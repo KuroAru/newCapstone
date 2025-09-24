@@ -459,6 +459,7 @@ GameObject:
   - component: {fileID: 290853957}
   - component: {fileID: 290853958}
   - component: {fileID: 290853959}
+  - component: {fileID: 290853960}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -479,11 +480,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -270.58762, y: 190.66129}
+  scrollPos: {x: -862.0182, y: 92.09411}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.6625
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -493,7 +494,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 290853950}
   selectedCommands:
-  - {fileID: 290853949}
+  - {fileID: 290853960}
   variables:
   - {fileID: 290853934}
   description: 
@@ -1225,8 +1226,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 919.3421
-    y: 106.23262
+    x: 917.3421
+    y: 103.23262
     width: 74.06
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -3853,8 +3854,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 1428.3235
-    y: 5.565098
+    x: 1423.3235
+    y: 1.5650978
     width: 98.65
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -3865,6 +3866,7 @@ MonoBehaviour:
   eventHandler: {fileID: 0}
   commandList:
   - {fileID: 290853949}
+  - {fileID: 290853960}
   - {fileID: 290853957}
   suppressAllAutoSelections: 0
 --- !u!114 &290853951
@@ -4228,7 +4230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 1284.9274
+    x: 1283.9274
     y: 82.546265
     width: 125.5
     height: 40
@@ -4701,6 +4703,51 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
+--- !u!114 &290853960
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290853875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 75
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 984503962}
+  targetComponentAssemblyName: ItemPickup, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: ItemPickup
+  targetMethod: OnPointerClick
+  targetMethodText: 'OnPointerClick (PointerEventData): Void'
+  methodParameters:
+  - objValue:
+      typeAssemblyname: UnityEngine.EventSystems.PointerEventData, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+      typeFullname: UnityEngine.EventSystems.PointerEventData
+      intValue: 0
+      boolValue: 0
+      floatValue: 0
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: 
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
 --- !u!1 &460761960
 GameObject:
   m_ObjectHideFlags: 0
@@ -5538,6 +5585,8 @@ GameObject:
   - component: {fileID: 984503965}
   - component: {fileID: 984503964}
   - component: {fileID: 984503967}
+  - component: {fileID: 984503968}
+  - component: {fileID: 984503969}
   m_Layer: 0
   m_Name: Food
   m_TagString: Untagged
@@ -5675,6 +5724,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFlowchart: {fileID: 290853876}
   blockToExecute: Food_Clicked
+--- !u!114 &984503968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984503962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36992d1989d442a48a31cb0b8485dee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: 302cdbc4b289cd244a54196fac96319d, type: 2}
+--- !u!114 &984503969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984503962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb61c5fc33bbd642ae51bbe81a7c0df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredItem: {fileID: 11400000, guid: 302cdbc4b289cd244a54196fac96319d, type: 2}
+  onSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+  fungusBooleanVariableName: hasUsedStudyKey
 --- !u!1 &1072031612
 GameObject:
   m_ObjectHideFlags: 0
