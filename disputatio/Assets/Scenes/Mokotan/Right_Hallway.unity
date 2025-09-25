@@ -287,6 +287,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   fungusBooleanVariableName: hasUsedStudyKey
+  variabeleName: GetBottle
 --- !u!1 &309204879
 GameObject:
   m_ObjectHideFlags: 0
@@ -1100,7 +1101,7 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 2129203491}
+  - {fileID: 2129203484}
   selectedCommands: []
   variables:
   - {fileID: 2129203495}

@@ -14,6 +14,7 @@ public class InteractableObject : MonoBehaviour
     [Tooltip("이 상호작용이 성공했을 때 true로 설정할 Fungus Flowchart의 Boolean 변수 이름")]
     public string fungusBooleanVariableName = "hasUsedStudyKey"; // Fungus에 만들 변수 이름과 일치해야 합니다.
 
+
     // 이 오브젝트를 마우스로 클릭했을 때 호출됩니다.
     void OnMouseDown()
     {
