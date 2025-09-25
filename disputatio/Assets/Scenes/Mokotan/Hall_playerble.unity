@@ -6770,6 +6770,7 @@ GameObject:
   - component: {fileID: 1859562078}
   - component: {fileID: 1859562077}
   - component: {fileID: 1859562082}
+  - component: {fileID: 1859562083}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -6859,6 +6860,7 @@ MonoBehaviour:
   variables:
   - {fileID: 1859562078}
   - {fileID: 1859562082}
+  - {fileID: 1859562083}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -6898,6 +6900,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: GetBottle
+  value: 0
+--- !u!114 &1859562083
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859562076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scope: 0
+  key: GetMadeRoomKey
   value: 0
 --- !u!1 &1863794206
 GameObject:
