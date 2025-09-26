@@ -68,6 +68,10 @@ public class ChatbotManager : MonoBehaviour
 
     [SerializeField]
     public Flowchart globalFlowchart;
+
+    [SerializeField]
+    public Flowchart kitchenFlowchart;
+
     // Gemini API 호출을 위한 메시지 리스트
     private List<GeminiMessage> chatHistory = new List<GeminiMessage>();
 
@@ -163,23 +167,32 @@ public class ChatbotManager : MonoBehaviour
         }
 
         // 3. Fungus 변수와 사용자 메시지 키워드를 확인하여 프롬프트를 조립합니다.
-        if (globalFlowchart != null)
+        if (globalFlowchart != null || kitchenFlowchart != null)
         {
             bool hasBottleFlag = globalFlowchart.GetBooleanVariable("GetBottle"); // 예시 변수 이름
+            bool giveFood = kitchenFlowchart.GetBooleanVariable("giveFood");
 
             // 물병 플래그가 True이고, 사용자가 "물병"에 대해 물어봤을 경우
             if (hasBottleFlag && lastUserMessage.Contains("물병") || lastUserMessage.Contains("병"))
             {
                 // 프롬프트에 수수께끼를 내라는 특별 지시를 추가합니다.
-                finalPrompt += "\n\n[중요 지시] 플레이어는 '물병'에 대한 단서를 가지고 있으며, '물병'에 대해 질문했습니다. 부력에 대한 힌트로 수수께끼로 힌트를 주세요.";
+                finalPrompt += "\n\n[중요 지시] 플레이어는 '물병'에 대한 단서를 가지고 있으며, '물병'에 대해 질문했습니다. 부력에 대한 힌트를 수수께끼로 힌트를 주세요.";
             }
             // 여기에 다른 아이템에 대한 Else If 조건을 계속 추가할 수 있습니다.
-            // else if (hasKeyFlag && lastUserMessage.Contains("문")) { ... }
+            else if (giveFood)
+            {
+                finalPrompt += "\n\n[중요 지시] 플레이어는 당신에게 먹이를 주었습니다. 그에 대한 감사로 '카레'에 대한 힌트로 수수께끼를 힌트로 주세요";
+            }
         }
         else
         {
             Debug.LogError("Global Flowchart가 ChatbotManager에 연결되지 않았습니다!");
         }
+
+         if (chatHistory.Count > 0 && chatHistory[0].role == "model")
+    {
+        chatHistory[0].parts[0].text = finalPrompt;
+    }
 
         // --- 프롬프트 생성 로직 끝 ---
 
@@ -254,6 +267,29 @@ public class ChatbotManager : MonoBehaviour
         // API 응답을 받은 후, Fungus가 대사를 표시할 때까지 기다림
         yield return StartCoroutine(DisplayMessageChunks(chatbotResponse, true));
     }
+    
+    public void TriggerAIResponseByFlag()
+{
+    // 이미 API 요청이 진행 중이면 중복 실행 방지
+    if (isRequestInProgress)
+    {
+        Debug.Log("API 요청이 이미 진행 중입니다.");
+        return;
+    }
+
+    // AI가 상황을 이해할 수 있도록, 플레이어의 '행동'을 텍스트로 만들어 대화 기록에 추가합니다.
+    // 이 메시지는 화면에 보이지 않지만, AI의 다음 답변 생성에 결정적인 역할을 합니다.
+    string actionText = "(나는 방금 당신에게 먹이를 주었다.)"; 
+    
+    // 대화 기록에 행동 추가 (user 역할로)
+    chatHistory.Add(new GeminiMessage { role = "user", parts = new List<GeminiContent> { new GeminiContent { text = actionText } } });
+    
+    // AI가 응답하는 동안 플레이어의 입력을 막기 위해 입력창을 비활성화합니다.
+    SetInputActive(false);
+
+    // API 호출 코루틴을 시작합니다.
+    StartCoroutine(GetGeminiResponse());
+}
 
     private IEnumerator DisplayMessageChunks(string message, bool isUserTurn = false)
     {
@@ -268,10 +304,10 @@ public class ChatbotManager : MonoBehaviour
                 chunks.Add(message.Substring(currentIndex));
                 break;
             }
-            
+
             // 문장이 끝나는 부분을 찾음
             int sentenceEndIndex = message.LastIndexOfAny(new char[] { '.', '?', '!', '…' }, endIndex, dialogueChunkSize);
-            
+
             if (sentenceEndIndex > currentIndex)
             {
                 chunks.Add(message.Substring(currentIndex, sentenceEndIndex - currentIndex + 1).Trim());
@@ -284,7 +320,7 @@ public class ChatbotManager : MonoBehaviour
                 currentIndex = endIndex;
             }
         }
-        
+
         // 각 조각을 순서대로 표시
         foreach (var chunk in chunks)
         {
@@ -295,7 +331,7 @@ public class ChatbotManager : MonoBehaviour
                 yield return null;
             }
         }
-        
+
         // 모든 대사 표시가 끝나면 입력 패널을 활성화
         SetInputActive(true);
     }
