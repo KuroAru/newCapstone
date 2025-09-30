@@ -10,6 +10,8 @@ using Fungus;
 
 public class InGameSettingsPanel : MonoBehaviour
 {
+    public static InGameSettingsPanel instance;
+
     [Header("UI Components")]
     public GameObject settingPanel; // 설정 UI의 부모 패널 GameObject
     public GameObject targetObject;
@@ -29,18 +31,31 @@ public class InGameSettingsPanel : MonoBehaviour
 
     private List<Resolution> resolutions;
     private int currentResolutionIndex = 0;
-    private bool isPanelOpen = true;
+    private bool isPanelOpen = false;
 
     void Awake()
     {
+        // 싱글톤 패턴: 단 하나의 인스턴스만 유지
+        if (instance != null)
+        {
+            Debug.LogWarning("GameManager 중복 생성 시도. 기존 인스턴스가 있어 자신을 파괴합니다.");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject); // 이 GameManager는 씬 전환 시 파괴되지 않도록 설정
+        
+        // settingPanel은 초기에는 비활성화 상태
+        if (settingPanel != null)
+        {
+            settingPanel.SetActive(false);
+        }
         // 이 스크립트는 게임 내 패널을 위한 것이므로, 시작 시 항상 패널을 닫고 시작합니다.
-        settingPanel.SetActive(false);
-        isPanelOpen = true;
+        isPanelOpen = false;    
     }
 
     void Start()
     {
-        OnSettingPanel();
         LoadSettings();
         AssignListeners();
         InitializeResolution();
@@ -48,24 +63,19 @@ public class InGameSettingsPanel : MonoBehaviour
 
     void Update()
     {
-
-    }
-
-    // (이 아래 코드는 이전 답변의 최종 완성 코드와 거의 동일합니다.
-    // 클래스 이름만 InGameSettingsPanel로 바뀌었습니다.)
-
-    public void OnSettingPanel()
-    {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleSettingPanel();
         }
 
         if (!isPanelOpen) return;
-
+        
         HandleKeyboardInput();
     }
-            
+    
+    // (이 아래 코드는 이전 답변의 최종 완성 코드와 거의 동일합니다.
+    // 클래스 이름만 InGameSettingsPanel로 바뀌었습니다.)
+    
     private void LoadSettings()
     {
         bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 0.75f);
