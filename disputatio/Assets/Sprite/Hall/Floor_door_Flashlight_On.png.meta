@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Floor_door_Flashlight_On_0: -8575840513147524836
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
