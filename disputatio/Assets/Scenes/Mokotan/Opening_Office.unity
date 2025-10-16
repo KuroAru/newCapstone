@@ -1837,7 +1837,7 @@ MonoBehaviour:
   delay: 0
 --- !u!114 &545852036
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -2251,6 +2251,8 @@ GameObject:
   - component: {fileID: 764985579}
   - component: {fileID: 764985578}
   - component: {fileID: 764985587}
+  - component: {fileID: 764985588}
+  - component: {fileID: 764985589}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -2445,6 +2447,30 @@ MonoBehaviour:
   scope: 2
   key: Animation
   value: 0
+--- !u!114 &764985588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764985577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a270e224c8e38942a5c362b100b0afa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &764985589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764985577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7c703d526a04543a92c5e8a774eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &806860219
 GameObject:
   m_ObjectHideFlags: 0
@@ -5748,7 +5774,6 @@ MonoBehaviour:
   fungusVariableName: isCalled
   dialogInput: {fileID: 1077051685}
   settingPanel: {fileID: 2123509417}
-  targetObject: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: a5aecd8f294b4384a83c3cbaaf8b3189, type: 2}
   bgmSlider: {fileID: 806860221}
   sfxSlider: {fileID: 1184518975}

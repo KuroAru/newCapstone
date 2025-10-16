@@ -12,26 +12,22 @@ public class InGameSettingsPanel : MonoBehaviour
 {
     public static InGameSettingsPanel instance;
 
-
-
-    [Header("Fungus 연동")] // 이 부분을 추가하세요
+    [Header("Fungus 연동")]
     public Flowchart targetFlowchart;
     public string fungusVariableName = "isCalled";
     public Fungus.DialogInput dialogInput;
 
-
     [Header("UI Components")]
-    public GameObject settingPanel; // 설정 UI의 부모 패널 GameObject
-    public GameObject targetObject;
+    public GameObject settingPanel;
     public AudioMixer audioMixer;
     public Slider bgmSlider;
     public Slider sfxSlider;
     public TextMeshProUGUI resolutionText;
-    public Button resolutionButton; // 키보드 조작을 위해 참조
+    public Button resolutionButton;
     public Toggle fullscreenToggle;
 
     [Header("Keyboard Navigation")]
-    public Selectable[] navigableElements; // 키보드로 이동할 UI 요소들
+    public Selectable[] navigableElements;
     private int currentIndex = 0;
 
     [Header("Scene Navigation")]
@@ -43,23 +39,18 @@ public class InGameSettingsPanel : MonoBehaviour
 
     void Awake()
     {
-        // 싱글톤 패턴: 단 하나의 인스턴스만 유지
         if (instance != null)
         {
-            Debug.LogWarning("GameManager 중복 생성 시도. 기존 인스턴스가 있어 자신을 파괴합니다.");
             Destroy(gameObject);
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject); // 이 GameManager는 씬 전환 시 파괴되지 않도록 설정
-        
-        // settingPanel은 초기에는 비활성화 상태
+        DontDestroyOnLoad(gameObject);
+
         if (settingPanel != null)
-        {
             settingPanel.SetActive(false);
-        }
-        // 이 스크립트는 게임 내 패널을 위한 것이므로, 시작 시 항상 패널을 닫고 시작합니다.
-        isPanelOpen = false;    
+
+        isPanelOpen = false;
     }
 
     void Start()
@@ -77,13 +68,9 @@ public class InGameSettingsPanel : MonoBehaviour
         }
 
         if (!isPanelOpen) return;
-        
         HandleKeyboardInput();
     }
-    
-    // (이 아래 코드는 이전 답변의 최종 완성 코드와 거의 동일합니다.
-    // 클래스 이름만 InGameSettingsPanel로 바뀌었습니다.)
-    
+
     private void LoadSettings()
     {
         bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 0.75f);
@@ -101,67 +88,48 @@ public class InGameSettingsPanel : MonoBehaviour
     }
 
     public void ToggleSettingPanel()
-{
-    isPanelOpen = !isPanelOpen;
-    settingPanel.SetActive(isPanelOpen);
-
-    if (dialogInput != null)
     {
-        // 패널이 열리면 대사 입력을 막고, 닫히면 다시 활성화
-        dialogInput.enabled = !isPanelOpen;
-    }
+        isPanelOpen = !isPanelOpen;
+        settingPanel.SetActive(isPanelOpen);
 
-    // 🔹 Fungus 연동 부분 추가
-    if (targetFlowchart != null)
-    {
-        targetFlowchart.SetBooleanVariable(fungusVariableName, isPanelOpen);
-        Debug.Log($"Fungus 변수 '{fungusVariableName}'가 {isPanelOpen}로 변경됨");
+        if (dialogInput != null)
+            dialogInput.enabled = !isPanelOpen;
+
+        if (targetFlowchart != null)
+            targetFlowchart.SetBooleanVariable(fungusVariableName, isPanelOpen);
     }
-}
 
     public void OpenSettingPanel()
     {
-        if (!isPanelOpen)
-        {
-            ToggleSettingPanel();
-        }
+        if (!isPanelOpen) ToggleSettingPanel();
     }
 
     public void CloseSettingPanel()
     {
-        if (isPanelOpen)
-        {
-            ToggleSettingPanel();
-        }
+        if (isPanelOpen) ToggleSettingPanel();
     }
-    
+
     private void HandleKeyboardInput()
     {
         bool isKeyboardInput = Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) ||
-                                 Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
-                                 Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space);
+                               Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
+                               Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space);
 
         if (isKeyboardInput && EventSystem.current.currentSelectedGameObject == null)
-        {
             SelectUIElement(currentIndex);
-        }
 
         if (EventSystem.current.currentSelectedGameObject == null) return;
-        
+
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
             HandleNavigation();
-        }
         else
         {
             HandleSelectionKeyboardInput();
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
-            {
                 HandleEnterPress();
-            }
         }
     }
-    
+
     private void HandleNavigation()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -203,12 +171,10 @@ public class InGameSettingsPanel : MonoBehaviour
     {
         GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
         if (selectedObj == null) return;
-        
+
         Button button = selectedObj.GetComponent<Button>();
         if (button != null)
-        {
             button.onClick.Invoke();
-        }
     }
 
     private void SelectUIElement(int index)
@@ -217,16 +183,6 @@ public class InGameSettingsPanel : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(navigableElements[index].gameObject);
             currentIndex = index;
-        }
-    }
-    
-    private IEnumerator SelectFirstElementAfterRealtime()
-    {
-        yield return new WaitForSecondsRealtime(0.05f);
-        EventSystem.current.SetSelectedGameObject(null);
-        if (navigableElements.Length > 0)
-        {
-            SelectUIElement(0);
         }
     }
 
@@ -256,22 +212,13 @@ public class InGameSettingsPanel : MonoBehaviour
 
         currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", resolutions.Count - 1);
         if (currentResolutionIndex >= resolutions.Count)
-        {
             currentResolutionIndex = resolutions.Count - 1;
-        }
-        
+
         SetResolution(currentResolutionIndex);
     }
-    
-    public void CycleResolutionForward()
-    {
-        CycleResolution(1);
-    }
 
-    public void CycleResolutionBackward()
-    {
-        CycleResolution(-1);
-    }
+    public void CycleResolutionForward() => CycleResolution(1);
+    public void CycleResolutionBackward() => CycleResolution(-1);
 
     private void CycleResolution(int direction)
     {
@@ -293,21 +240,64 @@ public class InGameSettingsPanel : MonoBehaviour
     private void UpdateResolutionText()
     {
         if (resolutionText != null)
-            resolutionText.text = resolutions[currentResolutionIndex].width + " x " + resolutions[currentResolutionIndex].height;
+            resolutionText.text = $"{resolutions[currentResolutionIndex].width} x {resolutions[currentResolutionIndex].height}";
     }
 
     public void BackToMainMenu()
 {
-    // 1. 게임 시간을 반드시 정상으로 되돌립니다.
+    Debug.Log("메인메뉴 이동 버튼 클릭됨");
+    StartCoroutine(GoToMainMenu());
+}
+
+    private IEnumerator GoToMainMenu()
+{
     Time.timeScale = 1f;
 
-    // 2. 메인 메뉴 씬을 로드합니다. (오브젝트를 파괴하거나 숨기는 코드는 모두 제거)
+    if (targetFlowchart != null)
+        targetFlowchart.SetBooleanVariable(fungusVariableName, false);
+
+    CleanupDontDestroyObjects();
+    Debug.Log("모든 DontDestroyOnLoad 오브젝트 삭제 완료");
+
+    yield return null;
+    yield return null;
+
+    Debug.Log($"씬 로드 시도: {mainMenuSceneName}");
     SceneManager.LoadScene(mainMenuSceneName);
+
+    // ✅ 메인 메뉴로 넘어간 뒤 자신 제거 (다음 프레임에 파괴)
+    Destroy(gameObject);
 }
+    private void CleanupDontDestroyObjects()
+{
+    var temp = new GameObject("TempSceneProbe");
+    DontDestroyOnLoad(temp);
+    var ddScene = temp.scene;
+    Destroy(temp);
+
+    var roots = new List<GameObject>();
+    ddScene.GetRootGameObjects(roots);
+
+    foreach (var obj in roots)
+    {
+        // 자기 자신은 남겨야 코루틴이 끝까지 돌아서 씬 로드가 됨
+        if (obj == gameObject) continue;
+
+        // ① Fungus 전역 변수 저장소는 삭제하지 않음
+        if (obj.GetComponent<GlobalVariables>() != null) continue;
+
+        // ② (선택) 마커/이름으로도 제외 가능
+        if (obj.GetComponent<KeepAcrossScenes>() != null) continue;
+        if (obj.name == "Variablemanager") continue;
+
+        Destroy(obj);
+    }
+}
+
 
     public void ReturnToGame()
     {
         CloseSettingPanel();
-        Debug.Log("클릭되었다");
+        Debug.Log("게임 복귀");
     }
 }
