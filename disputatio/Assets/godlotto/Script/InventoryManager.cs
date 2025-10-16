@@ -31,6 +31,20 @@ public class InventoryManager : MonoBehaviour
     {
         if (instance != null) { Destroy(gameObject); return; }
         instance = this;
+
+        if (targetflowchart == null)
+        {
+            GameObject flowchartObj = GameObject.Find("Variablemanager");
+            if (flowchartObj != null)
+            {
+                targetflowchart = flowchartObj.GetComponent<Flowchart>();
+                Debug.Log("Variablemanager Flowchart 자동 연결 완료!");
+            }
+            else
+            {
+                Debug.LogWarning("Variablemanager Flowchart를 찾을 수 없습니다.");
+            }
+        }
     }
 
     void Start()

@@ -12,8 +12,11 @@ public class InGameSettingsPanel : MonoBehaviour
 {
     public static InGameSettingsPanel instance;
 
+
+
     [Header("Fungus 연동")] // 이 부분을 추가하세요
     public Flowchart targetFlowchart;
+    public string fungusVariableName = "isCalled";
     public Fungus.DialogInput dialogInput;
 
 
@@ -98,21 +101,30 @@ public class InGameSettingsPanel : MonoBehaviour
     }
 
     public void ToggleSettingPanel()
-    {
-        isPanelOpen = !isPanelOpen;
-        settingPanel.SetActive(isPanelOpen);
+{
+    isPanelOpen = !isPanelOpen;
+    settingPanel.SetActive(isPanelOpen);
 
-        if (dialogInput != null)
-        {
-            // isPanelOpen이 true면(패널이 열리면) dialogInput.enabled는 false가 됩니다.
-            // isPanelOpen이 false면(패널이 닫히면) dialogInput.enabled는 true가 됩니다.
-            dialogInput.enabled = !isPanelOpen;
-        }
+    if (dialogInput != null)
+    {
+        // 패널이 열리면 대사 입력을 막고, 닫히면 다시 활성화
+        dialogInput.enabled = !isPanelOpen;
     }
+
+    // 🔹 Fungus 연동 부분 추가
+    if (targetFlowchart != null)
+    {
+        targetFlowchart.SetBooleanVariable(fungusVariableName, isPanelOpen);
+        Debug.Log($"Fungus 변수 '{fungusVariableName}'가 {isPanelOpen}로 변경됨");
+    }
+}
 
     public void OpenSettingPanel()
     {
-        if (!isPanelOpen) ToggleSettingPanel();
+        if (!isPanelOpen)
+        {
+            ToggleSettingPanel();
+        }
     }
 
     public void CloseSettingPanel()
