@@ -1422,6 +1422,7 @@ GameObject:
   - component: {fileID: 290854112}
   - component: {fileID: 290854113}
   - component: {fileID: 290854114}
+<<<<<<< Updated upstream
   - component: {fileID: 290854115}
   - component: {fileID: 290854117}
   - component: {fileID: 290854118}
@@ -1493,6 +1494,8 @@ GameObject:
   - component: {fileID: 290854189}
   - component: {fileID: 290854191}
   - component: {fileID: 290854190}
+=======
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -1513,11 +1516,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
+<<<<<<< Updated upstream
   scrollPos: {x: -1924.8948, y: 269.43396}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 232
   zoom: 1
+=======
+  scrollPos: {x: -1501.8156, y: 529.789}
+  variablesScrollPos: {x: 0, y: 0}
+  variablesExpanded: 1
+  blockViewHeight: 232
+  zoom: 0.8500002
+>>>>>>> Stashed changes
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1525,9 +1536,15 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
+<<<<<<< Updated upstream
   - {fileID: 290854030}
   selectedCommands:
   - {fileID: 290854189}
+=======
+  - {fileID: 290854017}
+  selectedCommands:
+  - {fileID: 290854114}
+>>>>>>> Stashed changes
   variables:
   - {fileID: 290853934}
   - {fileID: 290853970}
@@ -5881,6 +5898,8 @@ MonoBehaviour:
   - {fileID: 290854041}
   - {fileID: 290854128}
   - {fileID: 290854040}
+  - {fileID: 290854113}
+  - {fileID: 290854114}
   - {fileID: 290854054}
   - {fileID: 290854045}
   - {fileID: 290854046}
@@ -10868,13 +10887,18 @@ MonoBehaviour:
   setSayDialog: {fileID: 0}
 --- !u!114 &290854113
 MonoBehaviour:
+<<<<<<< Updated upstream
   m_ObjectHideFlags: 2
+=======
+  m_ObjectHideFlags: 0
+>>>>>>> Stashed changes
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290853875}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< Updated upstream
   m_Script: {fileID: 11500000, guid: dbd8c931f22994b9d90e2037fffaa770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -10890,12 +10914,28 @@ MonoBehaviour:
 --- !u!114 &290854114
 MonoBehaviour:
   m_ObjectHideFlags: 2
+=======
+  m_Script: {fileID: 11500000, guid: ab0d0ed4a2ca94c81a230a0ecce6e6e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 223
+  indentLevel: 1
+  targetObjects:
+  - {fileID: 243801839}
+  interactableState:
+    booleanRef: {fileID: 0}
+    booleanVal: 0
+--- !u!114 &290854114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+>>>>>>> Stashed changes
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290853875}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< Updated upstream
   m_Script: {fileID: 11500000, guid: dbd8c931f22994b9d90e2037fffaa770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -15401,6 +15441,15 @@ MonoBehaviour:
   - {fileID: 535236202}
   - {fileID: 243801839}
   - {fileID: 586477519}
+=======
+  m_Script: {fileID: 11500000, guid: ab0d0ed4a2ca94c81a230a0ecce6e6e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 224
+  indentLevel: 1
+  targetObjects:
+  - {fileID: 535236202}
+>>>>>>> Stashed changes
   interactableState:
     booleanRef: {fileID: 0}
     booleanVal: 0
