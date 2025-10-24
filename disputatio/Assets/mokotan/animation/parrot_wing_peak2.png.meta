@@ -522,7 +522,23 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      parrot_wing_peak2_0: -2791181757249597978
+      parrot_wing_peak2_1: 4457903925134268601
+      parrot_wing_peak2_10: 2724228432001396037
+      parrot_wing_peak2_11: -2153785480525488918
+      parrot_wing_peak2_12: -985505404552839826
+      parrot_wing_peak2_13: 1081204721172308162
+      parrot_wing_peak2_14: -7810944564540244217
+      parrot_wing_peak2_15: -7492694480656679730
+      parrot_wing_peak2_2: -154048300573859839
+      parrot_wing_peak2_3: 3789825306214686007
+      parrot_wing_peak2_4: -9045630279582663370
+      parrot_wing_peak2_5: 682333864658877430
+      parrot_wing_peak2_6: -8845034917626700165
+      parrot_wing_peak2_7: -2933720806821382024
+      parrot_wing_peak2_8: 9218467099912986649
+      parrot_wing_peak2_9: -2155420129251528347
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
