@@ -661,8 +661,10 @@ MonoBehaviour:
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
-  selectedCommands: []
+  selectedBlocks:
+  - {fileID: 687597786}
+  selectedCommands:
+  - {fileID: 687597787}
   variables:
   - {fileID: 687597774}
   description: 
@@ -1707,7 +1709,7 @@ MonoBehaviour:
   indentLevel: 1
   _sceneName:
     stringRef: {fileID: 0}
-    stringVal: TuterEntrance
+    stringVal: TutorEntrance
   loadingImage: {fileID: 0}
   sceneNameOLD: 
 --- !u!114 &687597788
