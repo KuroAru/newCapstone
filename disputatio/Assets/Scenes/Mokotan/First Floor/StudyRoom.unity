@@ -3128,6 +3128,7 @@ GameObject:
   - component: {fileID: 826082800}
   - component: {fileID: 826082801}
   - component: {fileID: 826082802}
+  - component: {fileID: 826082803}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -3209,6 +3210,7 @@ MonoBehaviour:
   - {fileID: 826082707}
   - {fileID: 826082727}
   - {fileID: 826082765}
+  - {fileID: 826082803}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -7829,6 +7831,21 @@ MonoBehaviour:
     booleanRef: {fileID: 0}
     booleanVal: 1
   targetGameObjectOLD: {fileID: 0}
+--- !u!114 &826082803
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826082673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scope: 2
+  key: HaveTutorKey
+  value: 0
 --- !u!1 &828886283
 GameObject:
   m_ObjectHideFlags: 0
@@ -9630,6 +9647,14 @@ PrefabInstance:
       propertyPath: item
       value: 
       objectReference: {fileID: 11400000, guid: dbee556a35542fc43b09fdafae7e9a1a, type: 2}
+    - target: {fileID: 5307487762727215905, guid: 44d19139f0443ee488695f5e0f732173, type: 3}
+      propertyPath: targetFlowchart
+      value: 
+      objectReference: {fileID: 826082676}
+    - target: {fileID: 5307487762727215905, guid: 44d19139f0443ee488695f5e0f732173, type: 3}
+      propertyPath: fungusVariableName
+      value: HaveTutorKey
+      objectReference: {fileID: 0}
     - target: {fileID: 6339624962808743202, guid: 44d19139f0443ee488695f5e0f732173, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
