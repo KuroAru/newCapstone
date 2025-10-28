@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requiredItem: {fileID: 11400000, guid: 56c21cd6fe2d1dd47bce85177249889b, type: 2}
-  targetFlowchart: {fileID: 0}
+  targetFlowchart: {fileID: 2129203483}
   fungusBooleanVariableName: HaveChildKey
   onUnlock:
     m_PersistentCalls:
