@@ -1519,11 +1519,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -419.96887, y: 93.136406}
+  scrollPos: {x: 514.66473, y: 287.5}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 232
-  zoom: 0.90475017
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1533,7 +1533,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 290853886}
   selectedCommands:
-  - {fileID: 290854200}
+  - {fileID: 290854199}
   variables:
   - {fileID: 290853934}
   - {fileID: 290853970}
@@ -1673,7 +1673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 403
+    x: 396.32028
     y: 200
     width: 78.03
     height: 40
@@ -15671,7 +15671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scope: 0
+  scope: 2
   key: ElectricOn
   value: 0
 --- !u!114 &290854196
@@ -15710,7 +15710,7 @@ MonoBehaviour:
   indentLevel: 0
 --- !u!114 &290854199
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -15737,7 +15737,7 @@ MonoBehaviour:
       typeFullname: System.Single
       intValue: 0
       boolValue: 0
-      floatValue: 2
+      floatValue: 0
       stringValue: 
       colorValue: {r: 0, g: 0, b: 0, a: 0}
       gameObjectValue: {fileID: 0}
@@ -15754,7 +15754,7 @@ MonoBehaviour:
       typeFullname: System.Single
       intValue: 0
       boolValue: 0
-      floatValue: 2
+      floatValue: 0
       stringValue: 
       colorValue: {r: 0, g: 0, b: 0, a: 0}
       gameObjectValue: {fileID: 0}
@@ -15772,7 +15772,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &290854200
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -20368,7 +20368,7 @@ PrefabInstance:
     - target: {fileID: 8163036197592294877, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
       propertyPath: postProcessVolume
       value: 
-      objectReference: {fileID: 648344935}
+      objectReference: {fileID: 1349982555}
     - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 955.0286
@@ -20409,16 +20409,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8163036197592294877, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1948127513}
   m_SourcePrefab: {fileID: 100100000, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
 --- !u!1 &1948127510 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
   m_PrefabInstance: {fileID: 1948127509}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1948127513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948127510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e7374558c5f6b4cb50bd4542d4c089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postProcessVolume: {fileID: 1349982555}
+  fadeDuration: 3
 --- !u!1 &1992724850
 GameObject:
   m_ObjectHideFlags: 0
