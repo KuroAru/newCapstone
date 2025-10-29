@@ -3441,9 +3441,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1931558259}
+  - {fileID: 1931558292}
   selectedCommands:
-  - {fileID: 1931558310}
+  - {fileID: 1931558309}
   variables:
   - {fileID: 1931558226}
   - {fileID: 1931558264}
@@ -7588,7 +7588,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &1931558310
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -7650,7 +7650,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &1931558311
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
