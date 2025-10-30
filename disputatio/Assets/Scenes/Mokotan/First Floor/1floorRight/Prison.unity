@@ -423,8 +423,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 687597781}
-  selectedCommands: []
+  - {fileID: 687597767}
+  selectedCommands:
+  - {fileID: 687597777}
   variables:
   - {fileID: 687597774}
   description: 
@@ -562,12 +563,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 842
     y: 204
-    width: 132.23999
+    width: 115.48
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
   itemId: 3
-  blockName: POStudyRoom
+  blockName: StudyRoom
   description: 
   eventHandler: {fileID: 0}
   commandList:
@@ -820,7 +821,7 @@ MonoBehaviour:
   indentLevel: 0
   _sceneName:
     stringRef: {fileID: 0}
-    stringVal: POStudyRoom
+    stringVal: StudyRoom
   loadingImage: {fileID: 0}
   sceneNameOLD: 
 --- !u!114 &687597780
