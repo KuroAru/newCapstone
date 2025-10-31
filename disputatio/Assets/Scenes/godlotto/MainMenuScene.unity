@@ -310,10 +310,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 200220028}
+  - {fileID: 1851799362}
+  - {fileID: 39290173}
+  - {fileID: 788538145}
   gameSceneName: Opening_Office
   settingSceneName: SettingScene
 --- !u!1 &200220026
