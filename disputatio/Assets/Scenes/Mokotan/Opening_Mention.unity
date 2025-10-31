@@ -1980,11 +1980,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 501.09656, y: 115.34436}
+  scrollPos: {x: 350.51593, y: 82.301025}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.62625
+  zoom: 0.7462499
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1992,8 +1992,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1313011486}
-  selectedCommands: []
+  - {fileID: 1313011468}
+  selectedCommands:
+  - {fileID: 1313011469}
   variables:
   - {fileID: 1313011520}
   - {fileID: 1313011529}
@@ -2119,7 +2120,7 @@ MonoBehaviour:
   indentLevel: 2
   _sceneName:
     stringRef: {fileID: 0}
-    stringVal: Opening_Mention _FanseOff
+    stringVal: Opening_Mention _open
   loadingImage: {fileID: 0}
   sceneNameOLD: 
 --- !u!114 &1313011470
