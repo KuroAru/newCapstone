@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hallway_right_x2_showcase_0: -219461107308246217
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

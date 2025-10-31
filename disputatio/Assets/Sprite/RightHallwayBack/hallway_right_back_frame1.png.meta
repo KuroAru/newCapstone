@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hallway_right_back_frame1_0: 5334167104170591476
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
