@@ -1893,7 +1893,7 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1313011474}
+  - {fileID: 1313011552}
   selectedCommands: []
   variables:
   - {fileID: 1313011520}
@@ -3312,7 +3312,7 @@ MonoBehaviour:
   sceneNameOLD: 
 --- !u!114 &1313011556
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
