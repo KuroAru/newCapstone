@@ -80,16 +80,132 @@ public class ChangeSP : MonoBehaviour
                 slot.image.sprite = sprite[9];
                 break;
 
-            case "nding":
+            case "Hall_Right":
                 slot.image.sprite = sprite[10];
                 break;
 
-            case "Eng":
+            case "Hall_Right2":
                 slot.image.sprite = sprite[11];
                 break;
 
-            case "Endin":
+            case "Hall_RightCross":
                 slot.image.sprite = sprite[12];
+                break;
+
+            case "MaidEntrance":
+                slot.image.sprite = sprite[13];
+                break;
+
+            case "MaidRoom":
+                slot.image.sprite = sprite[14];
+                break;
+
+            case "StudyEntrance":
+                slot.image.sprite = sprite[15];
+                break;
+
+            case "StudyRoom":
+                slot.image.sprite = sprite[16];
+                break;
+
+            case "BookCase1":
+                slot.image.sprite = sprite[17];
+                break;
+
+            case "BookCase2":
+                slot.image.sprite = sprite[18];
+                break;
+
+            case "BookCase2Back":
+                slot.image.sprite = sprite[19];
+                break;
+
+            case "BookCase3":
+                slot.image.sprite = sprite[20];
+                break;
+
+            case "BookCase4":
+                slot.image.sprite = sprite[21];
+                break;
+
+            case "PrisonEntrance":
+                slot.image.sprite = sprite[22];
+                break;
+
+            case "Prison":
+                slot.image.sprite = sprite[23];
+                break;
+
+            case "Hallway_Right":
+                slot.image.sprite = sprite[24];
+                break;
+
+            case "Hallway_Right2":
+                slot.image.sprite = sprite[25];
+                break;
+
+            case "2floorMainHall":
+                slot.image.sprite = sprite[26];
+                break;
+
+            case "2floorLeft":
+                slot.image.sprite = sprite[27];
+                break;
+
+            case "2floorLeftCross":
+                slot.image.sprite = sprite[28];
+                break;
+
+            case "TutorEntrance":
+                slot.image.sprite = sprite[29];
+                break;
+
+            case "TutorRoom":
+                slot.image.sprite = sprite[30];
+                break;
+
+            case "ChildEntrance":
+                slot.image.sprite = sprite[31];
+                break;
+
+            case "ChildRoom":
+                slot.image.sprite = sprite[32];
+                break;
+
+            case "2floorHallway_Left":
+                slot.image.sprite = sprite[33];
+                break;
+
+            case "2floorRight":
+                slot.image.sprite = sprite[34];
+                break;
+
+            case "2floorRightCross":
+                slot.image.sprite = sprite[35];
+                break;
+
+            case "BedEntrance":
+                slot.image.sprite = sprite[36];
+                break;
+
+            case "BedRoom":
+                slot.image.sprite = sprite[37];
+                break;
+
+            case "WifeEntrance":
+                slot.image.sprite = sprite[38];
+                break;
+
+            case "WifeRoom":
+                slot.image.sprite = sprite[39];
+                break;
+
+            case "DressingRoom":
+                slot.image.sprite = sprite[40];
+                break;
+
+            case "2floorHallway_Right":
+                slot.image.sprite = sprite[41];
                 break;
 
             default:

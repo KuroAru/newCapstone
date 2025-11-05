@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hallway_left_light_on_0: -1297138581638178188
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
