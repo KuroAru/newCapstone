@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3889862883138159382}
   - component: {fileID: 4807627533568272178}
   - component: {fileID: 9198306104591219643}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Clicked
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -808,7 +808,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
     arc:
-      value: 360
+      value: 1
       mode: 0
       spread: 0
       speed:
@@ -4856,9 +4856,9 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -738384123
+  m_SortingLayer: 1
+  m_SortingOrder: 51
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0

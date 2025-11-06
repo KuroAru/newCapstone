@@ -1499,6 +1499,7 @@ GameObject:
   - component: {fileID: 290854198}
   - component: {fileID: 290854199}
   - component: {fileID: 290854200}
+  - component: {fileID: 290854201}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -1519,11 +1520,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -1111.9237, y: 145.15787}
+  scrollPos: {x: -357.4793, y: 88.850746}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 232
-  zoom: 0.8747501
+  zoom: 0.775
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1531,9 +1532,8 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 290853983}
-  selectedCommands:
-  - {fileID: 290853989}
+  - {fileID: 290853886}
+  selectedCommands: []
   variables:
   - {fileID: 290853934}
   - {fileID: 290853970}
@@ -1673,8 +1673,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 394.32028
-    y: 194
+    x: 391.88678
+    y: 191.41936
     width: 78.03
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -1684,6 +1684,7 @@ MonoBehaviour:
   description: 
   eventHandler: {fileID: 290853887}
   commandList:
+  - {fileID: 290854201}
   - {fileID: 290854108}
   - {fileID: 290854193}
   - {fileID: 290854199}
@@ -1952,7 +1953,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 669.7482
-    y: 438.76102
+    y: 440.66577
     width: 150.11
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -15724,10 +15725,10 @@ MonoBehaviour:
   indentLevel: 1
   description: 
   targetObject: {fileID: 1948127510}
-  targetComponentAssemblyName: PostExposureController, Assembly-CSharp, Version=0.0.0.0,
+  targetComponentAssemblyName: FitchenPostExposureController, Assembly-CSharp, Version=0.0.0.0,
     Culture=neutral, PublicKeyToken=null
   targetComponentFullname: 'UnityEngine.Component[]'
-  targetComponentText: PostExposureController
+  targetComponentText: FitchenPostExposureController
   targetMethod: TriggerFlashEffect
   targetMethodText: 'TriggerFlashEffect (Single, Single): Void'
   methodParameters:
@@ -15786,10 +15787,10 @@ MonoBehaviour:
   indentLevel: 1
   description: 
   targetObject: {fileID: 1948127510}
-  targetComponentAssemblyName: PostExposureController, Assembly-CSharp, Version=0.0.0.0,
+  targetComponentAssemblyName: FitchenPostExposureController, Assembly-CSharp, Version=0.0.0.0,
     Culture=neutral, PublicKeyToken=null
   targetComponentFullname: 'UnityEngine.Component[]'
-  targetComponentText: PostExposureController
+  targetComponentText: FitchenPostExposureController
   targetMethod: SetVignetteToZero
   targetMethodText: 'SetVignetteToZero (Single): Void'
   methodParameters:
@@ -15815,6 +15816,28 @@ MonoBehaviour:
   returnValueType: System.Void
   showInherited: 0
   callMode: 0
+--- !u!114 &290854201
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290853875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b115619cb83b4d6ab8047d0e9407403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 312
+  indentLevel: 0
+  isStartPoint: 1
+  keyMode: 1
+  customKey: '{SavePointKey}'
+  keySeparator: _
+  descriptionMode: 0
+  customDescription: 
+  fireEvent: 1
+  resumeOnLoad: 1
 --- !u!1 &300483508
 GameObject:
   m_ObjectHideFlags: 0
@@ -16398,7 +16421,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.027489007, y: -0.034290195}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -16408,7 +16431,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.6505648, y: 4.548645}
+  m_Size: {x: 0.54, y: 4.56}
   m_EdgeRadius: 0
 --- !u!212 &559136593
 SpriteRenderer:
@@ -19002,55 +19025,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1443738992
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1443738994}
-  - component: {fileID: 1443738993}
-  m_Layer: 7
-  m_Name: Global Volume (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1443738993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1443738992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 7f524485adb5daa43ad15ace9005cfb8, type: 2}
---- !u!4 &1443738994
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1443738992}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 980.89655, y: 747.06726, z: 3.9838583}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1461258858
 GameObject:
   m_ObjectHideFlags: 0
@@ -19225,7 +19199,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.021212772, y: -0.034826994}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -19235,7 +19209,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.58166945, y: 4.1841264}
+  m_Size: {x: 0.54, y: 4.04}
   m_EdgeRadius: 0
 --- !u!212 &1481154582
 SpriteRenderer:
@@ -19335,7 +19309,7 @@ GameObject:
   - component: {fileID: 1497324674}
   m_Layer: 7
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: EffectCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19979,8 +19953,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chatSayDialog: {fileID: 1747689393}
-  kitchenFlowchart: {fileID: 290853876}
   modelName: gpt-4o
+  kitchenFlowchart: {fileID: 290853876}
 --- !u!1 &1702324455
 GameObject:
   m_ObjectHideFlags: 0
@@ -20538,7 +20512,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -738384123
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1001 &1948127509
@@ -20597,16 +20571,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8163036197592294877, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1948127513}
   m_SourcePrefab: {fileID: 100100000, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
 --- !u!1 &1948127510 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
   m_PrefabInstance: {fileID: 1948127509}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1948127513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948127510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29324fe13d893cd4db49f07892964a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postProcessVolume: {fileID: 648344935}
+  fadeDuration: 3
 --- !u!1 &1992724850
 GameObject:
   m_ObjectHideFlags: 0
@@ -21112,3 +21104,4 @@ SceneRoots:
   - {fileID: 1948127509}
   - {fileID: 1349982556}
   - {fileID: 1443738994}
+  - {fileID: 683398219}

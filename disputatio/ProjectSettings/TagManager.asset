@@ -3,12 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - EffectCamera
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - ClickEvent
+  - Setting
   - Water
   - UI
   - NoBlurObject
@@ -41,8 +42,11 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: SpriteEffect
+  - name: mouseEffect
     uniqueID: 3556583173
+    locked: 0
+  - name: Setting
+    uniqueID: 3024628405
     locked: 0
   m_RenderingLayers:
   - Default
