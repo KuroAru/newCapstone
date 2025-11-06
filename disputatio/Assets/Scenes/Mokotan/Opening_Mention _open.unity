@@ -137,13 +137,13 @@ GameObject:
   - component: {fileID: 21773758}
   - component: {fileID: 21773757}
   - component: {fileID: 21773756}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: SayDialog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &21773756
 AudioSource:
   m_ObjectHideFlags: 0
@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 24113725}
   - component: {fileID: 24113724}
   - component: {fileID: 24113723}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1112,7 +1112,7 @@ GameObject:
   - component: {fileID: 717890283}
   - component: {fileID: 717890285}
   - component: {fileID: 717890284}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1415,7 +1415,7 @@ GameObject:
   - component: {fileID: 873182904}
   - component: {fileID: 873182903}
   - component: {fileID: 873182902}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Continue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4145,7 +4145,7 @@ GameObject:
   - component: {fileID: 1337120525}
   - component: {fileID: 1337120524}
   - component: {fileID: 1337120523}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: StoryText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4333,7 +4333,7 @@ GameObject:
   - component: {fileID: 1422586991}
   - component: {fileID: 1422586990}
   - component: {fileID: 1422586989}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5723,7 +5723,7 @@ GameObject:
   - component: {fileID: 2142455240}
   - component: {fileID: 2142455242}
   - component: {fileID: 2142455241}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

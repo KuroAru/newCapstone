@@ -19420,7 +19420,7 @@ GameObject:
   - component: {fileID: 1497324674}
   m_Layer: 7
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: EffectCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20064,8 +20064,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chatSayDialog: {fileID: 1747689393}
-  kitchenFlowchart: {fileID: 290853876}
   modelName: gpt-4o
+  kitchenFlowchart: {fileID: 290853876}
 --- !u!1 &1702324455
 GameObject:
   m_ObjectHideFlags: 0
