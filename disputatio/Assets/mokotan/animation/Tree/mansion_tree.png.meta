@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mansion_tree_0: 3186396188195360370
+      mansion_tree_1: -8591178707872318891
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
