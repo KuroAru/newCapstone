@@ -413,11 +413,11 @@ Material:
     - _ShineSmooth: 1
     - _ShineSpeed: 5
     - _ShineWidth: 0.1
-    - _SineGlowContrast: 0.55
-    - _SineGlowFade: 0.31
-    - _SineGlowFrequency: 4
+    - _SineGlowContrast: 2
+    - _SineGlowFade: 0.19
+    - _SineGlowFrequency: 1
     - _SineGlowMaskToggle: 0
-    - _SineGlowMax: 3
+    - _SineGlowMax: 6
     - _SineGlowMin: 0
     - _SineMoveFade: 1
     - _SineRotateAngle: 15
