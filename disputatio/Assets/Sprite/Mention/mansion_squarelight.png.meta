@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mansion_squarelight_0: 8448617712684940220
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
