@@ -2346,6 +2346,7 @@ GameObject:
   - component: {fileID: 687597923}
   - component: {fileID: 687597921}
   - component: {fileID: 687597922}
+  - component: {fileID: 687597926}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -2380,10 +2381,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 687597762}
   selectedCommands:
-  - {fileID: 687597925}
-  - {fileID: 687597924}
-  - {fileID: 687597923}
-  - {fileID: 687597921}
+  - {fileID: 687597926}
   variables:
   - {fileID: 687597774}
   - {fileID: 687597836}
@@ -2441,6 +2439,7 @@ MonoBehaviour:
   description: 
   eventHandler: {fileID: 687597761}
   commandList:
+  - {fileID: 687597926}
   - {fileID: 687597789}
   - {fileID: 687597919}
   - {fileID: 687597918}
@@ -12404,6 +12403,28 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
+--- !u!114 &687597926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687597759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b115619cb83b4d6ab8047d0e9407403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 288
+  indentLevel: 0
+  isStartPoint: 1
+  keyMode: 1
+  customKey: '{SavePointKey}'
+  keySeparator: _
+  descriptionMode: 0
+  customDescription: 
+  fireEvent: 1
+  resumeOnLoad: 1
 --- !u!1 &735253844
 GameObject:
   m_ObjectHideFlags: 0
