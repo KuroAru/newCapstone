@@ -318,6 +318,72 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 13.011874, y: 2.5025337}
   m_EdgeRadius: 0
+--- !u!1001 &128448703
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_Name
+      value: EffectManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8163036197592294877, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: postProcessVolume
+      value: 
+      objectReference: {fileID: 1059897741}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 955.0286
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 498.7195
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -119.078316
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428397339209424815, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+--- !u!1 &128448704 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5231378680288470734, guid: 8ac86a12e37968447bc0159a6895abf3, type: 3}
+  m_PrefabInstance: {fileID: 128448703}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &145574129
 GameObject:
   m_ObjectHideFlags: 0
@@ -2217,6 +2283,8 @@ GameObject:
   - component: {fileID: 1313011552}
   - component: {fileID: 1313011553}
   - component: {fileID: 1313011554}
+  - component: {fileID: 1313011555}
+  - component: {fileID: 1313011556}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -2237,11 +2305,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -155.22824, y: 200.42807}
+  scrollPos: {x: -111.13525, y: 232.08102}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.97
+  zoom: 0.89524996
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -2249,9 +2317,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1313011486}
+  - {fileID: 1313011474}
   selectedCommands:
-  - {fileID: 1313011554}
+  - {fileID: 1313011556}
   variables:
   - {fileID: 1313011520}
   - {fileID: 1313011529}
@@ -2478,8 +2546,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 593.7704
-    y: -135.63025
+    x: 596.0044
+    y: -132.27924
     width: 78.03
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -2490,6 +2558,8 @@ MonoBehaviour:
   eventHandler: {fileID: 1313011473}
   commandList:
   - {fileID: 1313011552}
+  - {fileID: 1313011555}
+  - {fileID: 1313011556}
   - {fileID: 1313011547}
   - {fileID: 1313011511}
   - {fileID: 1313011476}
@@ -5018,7 +5088,7 @@ MonoBehaviour:
   targetGameObjectOLD: {fileID: 0}
 --- !u!114 &1313011554
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5037,6 +5107,113 @@ MonoBehaviour:
     booleanRef: {fileID: 0}
     booleanVal: 0
   targetGameObjectOLD: {fileID: 0}
+--- !u!114 &1313011555
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313011441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 99
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 128448704}
+  targetComponentAssemblyName: PostExposureController, Assembly-CSharp, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: PostExposureController
+  targetMethod: TriggerFlashEffect
+  targetMethodText: 'TriggerFlashEffect (Single, Single): Void'
+  methodParameters:
+  - objValue:
+      typeAssemblyname: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      typeFullname: System.Single
+      intValue: 0
+      boolValue: 0
+      floatValue: -0.6
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: 
+  - objValue:
+      typeAssemblyname: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      typeFullname: System.Single
+      intValue: 0
+      boolValue: 0
+      floatValue: -0.6
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: 
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
+--- !u!114 &1313011556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313011441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 100
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 128448704}
+  targetComponentAssemblyName: PostExposureController, Assembly-CSharp, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: PostExposureController
+  targetMethod: SetVignetteToZero
+  targetMethodText: 'SetVignetteToZero (Single): Void'
+  methodParameters:
+  - objValue:
+      typeAssemblyname: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      typeFullname: System.Single
+      intValue: 0
+      boolValue: 0
+      floatValue: 0.2
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: 
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
 --- !u!1 &1411594160
 GameObject:
   m_ObjectHideFlags: 0
@@ -7729,4 +7906,4 @@ SceneRoots:
   - {fileID: 1921117664}
   - {fileID: 1872388525}
   - {fileID: 1430730049}
-  - {fileID: 1884286238}
+  - {fileID: 128448703}
