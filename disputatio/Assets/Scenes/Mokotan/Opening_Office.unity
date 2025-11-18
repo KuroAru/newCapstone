@@ -6728,7 +6728,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedWifeKey
-  value: 1
+  value: 0
 --- !u!114 &2144482580
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6743,7 +6743,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveWifeKey
-  value: 1
+  value: 0
 --- !u!114 &2144482581
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6758,7 +6758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveBedKey
-  value: 1
+  value: 0
 --- !u!114 &2144482582
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6773,7 +6773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedBedKey
-  value: 1
+  value: 0
 --- !u!114 &2144482583
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6788,7 +6788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveChildKey
-  value: 1
+  value: 0
 --- !u!114 &2144482584
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6803,7 +6803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedChildKey
-  value: 1
+  value: 0
 --- !u!114 &2144482585
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6833,7 +6833,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveBasementKey
-  value: 1
+  value: 0
 --- !u!114 &2144482587
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6848,7 +6848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveTutorKey
-  value: 1
+  value: 0
 --- !u!114 &2144482588
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6863,7 +6863,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveStudyKey
-  value: 1
+  value: 0
 --- !u!114 &2144482589
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6878,7 +6878,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: HaveMaidKey
-  value: 1
+  value: 0
 --- !u!114 &2144482590
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6893,7 +6893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &2144482591
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6908,7 +6908,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedTutorKey
-  value: 1
+  value: 0
 --- !u!114 &2144482592
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6923,7 +6923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedBasementKey
-  value: 1
+  value: 0
 --- !u!114 &2144482593
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6938,7 +6938,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedStudyKey
-  value: 1
+  value: 0
 --- !u!114 &2144482594
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6953,7 +6953,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedMaidKey
-  value: 1
+  value: 0
 --- !u!114 &2144482595
 MonoBehaviour:
   m_ObjectHideFlags: 0
