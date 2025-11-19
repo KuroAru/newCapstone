@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // 코루틴(IEnumerator)을 사용하려면 이 줄이 꼭 필요합니다!
+using System.Collections; // 코루틴(IEnumerator) 사용을 위해 필수
 
 public class AudioController : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class AudioController : MonoBehaviour
     public AudioClip musicToPlay;
     private AudioSource audioSource;
 
-    // --- 발자국 소리를 위한 새 변수들 ---
+    // --- 발자국 소리를 위한 변수들 ---
     [Header("SFX Settings")]
     public AudioClip footstepSound; // 인스펙터에서 발자국 소리 파일을 연결할 변수
     public float delayBetweenSteps = 0.3f; // 발자국 소리 사이의 간격 (초 단위)
@@ -18,7 +18,7 @@ public class AudioController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    // --- 기존 함수 ---
+    // --- 음악 재생 함수 ---
     public void PlayMusic()
     {
         if (audioSource != null && musicToPlay != null)
@@ -29,10 +29,22 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    // --- 새로 추가된 발자국 소리 재생 함수 ---
-
+    // --- [새로 추가됨] 음악 정지 함수 ---
     /// <summary>
-    /// 발자국 소리를 3회 반복해서 재생시키는 함수 (이 함수를 호출!)
+    /// 재생 중인 음악을 즉시 멈추는 함수입니다.
+    /// Fungus에서 Call Method로 이 함수를 호출하면 소리가 꺼집니다.
+    /// </summary>
+    public void StopMusic()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+    }
+
+    // --- 발자국 소리 재생 함수 ---
+    /// <summary>
+    /// 발자국 소리를 4회 반복해서 재생시키는 함수 (이 함수를 호출!)
     /// </summary>
     public void PlayFootstep()
     {
@@ -47,6 +59,7 @@ public class AudioController : MonoBehaviour
         }
     }
 
+    // --- 발자국 소리 코루틴 ---
     /// <summary>
     /// 실제 소리 재생과 지연을 처리하는 코루틴
     /// </summary>
@@ -56,6 +69,7 @@ public class AudioController : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             // 발자국 소리를 한 번 재생합니다.
+            // PlayOneShot은 배경음악이 재생 중이어도 끊기지 않고 위에 겹쳐서 소리가 납니다.
             audioSource.PlayOneShot(footstepSound);
 
             // delayBetweenSteps에 설정된 시간만큼 기다립니다.
