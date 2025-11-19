@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      first_chainsaw_4_0: -8723191538512108241
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
