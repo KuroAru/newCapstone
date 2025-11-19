@@ -1,0 +1,517 @@
+fileFormatVersion: 2
+guid: 039b6c9f4041a1d428facf026a78fff9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1709229570863870519
+    second: Floor_parrot_talk_sheet_0
+  - first:
+      213: -5653145055357933795
+    second: Floor_parrot_talk_sheet_1
+  - first:
+      213: -5660548629689242027
+    second: Floor_parrot_talk_sheet_2
+  - first:
+      213: 79421558137958586
+    second: Floor_parrot_talk_sheet_3
+  - first:
+      213: 2687257868746437309
+    second: Floor_parrot_talk_sheet_4
+  - first:
+      213: -6105488681291926993
+    second: Floor_parrot_talk_sheet_5
+  - first:
+      213: -375626820875962418
+    second: Floor_parrot_talk_sheet_6
+  - first:
+      213: 7275948347092048808
+    second: Floor_parrot_talk_sheet_7
+  - first:
+      213: 6393150262997546929
+    second: Floor_parrot_talk_sheet_8
+  - first:
+      213: -8858775975451161931
+    second: Floor_parrot_talk_sheet_9
+  - first:
+      213: -2373581641039477170
+    second: Floor_parrot_talk_sheet_10
+  - first:
+      213: -1031330500903123589
+    second: Floor_parrot_talk_sheet_11
+  - first:
+      213: -844751826344422473
+    second: Floor_parrot_talk_sheet_12
+  - first:
+      213: 6699798149543672012
+    second: Floor_parrot_talk_sheet_13
+  - first:
+      213: -1643030619342865721
+    second: Floor_parrot_talk_sheet_14
+  - first:
+      213: -5154002996143543018
+    second: Floor_parrot_talk_sheet_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_0
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7323fe22d3768b710800000000000000
+      internalID: 1709229570863870519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_1
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1762a7168efb81b0800000000000000
+      internalID: -5653145055357933795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_2
+      rect:
+        serializedVersion: 2
+        x: 1637
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55e6c8d1301b171b0800000000000000
+      internalID: -5660548629689242027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_3
+      rect:
+        serializedVersion: 2
+        x: 2447
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab032508c792a1100800000000000000
+      internalID: 79421558137958586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 3257
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db2318e3bce0b4520800000000000000
+      internalID: 2687257868746437309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 4067
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f223d638462f44ba0800000000000000
+      internalID: -6105488681291926993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_6
+      rect:
+        serializedVersion: 2
+        x: 4877
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec73495856189caf0800000000000000
+      internalID: -375626820875962418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_7
+      rect:
+        serializedVersion: 2
+        x: 5687
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ab1388d87c59f460800000000000000
+      internalID: 7275948347092048808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_8
+      rect:
+        serializedVersion: 2
+        x: 6497
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b7f9a5ba4809b850800000000000000
+      internalID: 6393150262997546929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_9
+      rect:
+        serializedVersion: 2
+        x: 7307
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba0876af2e4f0580800000000000000
+      internalID: -8858775975451161931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_10
+      rect:
+        serializedVersion: 2
+        x: 8117
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e460470c2185f0fd0800000000000000
+      internalID: -2373581641039477170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_11
+      rect:
+        serializedVersion: 2
+        x: 8927
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b75c4a7af5affa1f0800000000000000
+      internalID: -1031330500903123589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_12
+      rect:
+        serializedVersion: 2
+        x: 9737
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b3d06b80b6d644f0800000000000000
+      internalID: -844751826344422473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_13
+      rect:
+        serializedVersion: 2
+        x: 10547
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc8be528be67afc50800000000000000
+      internalID: 6699798149543672012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_14
+      rect:
+        serializedVersion: 2
+        x: 11357
+        y: 0
+        width: 758
+        height: 1033
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ca7afa5b58c239e0800000000000000
+      internalID: -1643030619342865721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_parrot_talk_sheet_15
+      rect:
+        serializedVersion: 2
+        x: 12167
+        y: 0
+        width: 758
+        height: 1021
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61da093059d4978b0800000000000000
+      internalID: -5154002996143543018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

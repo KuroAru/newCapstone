@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 684100758}
   - component: {fileID: 684100761}
   - component: {fileID: 684100760}
+  - component: {fileID: 684100762}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -586,7 +587,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 684100715}
   selectedCommands:
-  - {fileID: 684100729}
+  - {fileID: 684100760}
   variables: []
   description: 
   stepPause: 0
@@ -657,6 +658,7 @@ MonoBehaviour:
   - {fileID: 684100752}
   - {fileID: 684100744}
   - {fileID: 684100760}
+  - {fileID: 684100762}
   - {fileID: 684100718}
   - {fileID: 684100720}
   - {fileID: 684100719}
@@ -915,7 +917,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 3
+    floatVal: 2
   durationOLD: 0
 --- !u!114 &684100736
 MonoBehaviour:
@@ -933,7 +935,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 2
+    floatVal: 1
   durationOLD: 0
 --- !u!114 &684100738
 MonoBehaviour:
@@ -972,7 +974,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 2
+    floatVal: 1
   durationOLD: 0
 --- !u!114 &684100746
 MonoBehaviour:
@@ -990,7 +992,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 3
+    floatVal: 2
   durationOLD: 0
 --- !u!114 &684100748
 MonoBehaviour:
@@ -1008,7 +1010,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 2
+    floatVal: 1
   durationOLD: 0
 --- !u!114 &684100750
 MonoBehaviour:
@@ -1026,7 +1028,7 @@ MonoBehaviour:
   indentLevel: 0
   _duration:
     floatRef: {fileID: 0}
-    floatVal: 3
+    floatVal: 2
   durationOLD: 0
 --- !u!114 &684100751
 MonoBehaviour:
@@ -1162,7 +1164,7 @@ MonoBehaviour:
       typeFullname: System.Single
       intValue: 0
       boolValue: 0
-      floatValue: 1.5
+      floatValue: 0.7
       stringValue: 
       colorValue: {r: 0, g: 0, b: 0, a: 0}
       gameObjectValue: {fileID: 0}
@@ -1282,26 +1284,9 @@ MonoBehaviour:
     Culture=neutral, PublicKeyToken=null
   targetComponentFullname: 'UnityEngine.Component[]'
   targetComponentText: PostExposureController
-  targetMethod: SetEyesOpenSmoothly
-  targetMethodText: 'SetEyesOpenSmoothly (Single): Void'
-  methodParameters:
-  - objValue:
-      typeAssemblyname: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      typeFullname: System.Single
-      intValue: 0
-      boolValue: 0
-      floatValue: 1.5
-      stringValue: 
-      colorValue: {r: 0, g: 0, b: 0, a: 0}
-      gameObjectValue: {fileID: 0}
-      materialValue: {fileID: 0}
-      objectValue: {fileID: 0}
-      spriteValue: {fileID: 0}
-      textureValue: {fileID: 0}
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-    variableKey: 
+  targetMethod: SetEyesOpened
+  targetMethodText: 'SetEyesOpened (): Void'
+  methodParameters: []
   saveReturnValue: 0
   returnValueVariableKey: 
   returnValueType: System.Void
@@ -1336,7 +1321,7 @@ MonoBehaviour:
       typeFullname: System.Single
       intValue: 0
       boolValue: 0
-      floatValue: 1.5
+      floatValue: 0.7
       stringValue: 
       colorValue: {r: 0, g: 0, b: 0, a: 0}
       gameObjectValue: {fileID: 0}
@@ -1347,6 +1332,34 @@ MonoBehaviour:
       vector2Value: {x: 0, y: 0}
       vector3Value: {x: 0, y: 0, z: 0}
     variableKey: 
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
+--- !u!114 &684100762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684100712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 163
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 11617121}
+  targetComponentAssemblyName: PostExposureController, Assembly-CSharp, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: PostExposureController
+  targetMethod: SetDramaticEnding
+  targetMethodText: 'SetDramaticEnding (): Void'
+  methodParameters: []
   saveReturnValue: 0
   returnValueVariableKey: 
   returnValueType: System.Void
