@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 public class MainMenu : MonoBehaviour
 {
     public Button[] menuButtons; // Start, Load, Setting, Exit
-    public string gameSceneName = "GameScene";
-    public string settingSceneName = "SettingScene";
 
     private int currentButtonIndex = 0;
     private Vector3 lastMousePosition;
@@ -88,9 +86,6 @@ public class MainMenu : MonoBehaviour
         // ✅ 게임 데이터 초기화
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
-
-        UnlockCursorForSceneChange();              // ★ 추가
-        SceneManager.LoadScene(gameSceneName);
     }
 
     public void OnLoadButton()
@@ -100,8 +95,7 @@ public class MainMenu : MonoBehaviour
 
     public void OnSettingButton()
     {
-        UnlockCursorForSceneChange();              // 선택: 설정 씬에서도 마우스 사용 시
-        SceneManager.LoadScene(settingSceneName);
+
     }
 
     public void OnExitButton()

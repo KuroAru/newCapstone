@@ -1,277 +1,209 @@
 using UnityEngine;
-
-using System.Collections; // 코루틴 사용을 위해 필요
-
+using System.Collections;
 using UnityEngine.Rendering;
-
-using UnityEngine.Rendering.Universal; // URP의 ColorAdjustments, Vignette 사용을 위해 필요
-
-
+using UnityEngine.Rendering.Universal;
 
 public class PostExposureController : MonoBehaviour
-
 {
-
-    // 인스펙터 창에서 'Global Post-process Volume' 게임 오브젝트를 여기에 연결해주세요.
-
     [SerializeField] private Volume postProcessVolume;
 
-
-
-    // Post Processing 효과 변수들
-
     private ColorAdjustments colorAdjustments;
-
     private Vignette vignette;
-
     private Bloom bloom;
 
-
-
-    // 코루틴 추적 변수들 (Vignette 제외)
-
     private Coroutine postExposureFadeCoroutine;
-
     private Coroutine contrastFadeCoroutine;
-
-
-
-    // 효과 페이드 지속 시간 (인스펙터에서 조절 가능)
+    private Coroutine eyeBlinkCoroutine;
 
     [Tooltip("효과가 원래 값으로 돌아가는 데 걸리는 시간(초)")]
-
     [SerializeField] private float fadeDuration = 3.0f;
 
-
-
     void Start()
-
     {
-
         if (postProcessVolume == null)
-
         {
-
-            Debug.LogError("Post Process Volume이 Inspector에 연결되지 않았습니다!", this);
-
+            Debug.LogError("Post Process Volume이 Inspector에 연결되지 않았습니다!");
             return;
-
         }
 
-
-
-        // Color Adjustments 효과 가져오기
-
-        if (postProcessVolume.profile.TryGet(out colorAdjustments))
-
-        {
-
-            Debug.Log("Color Adjustments 효과를 찾았습니다.");
-
-            colorAdjustments.postExposure.value = 0f;
-
-            colorAdjustments.contrast.value = 50f;
-
-        }
-
-        else
-
-        {
-
-            Debug.LogError("지정된 Volume Profile에서 Color Adjustments 효과를 찾을 수 없습니다!", this);
-
-        }
-
-
-
-        // Vignette 효과 가져오기 (초기화 로직은 제거, 필요시 직접 설정)
-
-        if (postProcessVolume.profile.TryGet(out vignette))
-
-        {
-            vignette.intensity.value = 0.7f;
-            Debug.Log("Vignette 효과를 찾았습니다.");
-
-            // vignette.intensity.value = 0f; // 시작 시 초기화 제거 (원래 Profile 값 유지)
-
-        }
-
-        else
-
-        {
-
-            Debug.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
-
-        }
-
-        if (postProcessVolume.profile.TryGet(out bloom))
-
-        {
-            bloom.intensity.value = 2.0f;
-            Debug.Log("Vignette 효과를 찾았습니다.");
-        }
-
-        else
-
-        {
-
-            Debug.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
-
-        }
-
+        // Volume Profile의 컴포넌트들을 가져옵니다.
+        if (postProcessVolume.profile.TryGet(out colorAdjustments)) Debug.Log("Color Adjustments 찾음");
+        if (postProcessVolume.profile.TryGet(out vignette)) Debug.Log("Vignette 찾음");
+        if (postProcessVolume.profile.TryGet(out bloom)) Debug.Log("Bloom 찾음");
     }
 
-
-
-    /// <summary>
-
-    /// 섬광탄처럼 화면을 하얗게 만들고 지정된 시간 동안 원래대로 페이드 아웃합니다.
-
-    /// </summary>
-
-    public void TriggerFlashEffect(float peakExposure = 6f, float targetExposure = 0f)
-
-    {
-
-        if (colorAdjustments == null) return;
-
-
-
-        if (postExposureFadeCoroutine != null) StopCoroutine(postExposureFadeCoroutine);
-
-        postExposureFadeCoroutine = StartCoroutine(FadeEffect(
-
-            (value) => colorAdjustments.postExposure.value = value,
-
-            peakExposure, targetExposure, fadeDuration
-
-        ));
-
-    }
-
-
+    // ---------------------------------------------------------
+    // ★ 펑구스(Fungus) 연동용 함수들 (수정됨)
+    // ---------------------------------------------------------
 
     /// <summary>
-
-    /// 명암비(Contrast)를 조절하여 눈 깜빡임 후 적응 효과를 만듭니다.
-
+    /// [눈 감기] Vignette: 1, Exposure: -3 (어둡게)
     /// </summary>
-
-    public void TriggerBlinkEffect(float peakContrast = 50f, float targetContrast = 0f)
-
+    public void SetEyesClosed()
     {
-
-        if (colorAdjustments == null) return;
-
-
-
-        if (contrastFadeCoroutine != null) StopCoroutine(contrastFadeCoroutine);
-
-        contrastFadeCoroutine = StartCoroutine(FadeEffect(
-
-            (value) => colorAdjustments.contrast.value = value,
-
-            peakContrast, targetContrast, fadeDuration
-
-        ));
-
-    }
-
-
-
-    /// <summary>
-
-    /// Vignette 강도를 즉시 0으로 설정합니다. (사용자 요구사항 반영)
-
-    /// </summary>
-
-    public void SetVignetteToZero(float value) // 원래 함수 이름 유지
-
-    {
-
         if (vignette != null)
-
         {
-
-            vignette.intensity.value = value;
-
-            Debug.Log("Vignette Intensity set to 0 (instant)."); // 디버그 메시지 수정
-
+            vignette.active = true;
+            vignette.intensity.overrideState = true; // 체크박스 강제 활성화
+            vignette.intensity.value = 1f;
         }
 
-        else
-
+        if (colorAdjustments != null)
         {
-
-            Debug.LogError("Cannot set Vignette intensity: Vignette effect not found."); // 디버그 메시지 수정
-
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.overrideState = true; // 체크박스 강제 활성화
+            colorAdjustments.postExposure.value = -3f; // 눈 감았을 때는 어둡게
         }
-
+        
+        Debug.Log("눈을 감았습니다. (Vignette: 1, Exposure: -3)");
     }
 
-    public void SetBloomToZero(float value) // 원래 함수 이름 유지
-
+    /// <summary>
+    /// [눈 뜨기] Vignette: 0.3, Exposure: 2.0 (밝게!)
+    /// 사용자 요청 반영: Exposure 값을 2.0으로 상향 조정
+    /// </summary>
+    public void SetEyesOpened()
     {
-
-        if (bloom != null)
-
+        if (vignette != null)
         {
-
-            bloom.intensity.value = value;
-
-            Debug.Log("Vignette Intensity set to 0 (instant)."); // 디버그 메시지 수정
-
+            vignette.active = true;
+            vignette.intensity.overrideState = true;
+            vignette.intensity.value = 0.3f;
         }
 
-        else
-
+        if (colorAdjustments != null)
         {
-
-            Debug.LogError("Cannot set Vignette intensity: Vignette effect not found."); // 디버그 메시지 수정
-
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.overrideState = true;
+            
+            // ★ 수정된 부분: -0.6 -> 2.0 (배경이 잘 보이도록 밝기 올림)
+            colorAdjustments.postExposure.value = 2.0f; 
         }
 
+        Debug.Log("눈을 떴습니다. (Vignette: 0.3, Exposure: 2.0)");
     }
 
-
-    private IEnumerator FadeEffect(System.Action<float> setter, float startValue, float endValue, float duration)
-
+    /// <summary>
+    /// [부드럽게 눈 뜨기] 서서히 밝아짐 (-3 -> 2.0)
+    /// </summary>
+    public void SetEyesOpenSmoothly(float duration)
     {
-
-        setter(startValue);
-
-        Debug.Log($"Effect starting from {startValue}, fading to {endValue} over {duration}s.");
-
-
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < duration)
-
+        if (duration <= 0)
         {
+            SetEyesOpened();
+            return;
+        }
 
-            float currentValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+        if (eyeBlinkCoroutine != null) StopCoroutine(eyeBlinkCoroutine);
+        eyeBlinkCoroutine = StartCoroutine(SmoothEyeOpen(duration));
+    }
 
-            setter(currentValue);
+    private IEnumerator SmoothEyeOpen(float duration)
+    {
+        float time = 0f;
+        
+        // 시작 값 (눈 감음)
+        float startVig = 1f;
+        float startExp = -3f;
 
-            elapsedTime += Time.deltaTime;
+        // 목표 값 (눈 뜸) - ★ 여기도 2.0으로 수정
+        float endVig = 0.3f;
+        float endExp = 2.0f; 
+
+        // 코루틴 시작 전 overrideState 확실히 켜기
+        if (vignette != null)
+        {
+            vignette.active = true;
+            vignette.intensity.overrideState = true; 
+            vignette.intensity.value = startVig;
+        }
+        if (colorAdjustments != null)
+        {
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.overrideState = true;
+            colorAdjustments.postExposure.value = startExp;
+        }
+
+        Debug.Log($"SmoothEyeOpen 시작: {duration}초 동안 Exposure {startExp} -> {endExp}로 변경");
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            float tSmooth = Mathf.SmoothStep(0f, 1f, t); // 부드러운 가속
+
+            if (vignette != null) 
+                vignette.intensity.value = Mathf.Lerp(startVig, endVig, tSmooth);
+            
+            if (colorAdjustments != null) 
+                colorAdjustments.postExposure.value = Mathf.Lerp(startExp, endExp, tSmooth);
 
             yield return null;
-
         }
 
-
-
-        setter(endValue);
-
-        Debug.Log($"Effect fade complete, set to {endValue}.");
-
-        // 해당 코루틴 변수를 null로 설정 (각 호출 지점에서 필요시)
-
-        if (setter.Target == colorAdjustments && setter.Method.Name.Contains("postExposure")) postExposureFadeCoroutine = null;
-
-        if (setter.Target == colorAdjustments && setter.Method.Name.Contains("contrast")) contrastFadeCoroutine = null;
-
+        // 최종 값 확정
+        SetEyesOpened();
     }
 
+    // ---------------------------------------------------------
+    // ▼ 기존 레거시 함수들 (유지)
+    // ---------------------------------------------------------
+
+    public void TriggerFlashEffect(float peakExposure = 6f, float targetExposure = 0f)
+    {
+        if (colorAdjustments == null) return;
+        if (postExposureFadeCoroutine != null) StopCoroutine(postExposureFadeCoroutine);
+        postExposureFadeCoroutine = StartCoroutine(FadeEffect(
+            (value) => { 
+                colorAdjustments.postExposure.overrideState = true;
+                colorAdjustments.postExposure.value = value; 
+            },
+            peakExposure, targetExposure, fadeDuration
+        ));
+    }
+
+    public void TriggerBlinkEffect(float peakContrast = 50f, float targetContrast = 0f)
+    {
+        if (colorAdjustments == null) return;
+        if (contrastFadeCoroutine != null) StopCoroutine(contrastFadeCoroutine);
+        contrastFadeCoroutine = StartCoroutine(FadeEffect(
+            (value) => { 
+                colorAdjustments.contrast.overrideState = true;
+                colorAdjustments.contrast.value = value; 
+            },
+            peakContrast, targetContrast, fadeDuration
+        ));
+    }
+    
+    public void SetVignetteToZero(float value)
+    {
+        if (vignette != null)
+        {
+            vignette.intensity.overrideState = true;
+            vignette.intensity.value = value;
+        }
+    }
+
+    public void SetBloomToZero(float value)
+    {
+        if (bloom != null)
+        {
+            bloom.intensity.overrideState = true;
+            bloom.intensity.value = value;
+        }
+    }
+
+    private IEnumerator FadeEffect(System.Action<float> setter, float startValue, float endValue, float duration)
+    {
+        setter(startValue);
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            float currentValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+            setter(currentValue);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        setter(endValue);
+    }
 }

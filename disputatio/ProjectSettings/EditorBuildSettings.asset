@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/godlotto/SettingScene.unity
     guid: cd2d1205d93f7804fb4b847368272626
   - enabled: 1
+    path: Assets/Scenes/godlotto/IntroScene.unity
+    guid: dd3616191416dbe43a8a84fbb0a5f471
+  - enabled: 1
     path: Assets/Scenes/Mokotan/Opening_Office.unity
     guid: d6ee3e7b61902f14aae0380c4cb59c5c
   - enabled: 1
