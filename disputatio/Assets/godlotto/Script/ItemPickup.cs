@@ -9,7 +9,8 @@ public class ItemPickup : MonoBehaviour, IPointerClickHandler
 
     [Header("Fungus 연동 (선택사항)")]
     public Flowchart targetFlowchart;   // 이벤트를 보낼 Flowchart
-    public string fungusVariableName;   // True로 바꿀 변수 이름
+    public string fungusVariableName;   // True로 바꿀 변수 이름 (기존 기능)
+    public string executeBlockName;     // ★ 실행할 블록의 이름 (새로 추가됨)
 
     // Unity UI 클릭 이벤트로 호출됨
     public void OnPointerClick(PointerEventData eventData)
@@ -27,11 +28,22 @@ public class ItemPickup : MonoBehaviour, IPointerClickHandler
     // 실제 동작 로직
     private void PickUp()
     {
-        // 1. Fungus 변수 설정
-        if (targetFlowchart != null && !string.IsNullOrEmpty(fungusVariableName))
+        // 1. Fungus 연동 처리
+        if (targetFlowchart != null)
         {
-            targetFlowchart.SetBooleanVariable(fungusVariableName, true);
-            Debug.Log($"[ItemPickup] Fungus 변수 '{fungusVariableName}' → True");
+            // A. 변수 설정 (기존 기능)
+            if (!string.IsNullOrEmpty(fungusVariableName))
+            {
+                targetFlowchart.SetBooleanVariable(fungusVariableName, true);
+                Debug.Log($"[ItemPickup] Fungus 변수 '{fungusVariableName}' → True");
+            }
+
+            // B. ★ 특정 블록 실행 (추가된 기능)
+            if (!string.IsNullOrEmpty(executeBlockName))
+            {
+                targetFlowchart.ExecuteBlock(executeBlockName);
+                Debug.Log($"[ItemPickup] Fungus 블록 '{executeBlockName}' 실행");
+            }
         }
 
         // 2. 인벤토리 추가
