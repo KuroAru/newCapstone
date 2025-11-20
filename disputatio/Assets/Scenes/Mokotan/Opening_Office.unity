@@ -1091,7 +1091,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 545852010}
   selectedCommands:
-  - {fileID: 545852072}
+  - {fileID: 545852023}
   variables: []
   description: 
   stepPause: 0
@@ -1136,7 +1136,7 @@ MonoBehaviour:
     \uC11C\uB958\uAC00 \uC5B4\uB514 \uC788\uC9C0."
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1163,7 +1163,7 @@ MonoBehaviour:
   storyText: "\uD558... \uADC0\uCC2E\uAC8C \uB610 \uC57C\uADFC\uC774\uB2E4."
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1342,7 +1342,7 @@ MonoBehaviour:
     \uC5F0\uB77D\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1402,7 +1402,7 @@ MonoBehaviour:
     XX\uBC88\uC9C0, \uADF8 \uD070 \uC800\uD0DD \uB9DE\uC73C\uC2DC\uC8E0?"
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1459,7 +1459,7 @@ MonoBehaviour:
     \uC800\uD76C\uAC00 \uC9C1\uC811 \uC870\uC0AC\uD558\uAE30\uB294 \uC5B4\uB824\uC6CC\uC11C\uC694."
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1515,7 +1515,7 @@ MonoBehaviour:
   storyText: "\uC800\uD0DD\uC774\uC694? \uC5B4\uB5A4 \uBB38\uC81C\uC2E0\uAC00\uC694?"
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1572,7 +1572,7 @@ MonoBehaviour:
     \uD574\uBCF4\uC168\uC2B5\uB2C8\uAE4C?"
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1599,7 +1599,7 @@ MonoBehaviour:
   storyText: " \uD604\uC7AC \uAC70\uC8FC\uC790\uAC00 \uBD88\uBD84\uBA85\uD55C \uC0C1\uD669\uC774\uAD70\uC694."
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1627,7 +1627,7 @@ MonoBehaviour:
     \uBB34\uC2A8 \uC77C\uB85C \uC804\uD654\uD558\uC168\uB098\uC694?"
   description: 
   character: {fileID: 914388156}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1901,7 +1901,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &545852071
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -1922,7 +1922,7 @@ MonoBehaviour:
   targetGameObjectOLD: {fileID: 0}
 --- !u!114 &545852072
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -2955,8 +2955,7 @@ MonoBehaviour:
   nameText: "\uC8FC\uC778\uACF5"
   nameColor: {r: 0.31764707, g: 0.31764707, b: 0.31764707, a: 1}
   soundEffect: {fileID: 0}
-  portraits:
-  - {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portraits: []
   portraitsFace: 2
   setSayDialog: {fileID: 0}
   description: 
