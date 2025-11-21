@@ -2369,8 +2369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0b45dd64b2189468ae92fafca738fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicToPlay: {fileID: 0}
-  footstepSound: {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  bgmList: []
+  sfxList: []
   delayBetweenSteps: 0.3
 --- !u!82 &1265914556
 AudioSource:
@@ -3802,11 +3802,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 96.58133, y: -18.799057}
+  scrollPos: {x: -16.26551, y: -69.88066}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.73
+  zoom: 0.90999985
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -3814,9 +3814,8 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1931558219}
-  selectedCommands:
-  - {fileID: 1931558320}
+  - {fileID: 1931558224}
+  selectedCommands: []
   variables:
   - {fileID: 1931558226}
   - {fileID: 1931558264}
@@ -3902,7 +3901,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 354.41037
-    y: 154.1025
+    y: 153.00359
     width: 225.88
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -4256,7 +4255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 0
   key: hasPannel
-  value: 1
+  value: 0
 --- !u!114 &1931558241
 MonoBehaviour:
   m_ObjectHideFlags: 2

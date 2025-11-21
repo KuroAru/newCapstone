@@ -798,8 +798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0b45dd64b2189468ae92fafca738fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicToPlay: {fileID: 0}
-  footstepSound: {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  bgmList: []
+  sfxList: []
   delayBetweenSteps: 0.3
 --- !u!82 &601229876
 AudioSource:
@@ -1866,7 +1866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &1167277888
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -8153,7 +8153,7 @@ MonoBehaviour:
     booleanVal: 1
 --- !u!114 &1167278000
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -8172,7 +8172,7 @@ MonoBehaviour:
     booleanVal: 1
 --- !u!114 &1167278001
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -8598,6 +8598,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 22140fa725c2e4b40bb10fe1d73c4f43, type: 2}
   targetFlowchart: {fileID: 0}
   fungusVariableName: 
+  executeBlockName: 
 --- !u!1001 &1852452681
 PrefabInstance:
   m_ObjectHideFlags: 0

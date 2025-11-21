@@ -103,10 +103,10 @@ TextureImporter:
       name: 2f_studyroom_chair_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 41
-        width: 194
-        height: 308
+        x: 17
+        y: 5
+        width: 272
+        height: 416
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      2f_studyroom_chair_0: 6711978916553422457
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
