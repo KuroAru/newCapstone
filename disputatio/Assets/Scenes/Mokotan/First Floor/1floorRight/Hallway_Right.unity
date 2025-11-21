@@ -1588,8 +1588,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0b45dd64b2189468ae92fafca738fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicToPlay: {fileID: 0}
-  footstepSound: {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  bgmList: []
+  sfxList: []
   delayBetweenSteps: 0.3
 --- !u!82 &1012184068
 AudioSource:
@@ -3411,7 +3411,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &2129203558
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -4908,7 +4908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3315ad2ebb85443909a1203d56d9344e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemId: 181
+  itemId: 195
   indentLevel: 1
   _duration:
     floatRef: {fileID: 0}
@@ -5354,7 +5354,7 @@ MonoBehaviour:
   waitFrames: 1
 --- !u!114 &2129203590
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5506,7 +5506,7 @@ MonoBehaviour:
     vector3Val: {x: 0, y: 0, z: 0}
 --- !u!114 &2129203591
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5537,7 +5537,7 @@ MonoBehaviour:
   suppressAllAutoSelections: 0
 --- !u!114 &2129203592
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5555,7 +5555,7 @@ MonoBehaviour:
   durationOLD: 0
 --- !u!114 &2129203593
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5582,7 +5582,7 @@ MonoBehaviour:
   setSayDialog: {fileID: 0}
 --- !u!114 &2129203594
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5734,7 +5734,7 @@ MonoBehaviour:
     vector3Val: {x: 0, y: 0, z: 0}
 --- !u!114 &2129203595
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5977,7 +5977,7 @@ MonoBehaviour:
     vector3Val: {x: 0, y: 0, z: 0}
 --- !u!114 &2129203596
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

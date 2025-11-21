@@ -779,8 +779,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0b45dd64b2189468ae92fafca738fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicToPlay: {fileID: 0}
-  footstepSound: {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  bgmList: []
+  sfxList: []
   delayBetweenSteps: 0.3
 --- !u!82 &1439803118
 AudioSource:
@@ -2753,7 +2753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &1945851972
 MonoBehaviour:
   m_ObjectHideFlags: 2

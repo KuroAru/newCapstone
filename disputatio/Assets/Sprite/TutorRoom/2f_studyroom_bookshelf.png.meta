@@ -103,10 +103,10 @@ TextureImporter:
       name: 2f_studyroom_bookshelf_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 41
-        width: 553
-        height: 992
+        x: 23
+        y: 23
+        width: 644
+        height: 692
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      2f_studyroom_bookshelf_0: -2999238359586906060
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

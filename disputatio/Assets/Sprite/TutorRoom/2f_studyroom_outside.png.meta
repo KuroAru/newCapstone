@@ -103,10 +103,10 @@ TextureImporter:
       name: 2f_studyroom_outside_0
       rect:
         serializedVersion: 2
-        x: 179
-        y: 89
-        width: 200
-        height: 458
+        x: 65
+        y: 29
+        width: 626
+        height: 452
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      2f_studyroom_outside_0: -8510272743677382042
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

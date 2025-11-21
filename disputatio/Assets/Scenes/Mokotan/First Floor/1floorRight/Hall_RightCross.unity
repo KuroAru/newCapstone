@@ -2058,7 +2058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &687597809
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -3770,7 +3770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgmList: []
-  footstepSound: {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  sfxList: []
   delayBetweenSteps: 0.3
 --- !u!82 &1219328355
 AudioSource:
