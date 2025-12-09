@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Kitchen_newsink_hose_close_0: 8890604801379553791
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Kitchen_newsink_BG_0: 6919900490384518186
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

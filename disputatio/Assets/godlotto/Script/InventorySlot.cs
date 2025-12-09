@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems; // 드래그 앤 드롭을 위해 반드시 필요합니다!
+using Fungus;
 
 public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -61,15 +62,64 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnEndDrag(PointerEventData eventData)
+{
+    // 드래그 아이콘이 있다면 파괴합니다.
+    if (dragIcon != null)
     {
-        // 드래그 아이콘 제거
-        if (dragIcon != null)
-        {
-            Destroy(dragIcon);
-        }
-
-        draggedItem = null;   // 마지막에만 초기화
+        Destroy(dragIcon);
     }
+
+    // 1. UI 드롭존이 먼저 처리했는지 확인합니다 (기존 기능).
+    if (eventData.pointerEnter != null && eventData.pointerEnter.GetComponent<DropZone>() != null)
+    {
+        // DropZone.cs가 OnDrop을 실행할 것이므로, 여기서는 아무것도 할 필요가 없습니다.
+        draggedItem = null; // static 변수만 초기화하고 함수 종료
+        return;
+    }
+
+    // 2. UI가 아니라면, 2D 월드에 드롭했는지 확인합니다.
+    Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    RaycastHit2D hit = Physics2D.Raycast(mouseWorldPosition, Vector2.zero);
+
+    if (hit.collider != null)
+    {
+        WorldItemDropZone worldDropZone = hit.collider.GetComponent<WorldItemDropZone>();
+        if (worldDropZone != null)
+        {
+            // 🔹 Fungus에서 대사 진행 중인지 먼저 확인
+            bool dialog = false;
+
+            // WorldItemDropZone 안에 Flowchart / dialogBoolName 이 있다고 가정
+            if (worldDropZone.flowchart != null && 
+                !string.IsNullOrEmpty(worldDropZone.dialogBoolName))
+            {
+                dialog = worldDropZone.flowchart.GetBooleanVariable(worldDropZone.dialogBoolName);
+            }
+
+            if (dialog)
+            {
+                Debug.Log("대사가 진행 중이라 아이템을 사용할 수 없습니다.");
+                draggedItem = null;
+                return;
+            }
+
+            // 🔹 대사 중이 아니고, 아이템도 올바르면 사용
+            if (draggedItem == worldDropZone.requiredItem)
+            {
+                Debug.Log("올바른 아이템(" + draggedItem.itemName + ")을 2D 오브젝트에 사용했습니다!");
+
+                worldDropZone.onUnlock.Invoke();
+                InventoryManager.instance.RemoveItem(draggedItem);
+
+                // 한 번만 쓰고 싶으면
+                worldDropZone.enabled = false;
+            }
+        }
+    }
+
+    // 드롭에 성공했든 실패했든 static 변수를 초기화합니다.
+    draggedItem = null;
+}
 
     public void OnSlotClicked()
     {
