@@ -1406,6 +1406,7 @@ GameObject:
   - component: {fileID: 290854313}
   - component: {fileID: 290854315}
   - component: {fileID: 290854316}
+  - component: {fileID: 290854317}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -1426,7 +1427,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -260.916, y: 171.9813}
+  scrollPos: {x: -500.91544, y: 330.44202}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 232
@@ -1437,8 +1438,7 @@ MonoBehaviour:
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 290853882}
+  selectedBlocks: []
   selectedCommands: []
   variables:
   - {fileID: 290853934}
@@ -1455,6 +1455,7 @@ MonoBehaviour:
   - {fileID: 290854258}
   - {fileID: 290854289}
   - {fileID: 290854300}
+  - {fileID: 290854317}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -17712,7 +17713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 1269.3921
+    x: 1267.8536
     y: -2.0528564
     width: 138.01001
     height: 40
@@ -19440,7 +19441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 1271.1569
+    x: 1272.6953
     y: 63.094193
     width: 133.08
     height: 40
@@ -21111,7 +21112,7 @@ MonoBehaviour:
   fadeTweenType: 4
 --- !u!114 &290854315
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -21139,7 +21140,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &290854316
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -21165,6 +21166,21 @@ MonoBehaviour:
   returnValueType: System.Void
   showInherited: 0
   callMode: 0
+--- !u!114 &290854317
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290853875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scope: 2
+  key: isTalking
+  value: 0
 --- !u!114 &422072702 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2148969391052945776, guid: efa3bb7751c608d4fb3134e5543705b4, type: 3}
@@ -24155,7 +24171,7 @@ MonoBehaviour:
           m_StringArgument: Bottle_Dragged
           m_BoolArgument: 0
         m_CallState: 2
-  flowchart: {fileID: 0}
+  flowchart: {fileID: 290853876}
   dialogBoolName: isTalking
 --- !u!114 &1324476036
 MonoBehaviour:
@@ -24893,7 +24909,7 @@ MonoBehaviour:
           m_StringArgument: Food_Dragged
           m_BoolArgument: 0
         m_CallState: 2
-  flowchart: {fileID: 0}
+  flowchart: {fileID: 290853876}
   dialogBoolName: isTalking
 --- !u!114 &1501483040
 MonoBehaviour:
