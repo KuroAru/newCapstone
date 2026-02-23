@@ -15,14 +15,16 @@ load_dotenv()
 app = FastAPI()
 
 # API 키 설정
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = os.getenv("capstone")  # 'capstone'이라는 이름의 환경변수 사용
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Groq 클라이언트 초기화 (Primary)
 groq_client = None
 if GROQ_API_KEY:
     groq_client = Groq(api_key=GROQ_API_KEY)
-    logger.info("✅ Groq API Key 로드 완료 (Primary 엔진)")
+    logger.info("✅ Groq API Key 로드 완료 (Primary 엔진: capstone)")
+else:
+    logger.warning("⚠️ 'capstone' 환경변수를 찾을 수 없습니다. Groq 엔진이 비활성화됩니다.")
 
 # Gemini 설정 (Fallback)
 if GOOGLE_API_KEY:
