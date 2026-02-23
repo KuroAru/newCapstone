@@ -3,67 +3,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using System.Text;
-using Fungus;
-using System;
 using Newtonsoft.Json;
-using TMPro;
+using System;
+using Fungus; // Fungus 네임스페이스 추가 확인
+
+public class BypassCertificate : CertificateHandler {
+    protected override bool ValidateCertificate(byte[] certificateData) => true;
+}
 
 public abstract class BaseChatbot : MonoBehaviour
 {
-    // --- 로컬 서버 설정 ---
-    [Header("Local AI Settings")]
+    [Header("Server Settings")]
     [SerializeField] protected string localServerUrl = "https://newcapstone.onrender.com/chat";
-
-    // --- 공통 Unity & Fungus 연결 변수 ---
-    [Header("Base Settings")]
-    [SerializeField] protected SayDialog chatSayDialog;
-    [SerializeField] protected TMP_InputField targetInputField; 
-
-    [Header("Animation Settings")]
-    [SerializeField] protected Animator npcAnimator; 
-    [SerializeField] protected string talkTriggerName = "TalkTrigger";
-
-    protected List<OpenAIMessage> chatHistory = new List<OpenAIMessage>();
     protected bool isRequestInProgress = false;
 
+    [Header("Base UI Settings")]
+    // ⚠️ 중요: 변수 이름을 'Say'가 아닌 'chatSayDialog'로 수정했습니다.
+    [SerializeField] protected SayDialog chatSayDialog; 
+
+    protected List<OpenAIMessage> chatHistory = new List<OpenAIMessage>();
+
     [Serializable]
-    public class LocalLlamaPayload
-    {
-        // 서버의 ChatRequest 모델과 이름을 똑같이 맞춰야 합니다.
-        public string user_id; 
-        public string message; 
-        public string context; 
+    public class LocalLlamaPayload {
+        public string prompt; 
+        public string system; 
     }
 
     [Serializable]
-    public class LocalLlamaResponse
-    {
+    public class LocalLlamaResponse {
         public string response;
     }
 
     [Serializable]
-    public class OpenAIMessage
-    {
+    public class OpenAIMessage {
         public string role;
         public string content;
     }
-   
 
-    protected virtual void Awake() { }
-
-    protected virtual void Start()
-    {
+    protected virtual void Start() {
         InitializeChatHistory();
     }
 
-    protected virtual void InitializeChatHistory()
-    {
+    protected virtual void InitializeChatHistory() {
         chatHistory.Clear();
-        TextAsset introTextAsset = Resources.Load<TextAsset>("introPrompt"); 
-        string basePrompt = introTextAsset != null ? introTextAsset.text : "당신은 저택의 도우미입니다.";
-        chatHistory.Add(new OpenAIMessage { role = "system", content = basePrompt });
+        chatHistory.Add(new OpenAIMessage { role = "system", content = "당신은 저택의 도우미입니다." });
     }
 
+    // ✅ 충돌 해결된 Say 함수
     protected void Say(string message, System.Action onComplete = null)
     {
         if (chatSayDialog != null)
@@ -71,27 +57,25 @@ public abstract class BaseChatbot : MonoBehaviour
             if (!chatSayDialog.gameObject.activeInHierarchy) chatSayDialog.gameObject.SetActive(true);
             chatSayDialog.Say(message, true, true, false, true, true, null, onComplete);
         }
+        else
+        {
+            Debug.LogWarning("⚠️ Inspector에서 Chat Say Dialog를 연결해주세요!");
+            onComplete?.Invoke();
+        }
     }
 
-    protected IEnumerator GetGPTResponse(string userMessage = null)
+    protected IEnumerator GetGPTResponse(string userMessage)
     {
-
         if (isRequestInProgress) yield break;
         isRequestInProgress = true;
 
-        SetInputState(false);
-
-        if (npcAnimator != null) npcAnimator.SetTrigger(talkTriggerName);
-
-        Say("...", null);
-
+        chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
         string finalSystemPrompt = BuildFinalSystemPrompt();
 
-        LocalLlamaPayload payload = new LocalLlamaPayload 
-        { 
-            user_id = "master_user", // 임의의 ID 값
-            message = userMessage ?? "", 
-            context = BuildFinalSystemPrompt() 
+        // 서버 규격에 맞춘 데이터 조립
+        LocalLlamaPayload payload = new LocalLlamaPayload { 
+            prompt = userMessage, 
+            system = finalSystemPrompt 
         };
         string payloadJson = JsonConvert.SerializeObject(payload);
 
@@ -101,44 +85,22 @@ public abstract class BaseChatbot : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            request.certificateHandler = new BypassCertificate();
+            request.timeout = 60; 
 
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("서버로부터 받은 원본 데이터: " + request.downloadHandler.text);
-    // ... 기존 코드
-            }
-
             string chatbotResponse;
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                chatbotResponse = "로컬 서버 오류: " + request.error;
-            }
-            else
-            {
-                LocalLlamaResponse responseData = JsonConvert.DeserializeObject<LocalLlamaResponse>(request.downloadHandler.text);
-                chatbotResponse = responseData.response;
-
-                if (!string.IsNullOrEmpty(userMessage))
-                    chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
-                
+            if (request.result != UnityWebRequest.Result.Success) {
+                chatbotResponse = "연결 오류: " + request.error;
+            } else {
+                var res = JsonConvert.DeserializeObject<LocalLlamaResponse>(request.downloadHandler.text);
+                chatbotResponse = res.response;
                 chatHistory.Add(new OpenAIMessage { role = "assistant", content = chatbotResponse });
             }
 
             isRequestInProgress = false;
-            SetInputState(true);
-
             yield return StartCoroutine(HandleChatbotResponse(chatbotResponse));
-        }
-    }
-
-    private void SetInputState(bool state)
-    {
-        if (targetInputField != null)
-        {
-            targetInputField.interactable = state;
-            if (state) targetInputField.ActivateInputField();
         }
     }
 
