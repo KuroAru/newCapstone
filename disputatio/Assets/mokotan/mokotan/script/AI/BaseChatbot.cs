@@ -29,8 +29,10 @@ public abstract class BaseChatbot : MonoBehaviour
     [Serializable]
     public class LocalLlamaPayload
     {
-        public string prompt;
-        public string system;
+        // 서버의 ChatRequest 모델과 이름을 똑같이 맞춰야 합니다.
+        public string user_id; 
+        public string message; 
+        public string context; 
     }
 
     [Serializable]
@@ -45,6 +47,7 @@ public abstract class BaseChatbot : MonoBehaviour
         public string role;
         public string content;
     }
+   
 
     protected virtual void Awake() { }
 
@@ -72,6 +75,7 @@ public abstract class BaseChatbot : MonoBehaviour
 
     protected IEnumerator GetGPTResponse(string userMessage = null)
     {
+
         if (isRequestInProgress) yield break;
         isRequestInProgress = true;
 
@@ -85,8 +89,9 @@ public abstract class BaseChatbot : MonoBehaviour
 
         LocalLlamaPayload payload = new LocalLlamaPayload 
         { 
-            prompt = userMessage ?? "", 
-            system = finalSystemPrompt 
+            user_id = "master_user", // 임의의 ID 값
+            message = userMessage ?? "", 
+            context = BuildFinalSystemPrompt() 
         };
         string payloadJson = JsonConvert.SerializeObject(payload);
 
