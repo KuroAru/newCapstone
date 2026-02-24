@@ -10,14 +10,18 @@ public class MiniGameManager : MonoBehaviour
     [Header("Game Settings")]
     public float gameDuration = 60f;
     public int maxHealth = 5;
-    public Vector2 mapSize = new Vector2(5000, 3000);
+    public Vector2 mapSize = new Vector2(5000, 3000); // 전체 맵 사이즈 [cite: 64]
     
+    [Header("Spawn Points")]
+    public Vector3 playerSpawnPos = new Vector3(500, 1500, 0); 
+
     [Header("Prefabs (Assign in Inspector)")]
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
     public GameObject projectilePrefab;
     public GameObject exitPrefab;
 
+    private GameObject playerInstance; // 소환된 플레이어 추적용
     private int currentHealth;
     private bool isGameOver = false;
 
@@ -29,8 +33,28 @@ public class MiniGameManager : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        
+        // 1. 플레이어 소환
+        SpawnPlayer();
+        
         SpawnExit();
+        
+        // 3. 적 스폰 시작
         StartCoroutine(EnemySpawner());
+    }
+
+    // 플레이어 소환 로직 추가
+    void SpawnPlayer()
+    {
+        if (playerPrefab != null)
+        {
+            playerInstance = Instantiate(playerPrefab, playerSpawnPos, Quaternion.identity);
+            Debug.Log($"플레이어가 {playerSpawnPos} 위치에 소환되었습니다.");
+        }
+        else
+        {
+            Debug.LogError("Player Prefab이 할당되지 않았습니다!");
+        }
     }
 
     void SpawnExit()
@@ -50,7 +74,7 @@ public class MiniGameManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        // Spawn enemies around player or at random edges
+        // 적들이 플레이어 주변이나 랜덤한 위치에서 생성됨
         Vector3 spawnPos = new Vector3(Random.Range(1000, 4000), Random.Range(500, 2500), 0);
         Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
     }
@@ -58,7 +82,6 @@ public class MiniGameManager : MonoBehaviour
     public void TakeDamage()
     {
         currentHealth--;
-        // Trigger red screen UI effect
         if (currentHealth <= 0)
         {
             GameOver();
@@ -69,13 +92,12 @@ public class MiniGameManager : MonoBehaviour
     {
         isGameOver = true;
         Debug.Log("Game Over! Reloading...");
-        // Logic to reload last save
+
     }
 
     public void Win()
     {
         isGameOver = true;
         Debug.Log("Escaped! Transitioning to 1st Person...");
-        // Fade out and load next scene
     }
 }
