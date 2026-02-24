@@ -28,7 +28,7 @@ public class MiniGamePlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = moveInput.normalized * moveSpeed * Time.fixedDeltaTime * 50f;
+        rb.linearVelocity = moveInput.normalized * moveSpeed * Time.fixedDeltaTime * 50f;
     }
 
     void Attack()
@@ -38,7 +38,7 @@ public class MiniGamePlayer : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-        proj.GetComponent<Rigidbody2D>().velocity = direction * 500f;
+        proj.GetComponent<Rigidbody2D>().linearVelocity = direction * 500f;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
