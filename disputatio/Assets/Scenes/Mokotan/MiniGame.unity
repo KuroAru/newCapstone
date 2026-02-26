@@ -325,7 +325,7 @@ MonoBehaviour:
   cursorTexture: {fileID: 2800000, guid: c7c1b08d6687ff04189bc4c188d370fc, type: 3}
   playerSpawnPos: {x: 500, y: 1500, z: 0}
   playerPrefab: {fileID: 4857140483400773701, guid: b3a5c0412d2072a428a38ba134023da7, type: 3}
-  enemyPrefab: {fileID: 6231951745456578613, guid: 5690ab85623a1104da13cd815f613f69, type: 3}
+  enemyPrefab: {fileID: 3298669142999695090, guid: 099b26606acd17d4f9f727d0fc49fffc, type: 3}
   projectilePrefab: {fileID: 4911330337277831650, guid: 117c0eb44859f21408316f7b23bc6d7a, type: 3}
   exitPrefab: {fileID: 7574696701611563614, guid: 04e526193f610c447a5c1a0fdc42a6e0, type: 3}
 --- !u!4 &1357657424

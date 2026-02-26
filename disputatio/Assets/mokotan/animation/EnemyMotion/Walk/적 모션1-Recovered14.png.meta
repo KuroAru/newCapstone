@@ -119,12 +119,12 @@ TextureImporter:
       name: "\uC801 \uBAA8\uC1581-Recovered14_0"
       rect:
         serializedVersion: 2
-        x: 154
+        x: 230
         y: 9
-        width: 192
-        height: 220
+        width: 81
+        height: 138
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -137,33 +137,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: "\uC801 \uBAA8\uC1581-Recovered14_1"
-      rect:
-        serializedVersion: 2
-        x: 223
-        y: 0
-        width: 20
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 829519de9599392d0800000000000000
-      internalID: -3273103892651353816
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6b157be3b6af43a43899f9744b746b63
     internalID: 0
     vertices: []
     indices: 
@@ -172,7 +150,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "\uC801 \uBAA8\uC1581-Recovered14_0": 9197881237518542086
+      "\uC801 \uBAA8\uC1581-Recovered14_1": -3273103892651353816
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
