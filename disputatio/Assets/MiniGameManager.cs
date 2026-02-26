@@ -15,13 +15,17 @@ public class MiniGameManager : MonoBehaviour
     [Header("Game Settings")]
     public float gameDuration = 60f;
     public int maxHealth = 5;
-    public Vector2 mapSize = new Vector2(5000, 3000); // 전체 맵 사이즈 [cite: 64]
+    public Vector2 mapSize = new Vector2(5000, 3000); 
 
     [Header("Cursor Settings")]
-    public Texture2D cursorTexture; // 조준경 이미지를 여기에 드래그하세요.
+    public Texture2D cursorTexture; 
     
-    [Header("Spawn Points")]
-    public Vector3 playerSpawnPos = new Vector3(500, 1500, 0); 
+    [Header("Spawn Settings")]
+    // [수정] 플레이어 스폰 위치를 0, 0, 0으로 설정
+    public Vector3 playerSpawnPos = Vector3.zero; 
+    // [추가] 적 소환 시 최소/최대 거리 설정 (캐릭터 크기 400x300 고려)
+    public float minEnemyDistance = 700f; 
+    public float maxEnemyDistance = 1200f;
 
     [Header("Prefabs (Assign in Inspector)")]
     public GameObject playerPrefab;
@@ -29,7 +33,7 @@ public class MiniGameManager : MonoBehaviour
     public GameObject projectilePrefab;
     public GameObject exitPrefab;
 
-    private GameObject playerInstance; // 소환된 플레이어 추적용
+    private GameObject playerInstance; 
     private int currentHealth;
     private bool isGameOver = false;
 
@@ -40,25 +44,17 @@ public class MiniGameManager : MonoBehaviour
 
     void Start()
     {
-
         if (cursorTexture != null)
-    {
-        // 1. 커서의 정중앙을 클릭 지점으로 설정 (이미지 크기의 절반)
-        Vector2 hotspot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
-        
-        // 2. 커서 변경
-        Cursor.SetCursor(cursorTexture, hotspot, CursorMode.Auto);
-    }
-
+        {
+            Vector2 hotspot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
+            Cursor.SetCursor(cursorTexture, hotspot, CursorMode.Auto);
+        }
 
         currentHealth = maxHealth;
         
-        // 1. 플레이어 소환
         SpawnPlayer();
-        
         SpawnExit();
         
-        // 3. 적 스폰 시작
         StartCoroutine(EnemySpawner());
     }
 
@@ -70,7 +66,6 @@ public class MiniGameManager : MonoBehaviour
         }
     }
 
-    // 플레이어 소환 로직 추가
     void SpawnPlayer()
     {
         if (playerPrefab != null)
@@ -83,16 +78,16 @@ public class MiniGameManager : MonoBehaviour
             Debug.LogError("Player Prefab이 할당되지 않았습니다!");
         }
 
-        if (vcam != null)
+        if (vcam != null && playerInstance != null)
         {
             vcam.Follow = playerInstance.transform;
-            // vcam.LookAt = newPlayer.transform; // 필요하다면 설정
         }
     }
 
     void SpawnExit()
     {
-        Vector3 exitPos = new Vector3(4500, 1500, 0);
+        // [참고] 플레이어가 (0,0,0)에 소환되므로 탈출구 위치도 조정이 필요할 수 있습니다.
+        Vector3 exitPos = new Vector3(2500, 0, 0); 
         Instantiate(exitPrefab, exitPos, Quaternion.identity);
     }
 
@@ -105,12 +100,26 @@ public class MiniGameManager : MonoBehaviour
         }
     }
 
+    // [수정] 캐릭터를 중심으로 사방에서 적 소환
     void SpawnEnemy()
+{
+    if (playerInstance == null) return;
+
+    // 사방 소환 위치 계산
+    float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+    float distance = 800f; // 캐릭터 크기 400x300 고려
+    Vector3 spawnOffset = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * distance;
+    Vector3 spawnPos = playerInstance.transform.position + spawnOffset;
+
+    GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+    // [수정] 소환된 적에게 플레이어 정보를 전달하여 추격 및 방향 전환 시작
+    MiniGameEnemy enemyScript = enemy.GetComponent<MiniGameEnemy>();
+    if (enemyScript != null)
     {
-        // 적들이 플레이어 주변이나 랜덤한 위치에서 생성됨
-        Vector3 spawnPos = new Vector3(Random.Range(1000, 4000), Random.Range(500, 2500), 0);
-        Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+        enemyScript.SetTarget(playerInstance.transform); 
     }
+}
 
     public void TakeDamage()
     {
@@ -125,7 +134,6 @@ public class MiniGameManager : MonoBehaviour
     {
         isGameOver = true;
         Debug.Log("Game Over! Reloading...");
-
     }
 
     public void Win()

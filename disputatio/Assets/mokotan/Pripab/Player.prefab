@@ -47,11 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbf1784ad5987f4cb1f7eecea57fedb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  knockbackForce: 15
+  moveSpeed: 500
+  knockbackForce: 100
+  invincibilityDuration: 0.5
   meleeHitboxPrefab: {fileID: 4911330337277831650, guid: 117c0eb44859f21408316f7b23bc6d7a, type: 3}
   attackDuration: 0.2
-  attackCooldown: 0.5
+  attackCooldown: 1
   spriteRenderer: {fileID: 7248649298697819015}
   animator: {fileID: 6000840571167478617}
 --- !u!50 &7523556890878634827
