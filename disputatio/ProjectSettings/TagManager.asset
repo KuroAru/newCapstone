@@ -10,6 +10,7 @@ TagManager:
   - Undefined
   - Enemy
   - Projectile
+  - BackSpace
   layers:
   - Default
   - TransparentFX

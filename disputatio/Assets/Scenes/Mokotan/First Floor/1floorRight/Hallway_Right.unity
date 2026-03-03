@@ -2687,21 +2687,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -315.68826, y: -15.766177}
+  scrollPos: {x: -282.3955, y: 12.174603}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.9625
+  zoom: 0.90250003
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 2129203530}
-  selectedCommands:
-  - {fileID: 2129203599}
+  selectedBlocks: []
+  selectedCommands: []
   variables:
   - {fileID: 2129203512}
   - {fileID: 2129203553}
@@ -5798,7 +5796,7 @@ MonoBehaviour:
   waitFrames: 1
 --- !u!114 &2129203597
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5950,7 +5948,7 @@ MonoBehaviour:
     vector3Val: {x: 0, y: 0, z: 0}
 --- !u!114 &2129203598
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5978,7 +5976,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &2129203599
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

@@ -3579,7 +3579,6 @@ GameObject:
   - component: {fileID: 826082766}
   - component: {fileID: 826082767}
   - component: {fileID: 826082768}
-  - component: {fileID: 826082769}
   - component: {fileID: 826082771}
   - component: {fileID: 826082772}
   - component: {fileID: 826082774}
@@ -3694,19 +3693,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -407.29684, y: -105.62428}
+  scrollPos: {x: -88.06741, y: 37.071175}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.7900002
+  zoom: 0.85000014
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 826082698}
+  selectedBlocks: []
   selectedCommands: []
   variables:
   - {fileID: 826082707}
@@ -7292,7 +7290,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 379.84534
-    y: 253.94843
+    y: 252.6826
     width: 176.95999
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -7305,7 +7303,6 @@ MonoBehaviour:
   - {fileID: 826082768}
   - {fileID: 826082767}
   - {fileID: 826082804}
-  - {fileID: 826082769}
   - {fileID: 826082822}
   - {fileID: 826082771}
   suppressAllAutoSelections: 0
@@ -7704,31 +7701,6 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
---- !u!114 &826082769
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826082673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 841589fc622bc494aa5405f416fa1301, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 84
-  indentLevel: 1
-  text: "\uC774\uC804 \uC704\uCE58\uB85C \uB3CC\uC544\uAC04\uB2E4."
-  description: 
-  targetBlock: {fileID: 826082821}
-  hideIfVisited: 0
-  interactable:
-    booleanRef: {fileID: 0}
-    booleanVal: 1
-  setMenuDialog: {fileID: 0}
-  hideThisOption:
-    booleanRef: {fileID: 0}
-    booleanVal: 0
 --- !u!114 &826082771
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -7812,7 +7784,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 594.79517
-    y: 251.87595
+    y: 253.14177
     width: 139.15
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -7843,7 +7815,7 @@ MonoBehaviour:
   indentLevel: 0
   _sceneName:
     stringRef: {fileID: 0}
-    stringVal: Hall_RightCross
+    stringVal: Hallway_Right
   loadingImage: {fileID: 0}
   sceneNameOLD: 
 --- !u!114 &826082776
@@ -9354,7 +9326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 157
   indentLevel: 1
-  text: "\uD640\uB85C \uD5A5\uD558\uB294 \uBCF5\uB3C4\uB85C \uAC04\uB2E4."
+  text: "\uB3CC\uC544\uAC04\uB2E4"
   description: 
   targetBlock: {fileID: 826082774}
   hideIfVisited: 0

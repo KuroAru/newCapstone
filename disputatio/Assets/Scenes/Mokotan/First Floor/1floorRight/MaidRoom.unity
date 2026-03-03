@@ -1006,7 +1006,6 @@ GameObject:
   - component: {fileID: 285511241}
   - component: {fileID: 285511242}
   - component: {fileID: 285511243}
-  - component: {fileID: 285511244}
   - component: {fileID: 285511245}
   - component: {fileID: 285511246}
   - component: {fileID: 285511247}
@@ -1039,6 +1038,7 @@ GameObject:
   - component: {fileID: 285511294}
   - component: {fileID: 285511293}
   - component: {fileID: 285511295}
+  - component: {fileID: 285511296}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -1059,11 +1059,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -12.732777, y: -96.88504}
+  scrollPos: {x: -181.91545, y: 59.192867}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.7900002
+  zoom: 0.85000014
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1073,7 +1073,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 285511234}
   selectedCommands:
-  - {fileID: 285511295}
+  - {fileID: 285511296}
   variables:
   - {fileID: 285511159}
   - {fileID: 285511156}
@@ -6837,7 +6837,7 @@ MonoBehaviour:
   - {fileID: 285511238}
   - {fileID: 285511295}
   - {fileID: 285511236}
-  - {fileID: 285511244}
+  - {fileID: 285511296}
   suppressAllAutoSelections: 0
 --- !u!114 &285511236
 MonoBehaviour:
@@ -7133,25 +7133,6 @@ MonoBehaviour:
   stopVoiceover: 1
   waitForVO: 0
   setSayDialog: {fileID: 0}
---- !u!114 &285511244
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 285511111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00d03ae0919f04264b018681ed534177, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 151
-  indentLevel: 0
-  _sceneName:
-    stringRef: {fileID: 0}
-    stringVal: Hall_RightCross
-  loadingImage: {fileID: 0}
-  sceneNameOLD: 
 --- !u!114 &285511245
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -9377,7 +9358,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &285511295
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -9403,6 +9384,25 @@ MonoBehaviour:
   returnValueType: System.Void
   showInherited: 0
   callMode: 0
+--- !u!114 &285511296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285511111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00d03ae0919f04264b018681ed534177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 347
+  indentLevel: 0
+  _sceneName:
+    stringRef: {fileID: 0}
+    stringVal: Hallway_Right
+  loadingImage: {fileID: 0}
+  sceneNameOLD: 
 --- !u!1 &358870567
 GameObject:
   m_ObjectHideFlags: 0
