@@ -11,6 +11,7 @@ TagManager:
   - Enemy
   - Projectile
   - BackSpace
+  - MainCanvas
   layers:
   - Default
   - TransparentFX
