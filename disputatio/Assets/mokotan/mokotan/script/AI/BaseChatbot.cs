@@ -14,7 +14,7 @@ public class BypassCertificate : CertificateHandler {
 public abstract class BaseChatbot : MonoBehaviour
 {
     [Header("Server Settings")]
-    [SerializeField] protected string localServerUrl = "https://newcapstone.onrender.com/chat";
+    [SerializeField] protected string serverUrl = "http://YOUR_AWS_IP_OR_DOMAIN/chat";
     protected bool isRequestInProgress = false;
 
     [Header("Base UI Settings")]
@@ -79,7 +79,7 @@ public abstract class BaseChatbot : MonoBehaviour
         };
         string payloadJson = JsonConvert.SerializeObject(payload);
 
-        using (UnityWebRequest request = new UnityWebRequest(localServerUrl, "POST"))
+        using (UnityWebRequest request = new UnityWebRequest(serverUrl, "POST"))
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(payloadJson);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
