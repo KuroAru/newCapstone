@@ -9,6 +9,7 @@ TagManager:
   - Melee
   - Undefined
   - Enemy
+  - Projectile
   layers:
   - Default
   - TransparentFX

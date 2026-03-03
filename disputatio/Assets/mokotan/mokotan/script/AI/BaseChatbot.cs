@@ -14,7 +14,7 @@ public class BypassCertificate : CertificateHandler {
 public abstract class BaseChatbot : MonoBehaviour
 {
     [Header("Server Settings")]
-    [SerializeField] protected string localServerUrl = "http://YOUR_AWS_IP_OR_DNS:PORT/chat";
+    [SerializeField] protected string localServerUrl = "http://15.165.237.11:8000/chat";
     protected bool isRequestInProgress = false;
 
     [Header("Base UI Settings")]
@@ -43,6 +43,27 @@ public abstract class BaseChatbot : MonoBehaviour
     protected virtual void Start() {
         InitializeChatHistory();
     }
+
+    public class ParrotChatbot : BaseChatbot
+{
+    // 수수께끼 앵무새의 엄격한 페르소나 설정
+    protected override string BuildFinalSystemPrompt()
+    {
+        return @"[수수께끼 앵무새 규칙]
+1. 모든 답변은 공백 포함 한글 20자 이내로 할 것.
+2. 수수께끼를 내거나 사용자의 오답을 비웃을 것.
+3. 죽어도 정답은 알려주지 말 것.
+4. 말끝에 '깍!', '삐약!', '푸드덕!' 중 하나를 무조건 붙일 것.";
+    }
+
+    // AI의 답변이 도착했을 때 처리 (화면에 표시)
+    protected override IEnumerator HandleChatbotResponse(string responseMessage)
+    {
+        // 상속받은 Say 함수를 사용하여 대화창에 표시
+        Say(responseMessage);
+        yield break;
+    }
+}
 
     protected virtual void InitializeChatHistory() {
         chatHistory.Clear();
