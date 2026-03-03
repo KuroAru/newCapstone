@@ -14,7 +14,7 @@ public class BypassCertificate : CertificateHandler {
 public abstract class BaseChatbot : MonoBehaviour
 {
     [Header("Server Settings")]
-    [SerializeField] protected string localServerUrl = "https://newcapstone.onrender.com/chat";
+    [SerializeField] protected string localServerUrl = "http://YOUR_AWS_IP_OR_DNS:PORT/chat";
     protected bool isRequestInProgress = false;
 
     [Header("Base UI Settings")]

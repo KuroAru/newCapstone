@@ -7,6 +7,7 @@ TagManager:
   - EffectCamera
   - MeleeAttack
   - Melee
+  - Undefined
   - Enemy
   layers:
   - Default

@@ -7,25 +7,32 @@ public class MiniGameEnemy : MonoBehaviour
     
     // 가루 효과 컴포넌트 및 상태 변수
     private SpriteDissolver dissolver;
-    private SpriteRenderer sr; // 방향 전환을 위한 컴포넌트 변수
+    private SpriteRenderer sr; 
     private bool isDead = false;
 
     void Start()
     {
-        // [필수 추가] 방향 전환을 위해 본인의 SpriteRenderer를 가져옵니다.
         sr = GetComponent<SpriteRenderer>();
 
-        // 플레이어 소환 방식에 따라 태그를 찾습니다.
+        // 플레이어 태그로 찾기
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
 
-        // 동일한 오브젝트에 붙어있는 소멸 스크립트를 가져옵니다.
         dissolver = GetComponent<SpriteDissolver>();
+
+        // [추가] 적이 물리적인 힘에 밀려나지 않도록 설정
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            // Kinematic으로 설정하면 AddForce 등의 물리 힘에 영향을 받지 않습니다.
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            // 회전 방지
+            rb.freezeRotation = true;
+        }
     }
 
     void Update()
     {
-        // 죽지 않았고 추격할 플레이어가 있을 때만 실행합니다.
         if (player != null && !isDead)
         {
             // 1. 추격 로직
@@ -34,7 +41,6 @@ public class MiniGameEnemy : MonoBehaviour
 
             // 2. 방향 전환(Flip) 로직
             // 플레이어가 적보다 왼쪽에 있으면(x값이 작으면) 이미지를 뒤집습니다(true).
-            // 이미지의 기본 방향이 오른쪽을 보고 있을 때 기준입니다.
             if (sr != null)
             {
                 sr.flipX = player.position.x > transform.position.x;
@@ -42,21 +48,20 @@ public class MiniGameEnemy : MonoBehaviour
         }
     }
 
-    // Manager에서 적을 생성할 때 타겟을 직접 넣어줄 수 있는 함수입니다.
     public void SetTarget(Transform target)
     {
         player = target;
     }
 
+    // [수정] 적의 죽음 감지 로직 (플레이어 공격 태그 확인)
     void OnTriggerEnter2D(Collider2D other)
     {
         if (isDead) return;
 
-        // 설정된 공격 태그에 닿으면 사망 시퀀스를 시작합니다.
-        if (other.CompareTag("Projectile") || other.CompareTag("Melee") || other.CompareTag("PlayerAttack"))
+        // 플레이어의 공격(히트박스)에 닿았을 때만 가루가 되어 사라짐
+        if (other.CompareTag("PlayerAttack") || other.CompareTag("Melee") || other.CompareTag("Projectile"))
         {
             if (other.CompareTag("Projectile")) Destroy(other.gameObject);
-            
             StartDeathSequence();
         }
     }
@@ -65,11 +70,11 @@ public class MiniGameEnemy : MonoBehaviour
     {
         isDead = true;
 
-        // 1. 더 이상 플레이어와 부딪히지 않도록 콜라이더를 끕니다.
+        // 충돌체 비활성화
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
 
-        // 2. 가루가 되어 사라지는 효과 실행
+        // 가루 효과 실행
         if (dissolver != null)
         {
             dissolver.StartDissolve();

@@ -133,7 +133,18 @@ public class MiniGameManager : MonoBehaviour
     void GameOver()
     {
         isGameOver = true;
-        Debug.Log("Game Over! Reloading...");
+
+        // 1. 유니티의 시간 흐름을 0으로 만들어 게임을 멈춤
+        Time.timeScale = 0f;
+
+        // 2. 갇혀있던 커서를 풀고 다시 보이게 설정
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Debug.Log("Game Over! 모든 동작이 정지되었습니다.");
+        
+        // 여기에 게임 오버 UI를 띄우는 코드를 추가하면 좋습니다.
+        // gameOverUI.SetActive(true); 
     }
 
     public void Win()
