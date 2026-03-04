@@ -104,7 +104,6 @@ public class WhenClikcedButton : MonoBehaviour
         }
     }
 
-    // --- [기능 2] 지도 닫기 (X 버튼 클릭 시) ---
     public void OnCloseMapClick()
     {
         if (panelToActivate != null && originalParent != null)

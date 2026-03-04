@@ -4,7 +4,7 @@ using System.Collections;
 public class SpriteDissolver : MonoBehaviour
 {
     private SpriteRenderer sr;
-    private Material dissolveMat;
+    public Material dissolveMat;
     
     [Header("설정")]
     public float dissolveDuration = 1.5f; // 사라지는 시간

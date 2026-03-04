@@ -380,7 +380,7 @@ Material:
     - _SineRotateAngle: 15
     - _SineRotateFade: 1
     - _SineRotateFrequency: 1
-    - _SineScaleFrequency: 2
+    - _SineScaleFrequency: 4
     - _SmokeAlpha: 1
     - _SmokeDarkEdge: 1
     - _SmokeNoiseFactor: 0.4
@@ -580,7 +580,7 @@ Material:
     - _SineMoveFrequency: {r: 1, g: 1, b: 0, a: 0}
     - _SineMoveOffset: {r: 0, g: 0.5, b: 0, a: 0}
     - _SineRotatePivot: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _SineScaleFactor: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _SineScaleFactor: {r: 0.03, g: 0.03, b: 0, a: 0}
     - _SourceAlphaDissolveNoiseScale: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _SourceAlphaDissolvePosition: {r: 0, g: 0, b: 0, a: 0}
     - _SourceGlowDissolveEdgeColor: {r: 11.98431, g: 0.627451, b: 0.627451, a: 0}

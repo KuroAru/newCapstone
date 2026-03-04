@@ -52,7 +52,7 @@ MonoBehaviour:
   invincibilityDuration: 0.5
   meleeHitboxPrefab: {fileID: 4911330337277831650, guid: 117c0eb44859f21408316f7b23bc6d7a, type: 3}
   attackDuration: 0.2
-  attackCooldown: 1
+  attackCooldown: 2
   spriteRenderer: {fileID: 7248649298697819015}
   animator: {fileID: 6000840571167478617}
 --- !u!50 &7523556890878634827
