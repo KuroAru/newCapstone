@@ -2,115 +2,146 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // 입력 잠금을 위해 필요
+using UnityEngine.Rendering; 
+using UnityEngine.Rendering.Universal; 
 
 public class SpecialJumpscareManager : MonoBehaviour
 {
-    private static bool hasVisitedSpecialScene = false;
+    public static SpecialJumpscareManager Instance; 
 
-    [Header("설정")]
+    [Header("입력 및 효과 설정")]
+    public CanvasGroup inputBlocker;
+    public Image blinkImage; 
+    public Volume globalVolume; 
+
+    [Header("시간 및 확률 설정")]
+    [Tooltip("적이 등장한 후 점프스케어까지 대기 시간")]
+    public float waitTimeToScare = 3f; // 사라졌던 변수 부활!
+    [Range(0f, 100f)]
     public float spawnChance = 100f;
+    public float blinkDuration = 0.2f; 
+    public float closedDuration = 0.1f; 
     public string retrySceneName = "MainScene";
 
-    [Header("오브젝트 연결 (계층 구조)")]
+    [Header("오브젝트 및 UI")]
     public GameObject parrotObject;
-    public GameObject enemyParent;      // ENEMY (Capsule Collider 2D 부착)
-    public GameObject enemyPanel;       // PANEL
-    public RawImage jumpscareRawImage;  // RAWIMAGE (Shader 및 Animator 부착)
-
-    [Header("셰이더 및 입력 설정")]
-    public Material jumpscareShaderMaterial; // 실행할 셰이더 그래프가 적용된 재질
+    public RectTransform triggerButtonRect;
+    public Animator jumpscareAnimator;
     public GameObject gameOverPanel;
     public Button retryButton;
 
+    private static bool hasVisitedSpecialScene = false;
     private bool hasTriggered = false;
+    private DepthOfField dof;
+    private readonly int blinkAmountProp = Shader.PropertyToID("_BlinkAmount");
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
 
     void Start()
     {
-        // 초기 상태: 적 관련 오브젝트 모두 비활성화
-        enemyParent.SetActive(false);
+        // 초기화 로직
+        if (blinkImage != null && blinkImage.material != null)
+        {
+            blinkImage.material = new Material(blinkImage.material);
+            blinkImage.material.SetFloat(blinkAmountProp, 0.5f);
+        }
+
+        if (globalVolume != null && globalVolume.profile.TryGet(out dof))
+        {
+            dof.gaussianMaxRadius.value = 0f;
+        }
+
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+        jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
 
+        // 첫 방문 체크
         if (!hasVisitedSpecialScene)
         {
-            if (Random.Range(0f, 100f) <= spawnChance)
+            float randomValue = Random.Range(0f, 100f);
+            if (randomValue <= spawnChance)
             {
                 hasVisitedSpecialScene = true;
-                ShowEnemy();
+                SetupEnemyState(true);
             }
-            else
-            {
-                ShowParrotOnly();
-            }
+            else ShowParrotOnly();
         }
-        else
-        {
-            ShowParrotOnly();
-        }
+        else ShowParrotOnly();
     }
 
-    private void ShowEnemy()
+    private void SetupEnemyState(bool isPresent)
     {
-        if (parrotObject != null) parrotObject.SetActive(false);
-        
-        enemyParent.SetActive(true); // ENEMY 활성화
-        enemyPanel.SetActive(true);  // PANEL 활성화 (필요 시)
-        jumpscareRawImage.gameObject.SetActive(true);
-
-        // 버튼 컴포넌트가 RawImage에 있다고 가정
-        Button btn = jumpscareRawImage.GetComponent<Button>();
-        if (btn != null)
+        if (isPresent)
         {
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(ExecuteJumpscare);
+            if (parrotObject != null) parrotObject.SetActive(false);
+            triggerButtonRect.gameObject.SetActive(true);
+            triggerButtonRect.GetComponent<Button>().onClick.AddListener(ExecuteJumpscare);
+            
+            // 이제 인스펙터의 waitTimeToScare 값을 사용합니다!
+            StartCoroutine(WaitAndExecuteScare());
         }
     }
 
     private void ShowParrotOnly()
     {
         if (parrotObject != null) parrotObject.SetActive(true);
-        enemyParent.SetActive(false);
+        triggerButtonRect.gameObject.SetActive(false);
+    }
+
+    private IEnumerator WaitAndExecuteScare()
+    {
+        yield return new WaitForSeconds(waitTimeToScare); //
+        ExecuteJumpscare();
     }
 
     public void ExecuteJumpscare()
     {
         if (hasTriggered) return;
         hasTriggered = true;
+        StopAllCoroutines();
+        triggerButtonRect.gameObject.SetActive(false);
 
-        // 1. 모든 클릭 및 버튼 입력 잠금
-        if (EventSystem.current != null)
-        {
-            EventSystem.current.enabled = false;
-        }
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = true;
+        StartCoroutine(FullJumpscareSequence());
+    }
 
-        // 2. 셰이더 그래프 실행 (셰이더 내의 'Trigger'나 'StartTime' 파라미터 조절)
-        // 예: 셰이더에 가동 시간을 전달하여 애니메이션 시작
-        if (jumpscareShaderMaterial != null)
-        {
-            jumpscareShaderMaterial.SetFloat("_StartTime", Time.time); 
-            // 셰이더 속성 이름은 실제 셰이더 그래프 내 설정에 맞춰 수정하세요.
-        }
+    private IEnumerator FullJumpscareSequence()
+    {
+        // 눈 감기 + 흐려지기
+        yield return StartCoroutine(AnimateBlink(0.5f, 0f, 0f, 2.0f, blinkDuration));
+        yield return new WaitForSeconds(closedDuration);
+        
+        // 눈 뜨기 + 선명해지기 (이때 애니메이션 시작)
+        jumpscareAnimator.gameObject.SetActive(true);
+        jumpscareAnimator.SetTrigger("Scare");
+        yield return StartCoroutine(AnimateBlink(0f, 0.5f, 2.0f, 0f, blinkDuration));
+    }
 
-        // 3. 애니메이션 재생
-        Animator anim = jumpscareRawImage.GetComponent<Animator>();
-        if (anim != null)
+    private IEnumerator AnimateBlink(float bStart, float bEnd, float blStart, float blEnd, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
-            anim.SetTrigger("Scare");
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            blinkImage.material.SetFloat(blinkAmountProp, Mathf.Lerp(bStart, bEnd, t));
+            if (dof != null) dof.gaussianMaxRadius.value = Mathf.Lerp(blStart, blEnd, t);
+            yield return null;
         }
     }
 
-    // 애니메이션 이벤트에서 호출
+    // 애니메이션 종료 후 호출 (Retry 버튼 잠금 해제 포함)
     public void OnJumpscareFinished()
     {
-        // 4. 입력 잠금 해제 (게임오버 UI는 눌러야 하므로)
-        if (EventSystem.current != null)
-        {
-            EventSystem.current.enabled = true;
-        }
-
-        enemyParent.SetActive(false);
+        jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(true);
         
+        // 중요: 여기서 입력 잠금을 풀어줘야 Retry 버튼이 눌립니다!
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+
         retryButton.onClick.RemoveAllListeners();
         retryButton.onClick.AddListener(() => SceneManager.LoadScene(retrySceneName));
     }
