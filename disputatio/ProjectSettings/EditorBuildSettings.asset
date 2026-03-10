@@ -158,6 +158,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/godlotto/BetaEnd.unity
     guid: a5f399f5d3c23074bacff7c0b5a524a8
+  - enabled: 1
+    path: Assets/godlotto/KTH/JumpscareTest1.unity
+    guid: 80dbe567c1a865548a99920f57bf44c9
+  - enabled: 1
+    path: Assets/godlotto/KTH/JumpscareTest2.unity
+    guid: 16ec18bf2f7d3a54a87a1966b23c5bd0
+  - enabled: 1
+    path: Assets/godlotto/KTH/JumpscareTest3.unity
+    guid: 162da6c5c1a272f47b567067d20c3b20
+  - enabled: 1
+    path: Assets/godlotto/KTH/JumpscareTest4.unity
+    guid: 209f548f75097af4fa0cf13e3f896568
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
