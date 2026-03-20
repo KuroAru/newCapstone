@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Fungus;
 
 public class MainBedroomChatbot : BaseChatbot
@@ -9,14 +10,13 @@ public class MainBedroomChatbot : BaseChatbot
 
     protected override string BuildFinalSystemPrompt()
     {
-        string finalSystemPrompt = chatHistory[0].content; // 앵무새 기본 자아
-        
+        string finalSystemPrompt = chatHistory[0].content;
+
         TextAsset promptAsset = Resources.Load<TextAsset>("MainBedroomPrompt");
         if (promptAsset != null) finalSystemPrompt += "\n\n" + promptAsset.text;
 
         if (mainFlowchart != null)
         {
-            // [행동 체크] 일기장 읽기 여부 및 금고 해결 상태 연동
             bool diaryRead = mainFlowchart.GetBooleanVariable("DiaryRead");
             bool safeSolved = mainFlowchart.GetBooleanVariable("SafeSolved");
 
@@ -36,10 +36,19 @@ public class MainBedroomChatbot : BaseChatbot
         return finalSystemPrompt;
     }
 
-    protected override IEnumerator HandleChatbotResponse(string responseMessage)
+    protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
         bool isComplete = false;
         Say(responseMessage, () => isComplete = true);
         yield return new WaitUntil(() => isComplete);
+
+        if (functionCalls != null)
+        {
+            foreach (var fc in functionCalls)
+            {
+                if (fc.name == "give_hint" || fc.name == "emote")
+                    Debug.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
+            }
+        }
     }
 }
