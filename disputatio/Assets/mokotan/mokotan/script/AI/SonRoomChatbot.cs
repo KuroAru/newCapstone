@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Fungus;
 
 public class SonRoomChatbot : BaseChatbot
@@ -9,14 +10,13 @@ public class SonRoomChatbot : BaseChatbot
 
     protected override string BuildFinalSystemPrompt()
     {
-        string finalSystemPrompt = chatHistory[0].content; // 앵무새 기본 자아
-        
+        string finalSystemPrompt = chatHistory[0].content;
+
         TextAsset promptAsset = Resources.Load<TextAsset>("SonRoomPrompt");
         if (promptAsset != null) finalSystemPrompt += "\n\n" + promptAsset.text;
 
         if (sonFlowchart != null)
         {
-            // [행동 체크] 플레이어의 퍼즐 진행 상황에 따른 동적 지침 추가
             bool hasBible = sonFlowchart.GetBooleanVariable("HasBible");
             int horsesPlaced = sonFlowchart.GetIntegerVariable("HorsesPlacedCount");
 
@@ -36,10 +36,19 @@ public class SonRoomChatbot : BaseChatbot
         return finalSystemPrompt;
     }
 
-    protected override IEnumerator HandleChatbotResponse(string responseMessage)
+    protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
         bool isComplete = false;
-        Say(responseMessage, () => isComplete = true); // 체셔의 수수께끼 출력
+        Say(responseMessage, () => isComplete = true);
         yield return new WaitUntil(() => isComplete);
+
+        if (functionCalls != null)
+        {
+            foreach (var fc in functionCalls)
+            {
+                if (fc.name == "give_hint" || fc.name == "emote")
+                    Debug.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
+            }
+        }
     }
 }
