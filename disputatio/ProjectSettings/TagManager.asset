@@ -12,6 +12,7 @@ TagManager:
   - Projectile
   - BackSpace
   - MainCanvas
+  - Interactable
   layers:
   - Default
   - TransparentFX
