@@ -28,9 +28,20 @@ class ChatService:
         self._temperature = temperature
         self._max_tokens = max_tokens
 
+    _TOOL_INSTRUCTION = (
+        "\n\n[중요: 응답 방식] "
+        "1) 반드시 캐릭터 대사를 텍스트로 먼저 말하세요. "
+        "2) 텍스트와 별개로, 제공된 tool/function을 호출하여 게임 액션을 지시하세요. "
+        "3) 절대로 텍스트 안에 function call 구문이나 JSON을 넣지 마세요. "
+        "텍스트 응답과 tool 호출은 완전히 분리되어야 합니다."
+    )
+
     def _build_messages(self, request: ChatRequest) -> list[dict]:
+        system_content = request.system
+        if request.use_tools and len(self._registry) > 0:
+            system_content += self._TOOL_INSTRUCTION
         return [
-            {"role": "system", "content": request.system},
+            {"role": "system", "content": system_content},
             {"role": "user", "content": request.prompt},
         ]
 
