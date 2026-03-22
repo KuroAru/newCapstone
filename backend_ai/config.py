@@ -2,11 +2,22 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
+from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# 저장소 클론 후 실행 위치(cwd)와 무관하게 backend_ai/.env 를 읽는다.
+_BACKEND_DIR = Path(__file__).resolve().parent
+_ENV_PATH = _BACKEND_DIR / ".env"
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=_ENV_PATH if _ENV_PATH.is_file() else None,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     groq_api_key: str = ""
     google_api_key: str = ""
 
@@ -15,10 +26,6 @@ class Settings(BaseSettings):
 
     default_temperature: float = 0.7
     max_tokens: int = 512
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 
 @lru_cache
