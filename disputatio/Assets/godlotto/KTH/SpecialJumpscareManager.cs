@@ -34,10 +34,12 @@ public class SpecialJumpscareManager : MonoBehaviour
     private bool hasTriggered = false;
     private DepthOfField dof;
     private readonly int blinkAmountProp = Shader.PropertyToID("_BlinkAmount");
+    private GraphicRaycaster _canvasRaycaster;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
+        _canvasRaycaster = GetComponent<GraphicRaycaster>();
     }
 
     void Start()
@@ -55,6 +57,8 @@ public class SpecialJumpscareManager : MonoBehaviour
         }
 
         if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+        // BlinkEffect는 전체 화면 + Raycast Target이라 CanvasGroup(InputBlocker)과 무관하게 클릭을 먹는다.
+        SetBlinkRaycastBlocking(false);
         jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
 
@@ -89,6 +93,10 @@ public class SpecialJumpscareManager : MonoBehaviour
     {
         if (parrotObject != null) parrotObject.SetActive(true);
         triggerButtonRect.gameObject.SetActive(false);
+        SetBlinkRaycastBlocking(false);
+        // 점프스케어를 쓰지 않을 때는 이 오버레이 캔버스가 켜져 있어도 레이캐스트를 처리하지 않게 한다.
+        if (_canvasRaycaster != null)
+            _canvasRaycaster.enabled = false;
     }
 
     private IEnumerator WaitAndExecuteScare()
@@ -105,6 +113,8 @@ public class SpecialJumpscareManager : MonoBehaviour
         triggerButtonRect.gameObject.SetActive(false);
 
         if (inputBlocker != null) inputBlocker.blocksRaycasts = true;
+        if (_canvasRaycaster != null)
+            _canvasRaycaster.enabled = true;
         StartCoroutine(FullJumpscareSequence());
     }
 
@@ -141,8 +151,16 @@ public class SpecialJumpscareManager : MonoBehaviour
         
         // 중요: 여기서 입력 잠금을 풀어줘야 Retry 버튼이 눌립니다!
         if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+        // InputBlocker만 끄면 Blink 전체화면 Image가 여전히 레이를 먹어서 하위 씬 UI(패널 등)가 막힌다.
+        SetBlinkRaycastBlocking(false);
 
         retryButton.onClick.RemoveAllListeners();
         retryButton.onClick.AddListener(() => SceneManager.LoadScene(retrySceneName));
+    }
+
+    private void SetBlinkRaycastBlocking(bool block)
+    {
+        if (blinkImage != null)
+            blinkImage.raycastTarget = block;
     }
 }

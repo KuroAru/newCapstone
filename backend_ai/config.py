@@ -23,7 +23,10 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings(
-        groq_api_key=os.getenv("capstone", ""),
-        google_api_key=os.getenv("GOOGLE_API_KEY", ""),
-    )
+    # Let pydantic load .env (GROQ_API_KEY, GOOGLE_API_KEY). Legacy env name for Groq only if still empty.
+    s = Settings()
+    if not s.groq_api_key:
+        legacy = os.getenv("capstone", "")
+        if legacy:
+            s = s.model_copy(update={"groq_api_key": legacy})
+    return s

@@ -16,9 +16,13 @@ public class GlobalChatbot : BaseChatbot
         if (userInputField != null) userInputField.onSubmit.AddListener(OnSubmit);
     }
 
-    private void OnSubmit(string text)
+    /// <summary>
+    /// TMP onSubmit may pass an empty string while IME is active or for some line types;
+    /// always read the live field text in OnSendButtonClick.
+    /// </summary>
+    private void OnSubmit(string _)
     {
-        if (!string.IsNullOrEmpty(text)) OnSendButtonClick();
+        OnSendButtonClick();
     }
 
     public void OnSendButtonClick()
