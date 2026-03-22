@@ -2,25 +2,25 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering; 
-using UnityEngine.Rendering.Universal; 
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class SpecialJumpscareManager : MonoBehaviour
 {
-    public static SpecialJumpscareManager Instance; 
+    public static SpecialJumpscareManager Instance;
 
     [Header("입력 및 효과 설정")]
     public CanvasGroup inputBlocker;
-    public Image blinkImage; 
-    public Volume globalVolume; 
+    [Header("효과 설정 (셰이더 & 블러)")]
+    public Image blinkImage;
+    public Volume globalVolume;
 
     [Header("시간 및 확률 설정")]
-    [Tooltip("적이 등장한 후 점프스케어까지 대기 시간")]
-    public float waitTimeToScare = 3f; // 사라졌던 변수 부활!
+    public float waitTimeToScare = 3f;
     [Range(0f, 100f)]
     public float spawnChance = 100f;
-    public float blinkDuration = 0.2f; 
-    public float closedDuration = 0.1f; 
+    public float blinkDuration = 0.2f;
+    public float closedDuration = 0.1f;
     public string retrySceneName = "MainScene";
 
     [Header("오브젝트 및 UI")]
@@ -44,25 +44,21 @@ public class SpecialJumpscareManager : MonoBehaviour
 
     void Start()
     {
-        // 초기화 로직
         if (blinkImage != null && blinkImage.material != null)
         {
             blinkImage.material = new Material(blinkImage.material);
             blinkImage.material.SetFloat(blinkAmountProp, 0.5f);
         }
-
         if (globalVolume != null && globalVolume.profile.TryGet(out dof))
-        {
             dof.gaussianMaxRadius.value = 0f;
-        }
 
         if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
         // BlinkEffect는 전체 화면 + Raycast Target이라 CanvasGroup(InputBlocker)과 무관하게 클릭을 먹는다.
         SetBlinkRaycastBlocking(false);
+
         jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
 
-        // 첫 방문 체크
         if (!hasVisitedSpecialScene)
         {
             float randomValue = Random.Range(0f, 100f);
@@ -82,9 +78,9 @@ public class SpecialJumpscareManager : MonoBehaviour
         {
             if (parrotObject != null) parrotObject.SetActive(false);
             triggerButtonRect.gameObject.SetActive(true);
+
+            triggerButtonRect.GetComponent<Button>().onClick.RemoveAllListeners();
             triggerButtonRect.GetComponent<Button>().onClick.AddListener(ExecuteJumpscare);
-            
-            // 이제 인스펙터의 waitTimeToScare 값을 사용합니다!
             StartCoroutine(WaitAndExecuteScare());
         }
     }
@@ -101,7 +97,7 @@ public class SpecialJumpscareManager : MonoBehaviour
 
     private IEnumerator WaitAndExecuteScare()
     {
-        yield return new WaitForSeconds(waitTimeToScare); //
+        yield return new WaitForSeconds(waitTimeToScare);
         ExecuteJumpscare();
     }
 
@@ -115,16 +111,15 @@ public class SpecialJumpscareManager : MonoBehaviour
         if (inputBlocker != null) inputBlocker.blocksRaycasts = true;
         if (_canvasRaycaster != null)
             _canvasRaycaster.enabled = true;
+
         StartCoroutine(FullJumpscareSequence());
     }
 
     private IEnumerator FullJumpscareSequence()
     {
-        // 눈 감기 + 흐려지기
         yield return StartCoroutine(AnimateBlink(0.5f, 0f, 0f, 2.0f, blinkDuration));
         yield return new WaitForSeconds(closedDuration);
-        
-        // 눈 뜨기 + 선명해지기 (이때 애니메이션 시작)
+
         jumpscareAnimator.gameObject.SetActive(true);
         jumpscareAnimator.SetTrigger("Scare");
         yield return StartCoroutine(AnimateBlink(0f, 0.5f, 2.0f, 0f, blinkDuration));
@@ -141,15 +136,15 @@ public class SpecialJumpscareManager : MonoBehaviour
             if (dof != null) dof.gaussianMaxRadius.value = Mathf.Lerp(blStart, blEnd, t);
             yield return null;
         }
+        blinkImage.material.SetFloat(blinkAmountProp, bEnd);
+        if (dof != null) dof.gaussianMaxRadius.value = blEnd;
     }
 
-    // 애니메이션 종료 후 호출 (Retry 버튼 잠금 해제 포함)
     public void OnJumpscareFinished()
     {
         jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(true);
-        
-        // 중요: 여기서 입력 잠금을 풀어줘야 Retry 버튼이 눌립니다!
+
         if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
         // InputBlocker만 끄면 Blink 전체화면 Image가 여전히 레이를 먹어서 하위 씬 UI(패널 등)가 막힌다.
         SetBlinkRaycastBlocking(false);

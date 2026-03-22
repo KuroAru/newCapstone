@@ -1,0 +1,173 @@
+name: CI Error Check
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+  actions: write
+
+env:
+  PYTHON_VERSION: "3.11"
+  MAX_FIX_ATTEMPTS: 1
+
+jobs:
+  python-check:
+    name: Python Syntax & Lint Check
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, '[ci skip]')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install lint tools
+        run: pip install ruff
+
+      - name: Install project dependencies
+        run: |
+          if [ -f backend_ai/requirements.txt ]; then
+            pip install -r backend_ai/requirements.txt
+          fi
+
+      - name: Run Python syntax check (py_compile)
+        id: syntax_check
+        continue-on-error: true
+        run: |
+          echo "## Python Syntax Check" > /tmp/python_syntax.log
+          ERRORS_FOUND=0
+          while IFS= read -r -d '' file; do
+            OUTPUT=$(python -m py_compile "$file" 2>&1) || {
+              echo "ERROR|$file|$OUTPUT" >> /tmp/python_syntax.log
+              ERRORS_FOUND=1
+            }
+          done < <(find backend_ai -name "*.py" -print0 2>/dev/null)
+          echo "errors_found=$ERRORS_FOUND" >> "$GITHUB_OUTPUT"
+
+      - name: Run Ruff linter
+        id: ruff_check
+        continue-on-error: true
+        run: |
+          echo "## Ruff Lint Check" > /tmp/ruff_lint.log
+          ruff check backend_ai --output-format=json > /tmp/ruff_lint.json 2>&1 || true
+          ruff check backend_ai >> /tmp/ruff_lint.log 2>&1
+          if [ -s /tmp/ruff_lint.json ] && [ "$(cat /tmp/ruff_lint.json)" != "[]" ]; then
+            echo "errors_found=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "errors_found=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Collect Python errors
+        if: steps.syntax_check.outputs.errors_found == '1' || steps.ruff_check.outputs.errors_found == '1'
+        run: |
+          python scripts/collect-errors.py \
+            --type python \
+            --branch "${{ github.ref_name }}" \
+            --commit "${{ github.sha }}" \
+            --syntax-log /tmp/python_syntax.log \
+            --ruff-json /tmp/ruff_lint.json
+
+      - name: Upload error report
+        if: steps.syntax_check.outputs.errors_found == '1' || steps.ruff_check.outputs.errors_found == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-report-python-${{ github.ref_name }}-${{ github.sha }}
+          path: /tmp/error-report.json
+          retention-days: 30
+
+      - name: Fail if errors found
+        if: steps.syntax_check.outputs.errors_found == '1' || steps.ruff_check.outputs.errors_found == '1'
+        run: |
+          echo "::error::Python checks failed. Run 'python scripts/fetch-errors.py' locally to fetch details."
+          cat /tmp/error-report.json
+          exit 1
+
+  csharp-check:
+    name: C# Syntax Check
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, '[ci skip]')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install C# syntax checker
+        run: dotnet tool install -g dotnet-script
+
+      - name: Run C# syntax check
+        id: cs_check
+        continue-on-error: true
+        run: |
+          echo "## C# Syntax Check" > /tmp/csharp_syntax.log
+          ERRORS_FOUND=0
+          while IFS= read -r -d '' file; do
+            OUTPUT=$(dotnet script "$file" --no-cache 2>&1) || {
+              echo "ERROR|$file|$OUTPUT" >> /tmp/csharp_syntax.log
+              ERRORS_FOUND=1
+            }
+          done < <(find disputatio/Assets -name "*.cs" -print0 2>/dev/null)
+
+          if [ "$ERRORS_FOUND" -eq 0 ]; then
+            # Fallback: basic syntax validation using Roslyn via pattern matching
+            while IFS= read -r -d '' file; do
+              # Check for common C# syntax issues
+              if grep -Pn '^\s*(public|private|protected|internal)\s+\w+\s+\w+\s*\([^)]*$' "$file" > /dev/null 2>&1; then
+                : # Multi-line method signatures are OK
+              fi
+              # Check unmatched braces
+              OPEN=$(grep -o '{' "$file" | wc -l)
+              CLOSE=$(grep -o '}' "$file" | wc -l)
+              if [ "$OPEN" -ne "$CLOSE" ]; then
+                echo "ERROR|$file|Unmatched braces: $OPEN opening vs $CLOSE closing" >> /tmp/csharp_syntax.log
+                ERRORS_FOUND=1
+              fi
+            done < <(find disputatio/Assets -name "*.cs" -print0 2>/dev/null)
+          fi
+          echo "errors_found=$ERRORS_FOUND" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Python for error collection
+        if: steps.cs_check.outputs.errors_found == '1'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Collect C# errors
+        if: steps.cs_check.outputs.errors_found == '1'
+        run: |
+          python scripts/collect-errors.py \
+            --type csharp \
+            --branch "${{ github.ref_name }}" \
+            --commit "${{ github.sha }}" \
+            --syntax-log /tmp/csharp_syntax.log
+
+      - name: Upload error report
+        if: steps.cs_check.outputs.errors_found == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-report-csharp-${{ github.ref_name }}-${{ github.sha }}
+          path: /tmp/error-report.json
+          retention-days: 30
+
+      - name: Fail if errors found
+        if: steps.cs_check.outputs.errors_found == '1'
+        run: |
+          echo "::error::C# checks failed. Run 'python scripts/fetch-errors.py' locally to fetch details."
+          cat /tmp/error-report.json
+          exit 1
