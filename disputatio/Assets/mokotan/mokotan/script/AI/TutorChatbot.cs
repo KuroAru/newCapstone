@@ -1,17 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Fungus;
-using Newtonsoft.Json; // JSON 파싱을 위해 필요
 using System;
-using UnityEngine.Events; // UnityEvent를 위해 필요
+using UnityEngine.Events;
 
-// BaseChatbot을 상속받습니다.
-[System.Serializable]
-public class ChatbotStatus
-{
-    public bool is_correct;
-    public bool quiz_complete;
-}
 public class TutorChatbot : BaseChatbot
 {
     [Header("TutorBot Settings")]
@@ -21,9 +14,6 @@ public class TutorChatbot : BaseChatbot
     public UnityEvent OnAIReponseComplete;
     public UnityEvent OnQuizCompletedEvent;
 
-    // (Awake, Start, LoadAPIKey, Say, ParseGPTResponse 등 모든 중복 코드 삭제)
-
-    // --- 고유 기능: 외부에서 플레이어 메시지 전달 ---
     public void AddPlayerMessageAndGetResponse(string playerMessage)
     {
         if (isRequestInProgress)
@@ -32,21 +22,18 @@ public class TutorChatbot : BaseChatbot
             return;
         }
 
-        // 부모의 GetGPTResponse 코루틴을 호출
         StartCoroutine(GetGPTResponse(playerMessage));
         Debug.Log($"플레이어 답변 전송 및 GPT 응답 요청: {playerMessage}");
     }
 
-    // ▼▼▼ BaseChatbot의 추상 함수 구현 ▼▼▼
-
     protected override string BuildFinalSystemPrompt()
     {
-        string finalSystemPrompt = chatHistory[0].content; // 기본 시스템 프롬프트
+        string finalSystemPrompt = chatHistory[0].content;
 
         if (flowchart != null)
         {
-            bool WindowClicked = flowchart.GetBooleanVariable("WindowClicked");
-            if (WindowClicked)
+            bool windowClicked = flowchart.GetBooleanVariable("WindowClicked");
+            if (windowClicked)
             {
                 TextAsset tutorRoomPromptAsset = Resources.Load<TextAsset>("TutorRoomPrompt");
                 if (tutorRoomPromptAsset != null)
@@ -57,7 +44,6 @@ public class TutorChatbot : BaseChatbot
                 else
                 {
                     Debug.LogError("TutorRoomPrompt.txt 파일을 찾을 수 없습니다!");
-                    // (대체 프롬프트 로직은 원본 코드를 따름)
                     finalSystemPrompt += "\n\n[중요 지시]... (TutorRoomPrompt 내용)...";
                 }
             }
@@ -65,52 +51,63 @@ public class TutorChatbot : BaseChatbot
         return finalSystemPrompt;
     }
 
-    protected override IEnumerator HandleChatbotResponse(string responseMessage)
+    protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
-        // TutorChatbot는 복잡한 JSON 파싱 및 이벤트 처리를 합니다.
-
-        // 1. 메시지에서 JSON 부분 추출 및 파싱
-        ChatbotStatus status = null;
-        string cleanedMessage = responseMessage;
-
-        int jsonStartIndex = responseMessage.LastIndexOf("{\"is_correct\"");
-        if (jsonStartIndex != -1)
-        {
-            string jsonString = responseMessage.Substring(jsonStartIndex);
-            try
-            {
-                status = JsonConvert.DeserializeObject<ChatbotStatus>(jsonString);
-                cleanedMessage = responseMessage.Substring(0, jsonStartIndex).Trim();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("ChatbotStatus JSON 파싱 오류: " + e.Message + " | JSON: " + jsonString);
-            }
-        }
-
-        // 2. JSON이 제거된 메시지를 SayDialog로 표시
         bool isComplete = false;
-        Say(cleanedMessage, () => isComplete = true);
+        Say(responseMessage, () => isComplete = true);
         yield return new WaitUntil(() => isComplete);
 
-        // 3. 파싱된 상태에 따라 Fungus 변수 업데이트 및 이벤트 트리거
-        if (status != null)
-        {
-            if (status.is_correct)
-            {
-                IncrementCorrectAnswerCount();
-            }
-            if (status.quiz_complete)
-            {
-                OnQuizCompletedEvent?.Invoke();
-            }
-        }
+        ProcessFunctionCalls(functionCalls);
 
-        // 4. AI 응답 표시 완료 후 일반 이벤트 호출
         OnAIReponseComplete?.Invoke();
     }
 
-    // --- TutorChatbot 고유 헬퍼 함수 ---
+    private void ProcessFunctionCalls(List<FunctionCallData> functionCalls)
+    {
+        if (functionCalls == null) return;
+
+        foreach (var fc in functionCalls)
+        {
+            switch (fc.name)
+            {
+                case "update_quiz":
+                    HandleUpdateQuiz(fc.arguments);
+                    break;
+                case "emote":
+                    HandleEmote(fc.arguments);
+                    break;
+                default:
+                    Debug.Log($"Unhandled function call: {fc.name}");
+                    break;
+            }
+        }
+    }
+
+    private void HandleUpdateQuiz(Dictionary<string, object> args)
+    {
+        if (args == null) return;
+
+        bool isCorrect = args.ContainsKey("is_correct") && Convert.ToBoolean(args["is_correct"]);
+        bool quizComplete = args.ContainsKey("quiz_complete") && Convert.ToBoolean(args["quiz_complete"]);
+
+        if (isCorrect)
+        {
+            IncrementCorrectAnswerCount();
+        }
+        if (quizComplete)
+        {
+            OnQuizCompletedEvent?.Invoke();
+        }
+    }
+
+    private void HandleEmote(Dictionary<string, object> args)
+    {
+        if (args == null || !args.ContainsKey("emotion")) return;
+        string emotion = args["emotion"].ToString();
+        Debug.Log($"Chester emote: {emotion}");
+        // TODO: wire to animation controller when Chester animations are ready
+    }
+
     public void IncrementCorrectAnswerCount()
     {
         if (flowchart != null)

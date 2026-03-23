@@ -2,23 +2,25 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering; 
-using UnityEngine.Rendering.Universal; 
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class SpecialJumpscareManager : MonoBehaviour
 {
-    public static SpecialJumpscareManager Instance; 
+    public static SpecialJumpscareManager Instance;
 
+    [Header("입력 및 효과 설정")]
+    public CanvasGroup inputBlocker;
     [Header("효과 설정 (셰이더 & 블러)")]
-    public Image blinkImage; 
-    public Volume globalVolume; 
+    public Image blinkImage;
+    public Volume globalVolume;
 
     [Header("시간 및 확률 설정")]
     public float waitTimeToScare = 3f;
     [Range(0f, 100f)]
     public float spawnChance = 100f;
-    public float blinkDuration = 0.2f; 
-    public float closedDuration = 0.1f; 
+    public float blinkDuration = 0.2f;
+    public float closedDuration = 0.1f;
     public string retrySceneName = "MainScene";
 
     [Header("오브젝트 및 UI")]
@@ -32,8 +34,13 @@ public class SpecialJumpscareManager : MonoBehaviour
     private bool hasTriggered = false;
     private DepthOfField dof;
     private readonly int blinkAmountProp = Shader.PropertyToID("_BlinkAmount");
+    private GraphicRaycaster _canvasRaycaster;
 
-    private void Awake() { if (Instance == null) Instance = this; }
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        _canvasRaycaster = GetComponent<GraphicRaycaster>();
+    }
 
     void Start()
     {
@@ -44,6 +51,10 @@ public class SpecialJumpscareManager : MonoBehaviour
         }
         if (globalVolume != null && globalVolume.profile.TryGet(out dof))
             dof.gaussianMaxRadius.value = 0f;
+
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+        // BlinkEffect는 전체 화면 + Raycast Target이라 CanvasGroup(InputBlocker)과 무관하게 클릭을 먹는다.
+        SetBlinkRaycastBlocking(false);
 
         jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
@@ -67,7 +78,7 @@ public class SpecialJumpscareManager : MonoBehaviour
         {
             if (parrotObject != null) parrotObject.SetActive(false);
             triggerButtonRect.gameObject.SetActive(true);
-            
+
             triggerButtonRect.GetComponent<Button>().onClick.RemoveAllListeners();
             triggerButtonRect.GetComponent<Button>().onClick.AddListener(ExecuteJumpscare);
             StartCoroutine(WaitAndExecuteScare());
@@ -78,6 +89,10 @@ public class SpecialJumpscareManager : MonoBehaviour
     {
         if (parrotObject != null) parrotObject.SetActive(true);
         triggerButtonRect.gameObject.SetActive(false);
+        SetBlinkRaycastBlocking(false);
+        // 점프스케어를 쓰지 않을 때는 이 오버레이 캔버스가 켜져 있어도 레이캐스트를 처리하지 않게 한다.
+        if (_canvasRaycaster != null)
+            _canvasRaycaster.enabled = false;
     }
 
     private IEnumerator WaitAndExecuteScare()
@@ -92,6 +107,11 @@ public class SpecialJumpscareManager : MonoBehaviour
         hasTriggered = true;
         StopAllCoroutines();
         triggerButtonRect.gameObject.SetActive(false);
+
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = true;
+        if (_canvasRaycaster != null)
+            _canvasRaycaster.enabled = true;
+
         StartCoroutine(FullJumpscareSequence());
     }
 
@@ -99,7 +119,7 @@ public class SpecialJumpscareManager : MonoBehaviour
     {
         yield return StartCoroutine(AnimateBlink(0.5f, 0f, 0f, 2.0f, blinkDuration));
         yield return new WaitForSeconds(closedDuration);
-        
+
         jumpscareAnimator.gameObject.SetActive(true);
         jumpscareAnimator.SetTrigger("Scare");
         yield return StartCoroutine(AnimateBlink(0f, 0.5f, 2.0f, 0f, blinkDuration));
@@ -124,7 +144,18 @@ public class SpecialJumpscareManager : MonoBehaviour
     {
         jumpscareAnimator.gameObject.SetActive(false);
         gameOverPanel.SetActive(true);
+
+        if (inputBlocker != null) inputBlocker.blocksRaycasts = false;
+        // InputBlocker만 끄면 Blink 전체화면 Image가 여전히 레이를 먹어서 하위 씬 UI(패널 등)가 막힌다.
+        SetBlinkRaycastBlocking(false);
+
         retryButton.onClick.RemoveAllListeners();
         retryButton.onClick.AddListener(() => SceneManager.LoadScene(retrySceneName));
+    }
+
+    private void SetBlinkRaycastBlocking(bool block)
+    {
+        if (blinkImage != null)
+            blinkImage.raycastTarget = block;
     }
 }

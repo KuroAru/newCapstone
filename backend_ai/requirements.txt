@@ -1,6 +1,10 @@
 fastapi
-uvicorn
-google-generativeai
+uvicorn[standard]
 groq
+google-generativeai
 python-dotenv
 pydantic
+pydantic-settings
+httpx
+pytest
+pytest-asyncio
