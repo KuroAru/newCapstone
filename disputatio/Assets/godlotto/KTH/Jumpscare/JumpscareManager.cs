@@ -57,8 +57,8 @@ public class JumpscareManager : MonoBehaviour
 
     // 점프스케어 진행 중 클릭 차단
     private bool isJumpscareInProgress = false;
-    // 비활성화한 Canvas 목록
-    private List<Canvas> disabledCanvases = new List<Canvas>();
+    // 점프스케어 시 비활성화할 SayDialog
+    private GameObject sayDialogObject;
 
     // 눈깜빡임 오버레이 자동 크기 조절용
     private Camera mainCam;
@@ -227,6 +227,7 @@ public class JumpscareManager : MonoBehaviour
         isBlinkSequenceRunning = false;
         StopAllCoroutines();
         hasTriggered = false;
+        isJumpscareInProgress = false;
 
         SetTriggerVisible(false);
         if (jumpscareAnimator != null) jumpscareAnimator.gameObject.SetActive(false);
@@ -238,6 +239,9 @@ public class JumpscareManager : MonoBehaviour
             dof.gaussianMaxRadius.value = 0f;
 
         SetHideObjectsByTag(false);
+
+        // 이전 점프스케어에서 꺼놓은 SayDialog 복원
+        RestoreSayDialog();
     }
 
     private void SpawnTrigger(Vector2 spawnPos)
@@ -298,8 +302,8 @@ public class JumpscareManager : MonoBehaviour
         // 클릭 차단 시작
         isJumpscareInProgress = true;
 
-        // 씬의 모든 Canvas 비활성화
-        DisableAllCanvases();
+        // SayDialog 비활성화
+        DisableSayDialog();
 
         // triggerObject를 끄지 않고, 보이는 부분만 숨김
         SetTriggerVisible(false);
@@ -402,20 +406,26 @@ public class JumpscareManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 씬에 있는 모든 활성 Canvas를 찾아 비활성화합니다.
+    /// 씬에서 Fungus SayDialog를 찾아 비활성화합니다.
     /// </summary>
-    private void DisableAllCanvases()
+    private void DisableSayDialog()
     {
-        disabledCanvases.Clear();
-        Canvas[] allCanvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-        foreach (var canvas in allCanvases)
-        {
-            if (canvas.gameObject.activeSelf)
-            {
-                disabledCanvases.Add(canvas);
-                canvas.gameObject.SetActive(false);
-            }
-        }
+        // Fungus의 SayDialog는 "SayDialog" 이름으로 찾을 수 있음
+        if (sayDialogObject == null)
+            sayDialogObject = GameObject.Find("SayDialog");
+
+        if (sayDialogObject != null && sayDialogObject.activeSelf)
+            sayDialogObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 비활성화했던 SayDialog를 다시 켭니다.
+    /// </summary>
+    private void RestoreSayDialog()
+    {
+        if (sayDialogObject != null && !sayDialogObject.activeSelf)
+            sayDialogObject.SetActive(true);
+        sayDialogObject = null;
     }
 
     /// <summary>

@@ -10421,6 +10421,7 @@ GameObject:
   - component: {fileID: 495798708}
   - component: {fileID: 495798707}
   - component: {fileID: 495798709}
+  - component: {fileID: 495798710}
   m_Layer: 6
   m_Name: parret
   m_TagString: Untagged
@@ -10507,6 +10508,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &495798710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495798705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e635592ba76274bb562714e5136728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sayDialogObject: {fileID: 1313100010}
+  targetAnimator: {fileID: 495798709}
 --- !u!1 &513782335
 GameObject:
   m_ObjectHideFlags: 0
