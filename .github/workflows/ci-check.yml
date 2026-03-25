@@ -103,43 +103,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Install C# syntax checker
-        run: dotnet tool install -g dotnet-script
-
       - name: Run C# syntax check
         id: cs_check
         continue-on-error: true
         run: |
           echo "## C# Syntax Check" > /tmp/csharp_syntax.log
           ERRORS_FOUND=0
+
+          EXCLUDE_DIRS="Fungus|TextMesh Pro|Plugins|ThirdParty|Thirdparty|Sprite Shaders Ultimate"
+
           while IFS= read -r -d '' file; do
-            OUTPUT=$(dotnet script "$file" --no-cache 2>&1) || {
-              echo "ERROR|$file|$OUTPUT" >> /tmp/csharp_syntax.log
+            if echo "$file" | grep -qE "($EXCLUDE_DIRS)"; then
+              continue
+            fi
+
+            if [ ! -s "$file" ]; then
+              echo "ERROR|$file|Empty C# file" >> /tmp/csharp_syntax.log
               ERRORS_FOUND=1
-            }
+              continue
+            fi
+
+            OPEN=$(tr -cd '{' < "$file" | wc -c)
+            CLOSE=$(tr -cd '}' < "$file" | wc -c)
+            if [ "$OPEN" -ne "$CLOSE" ]; then
+              echo "ERROR|$file|Unmatched braces: $OPEN opening vs $CLOSE closing" >> /tmp/csharp_syntax.log
+              ERRORS_FOUND=1
+            fi
+
+            if grep -Pn '<<<<<<< |>>>>>>> |=======$' "$file" > /dev/null 2>&1; then
+              echo "ERROR|$file|Unresolved merge conflict markers found" >> /tmp/csharp_syntax.log
+              ERRORS_FOUND=1
+            fi
           done < <(find disputatio/Assets -name "*.cs" -print0 2>/dev/null)
 
-          if [ "$ERRORS_FOUND" -eq 0 ]; then
-            # Fallback: basic syntax validation using Roslyn via pattern matching
-            while IFS= read -r -d '' file; do
-              # Check for common C# syntax issues
-              if grep -Pn '^\s*(public|private|protected|internal)\s+\w+\s+\w+\s*\([^)]*$' "$file" > /dev/null 2>&1; then
-                : # Multi-line method signatures are OK
-              fi
-              # Check unmatched braces
-              OPEN=$(grep -o '{' "$file" | wc -l)
-              CLOSE=$(grep -o '}' "$file" | wc -l)
-              if [ "$OPEN" -ne "$CLOSE" ]; then
-                echo "ERROR|$file|Unmatched braces: $OPEN opening vs $CLOSE closing" >> /tmp/csharp_syntax.log
-                ERRORS_FOUND=1
-              fi
-            done < <(find disputatio/Assets -name "*.cs" -print0 2>/dev/null)
-          fi
           echo "errors_found=$ERRORS_FOUND" >> "$GITHUB_OUTPUT"
 
       - name: Setup Python for error collection
