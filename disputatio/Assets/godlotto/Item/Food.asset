@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cf3b59c19c36044bdb045387c6675d, type: 3}
   m_Name: Food
   m_EditorClassIdentifier: 
+  itemId: 2
   itemName: Food
   icon: {fileID: -5382088272588069456, guid: 29acc07f3dff493458010121074275a8, type: 3}
   itemDescription: 

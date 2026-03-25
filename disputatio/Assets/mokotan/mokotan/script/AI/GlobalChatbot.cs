@@ -45,28 +45,35 @@ public class GlobalChatbot : BaseChatbot
         userInputField.text = "";
     }
 
+    private const int BottleItemId = 1;
+    private const string FallbackSystemPrompt = "당신은 저택의 도우미입니다.";
+
     protected override string BuildFinalSystemPrompt()
     {
         TextAsset promptAsset = Resources.Load<TextAsset>("introPrompt");
-        string basePrompt = (promptAsset != null) ? promptAsset.text : "당신은 저택의 도우미입니다.";
-        string finalSystemPrompt = basePrompt;
+        string finalSystemPrompt = promptAsset != null ? promptAsset.text : FallbackSystemPrompt;
 
-        if (globalFlowchart != null)
-        {
-            bool hasBottleFlag = globalFlowchart.GetBooleanVariable("GetBottle");
+        if (globalFlowchart == null)
+            return finalSystemPrompt;
 
-            if (chatHistory.Count > 0)
-            {
-                string lastUserMessage = chatHistory[chatHistory.Count - 1].content;
-
-                if (hasBottleFlag && (lastUserMessage.Contains("물병") || lastUserMessage.Contains("병")))
-                {
-                    finalSystemPrompt += "\n\n[중요 지시] 플레이어는 물병 단서를 가졌습니다. 부력에 대해 수수께끼로 답변하세요.";
-                }
-            }
-        }
+        finalSystemPrompt += ItemAcquisitionTracker.BuildPromptSection(globalFlowchart);
+        finalSystemPrompt += BuildBottleHintIfNeeded();
 
         return finalSystemPrompt;
+    }
+
+    private string BuildBottleHintIfNeeded()
+    {
+        if (chatHistory.Count == 0)
+            return string.Empty;
+
+        string lastMessage = chatHistory[chatHistory.Count - 1].content;
+        bool mentionsBottle = lastMessage.Contains("물병") || lastMessage.Contains("병");
+
+        if (mentionsBottle && ItemAcquisitionTracker.IsAcquired(globalFlowchart, BottleItemId))
+            return "\n\n[중요 지시] 플레이어는 물병 단서를 가졌습니다. 부력에 대해 수수께끼로 답변하세요.";
+
+        return string.Empty;
     }
 
     protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)

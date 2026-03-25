@@ -46,7 +46,7 @@ public class ItemPickup : MonoBehaviour, IPointerClickHandler
             }
         }
 
-        // 2. 인벤토리 추가
+        // 2. 인벤토리 추가 (습득 마스크는 AddItem 내부에서 처리)
         if (InventoryManager.instance != null && item != null)
         {
             InventoryManager.instance.AddItem(item);

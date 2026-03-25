@@ -14285,6 +14285,8 @@ GameObject:
   - component: {fileID: 1594444093}
   - component: {fileID: 1594444092}
   - component: {fileID: 1594444091}
+  - component: {fileID: 1594444119}
+  - component: {fileID: 1594444120}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -14721,6 +14723,7 @@ MonoBehaviour:
   - {fileID: 1594444102}
   - {fileID: 1594444101}
   - {fileID: 1594444094}
+  - {fileID: 1594444119}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -14731,6 +14734,34 @@ MonoBehaviour:
   hideCommands: []
   luaEnvironment: {fileID: 0}
   luaBindingName: flowchart
+--- !u!114 &1594444119
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594444090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb91b566ceda411bad1e9d3c3243ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scope: 2
+  key: AcquiredItemsMask
+  value: 0
+--- !u!114 &1594444120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594444090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3f8c21d4b564e8a9f0e1d2c3b4a5967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flowchart: {fileID: 1594444117}
 --- !u!4 &1594444118
 Transform:
   m_ObjectHideFlags: 0
