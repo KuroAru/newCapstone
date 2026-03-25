@@ -35,6 +35,8 @@
 ExportedObj/
 .consulo/
 *.csproj
+# CI Roslyn syntax checker — not Unity-generated; must be tracked for GitHub Actions
+!scripts/CSharpSyntaxChecker/**/*.csproj
 *.unityproj
 *.sln
 *.suo
