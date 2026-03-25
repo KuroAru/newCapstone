@@ -103,40 +103,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Run C# syntax checker unit tests
+        run: dotnet test scripts/CSharpSyntaxChecker/CSharpSyntaxChecker.Tests/CSharpSyntaxChecker.Tests.csproj --verbosity minimal
+
       - name: Run C# syntax check
         id: cs_check
         continue-on-error: true
         run: |
           echo "## C# Syntax Check" > /tmp/csharp_syntax.log
-          ERRORS_FOUND=0
-
-          EXCLUDE_DIRS="Fungus|TextMesh Pro|Plugins|ThirdParty|Thirdparty|Sprite Shaders Ultimate"
-
-          while IFS= read -r -d '' file; do
-            if echo "$file" | grep -qE "($EXCLUDE_DIRS)"; then
-              continue
-            fi
-
-            if [ ! -s "$file" ]; then
-              echo "ERROR|$file|Empty C# file" >> /tmp/csharp_syntax.log
-              ERRORS_FOUND=1
-              continue
-            fi
-
-            OPEN=$(tr -cd '{' < "$file" | wc -c)
-            CLOSE=$(tr -cd '}' < "$file" | wc -c)
-            if [ "$OPEN" -ne "$CLOSE" ]; then
-              echo "ERROR|$file|Unmatched braces: $OPEN opening vs $CLOSE closing" >> /tmp/csharp_syntax.log
-              ERRORS_FOUND=1
-            fi
-
-            if grep -Pn '<<<<<<< |>>>>>>> |=======$' "$file" > /dev/null 2>&1; then
-              echo "ERROR|$file|Unresolved merge conflict markers found" >> /tmp/csharp_syntax.log
-              ERRORS_FOUND=1
-            fi
-          done < <(find disputatio/Assets -name "*.cs" -print0 2>/dev/null)
-
-          echo "errors_found=$ERRORS_FOUND" >> "$GITHUB_OUTPUT"
+          set +e
+          dotnet run --project scripts/CSharpSyntaxChecker/CSharpSyntaxChecker.csproj -- "disputatio/Assets" >> /tmp/csharp_syntax.log 2>&1
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "errors_found=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "errors_found=1" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Setup Python for error collection
         if: steps.cs_check.outputs.errors_found == '1'
