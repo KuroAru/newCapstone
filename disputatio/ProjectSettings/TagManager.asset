@@ -13,6 +13,7 @@ TagManager:
   - BackSpace
   - MainCanvas
   - Interactable
+  - HideOnEnemy
   layers:
   - Default
   - TransparentFX

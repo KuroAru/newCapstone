@@ -2,13 +2,26 @@ using UnityEngine;
 
 public class SpecialJumpscareEventBridge : MonoBehaviour
 {
-    // 애니메이션 이벤트에서 이 함수를 선택하게 됩니다.
+    /// <summary>
+    /// 애니메이션 마지막 프레임 이벤트에서 호출됩니다.
+    /// </summary>
     public void OnJumpscareFinished()
     {
-        // 매니저를 찾아서 함수 실행
         if (SpecialJumpscareManager.Instance != null)
         {
             SpecialJumpscareManager.Instance.OnJumpscareFinished();
+        }
+    }
+
+    /// <summary>
+    /// 2컷, 3컷, 4컷 시작 키프레임의 Animation Event에서 호출됩니다.
+    /// 프레임 전환 시 눈깜빡임 효과를 발동합니다.
+    /// </summary>
+    public void OnFrameTransition()
+    {
+        if (SpecialJumpscareManager.Instance != null)
+        {
+            SpecialJumpscareManager.Instance.OnFrameTransition();
         }
     }
 }
