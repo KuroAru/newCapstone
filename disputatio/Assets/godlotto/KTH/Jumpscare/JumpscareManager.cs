@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Rendering; 
-using UnityEngine.Rendering.Universal; 
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [System.Serializable]
 public struct JumpscareSceneData
 {
     public string sceneName;        // 씬 이름
-    public Vector2 spawnPosition;   // 등장 위치
+    public Vector2 spawnPosition;   // 등장 위치 (월드 좌표)
     [Range(0f, 100f)]
     public float spawnChance;       // 해당 씬에서의 등장 확률
 }
@@ -22,28 +21,51 @@ public class JumpscareManager : MonoBehaviour
     [Header("씬별 설정 목록")]
     public List<JumpscareSceneData> targetScenes;
 
-    [Header("효과 설정 (셰이더 & 블러)")]
-    public Image blinkImage; 
-    public Volume globalVolume;
+    [Header("눈깜빡임 오버레이 (SpriteRenderer)")]
+    [Tooltip("카메라 앞에 배치할 전체화면 눈깜빡임 Sprite")]
+    public SpriteRenderer blinkOverlay;
+
+    [Header("효과 설정 (블러)")]
+    private Volume globalVolume;
 
     [Header("시간 설정")]
     public float waitTimeToScare = 3f;
     public float animationDuration = 2f;
-    public float blinkDuration = 0.2f; // [추가됨] 눈 깜빡임 속도
-    public float closedDuration = 0.1f; // [추가됨] 눈 감고 있는 시간
+    public float blinkDuration = 0.2f;
+    public float closedDuration = 0.1f;
     public string retrySceneName = "MainScene";
 
-    [Header("UI 할당")]
-    public RectTransform triggerButtonRect;
+    [Header("오브젝트 할당")]
+    [Tooltip("적 클릭 트리거용 오브젝트 (SpriteRenderer + Collider2D 필요)")]
+    public GameObject triggerObject;
     public Animator jumpscareAnimator;
-    public GameObject gameOverPanel;
-    public Button retryButton;
+
+    [Header("게임오버 오브젝트")]
+    [Tooltip("게임오버 시 표시할 오브젝트 (SpriteRenderer 기반)")]
+    public GameObject gameOverObject;
+    [Tooltip("리트라이 클릭 영역 (Collider2D 필요)")]
+    public GameObject retryClickObject;
+
+    [Header("적 등장 시 숨길 오브젝트")]
+    [Tooltip("적이 등장하면 비활성화될 Sprite 오브젝트들의 Tag")]
+    public string hideObjectTag = "HideOnEnemy";
 
     private bool hasTriggered = false;
-    
-    // [추가됨] 포스트 프로세싱 및 셰이더 변수
-    private DepthOfField dof; 
+    private DepthOfField dof;
     private readonly int blinkAmountProp = Shader.PropertyToID("_BlinkAmount");
+    private bool isBlinkSequenceRunning = false;
+
+    // 점프스케어 진행 중 클릭 차단
+    private bool isJumpscareInProgress = false;
+    // 점프스케어 시 비활성화할 SayDialog
+    private GameObject sayDialogObject;
+
+    // 눈깜빡임 오버레이 자동 크기 조절용
+    private Camera mainCam;
+
+    // triggerObject의 보이는 부분만 끄기 위한 캐시
+    private SpriteRenderer triggerSpriteRenderer;
+    private Collider2D triggerCollider;
 
     private void Awake()
     {
@@ -60,15 +82,15 @@ public class JumpscareManager : MonoBehaviour
 
     private void Start()
     {
-        // [추가됨] 시작할 때 머티리얼 복제 및 블러 효과 0으로 초기화
-        if (blinkImage != null && blinkImage.material != null)
+        InitBlinkMaterial();
+        FindAndBindVolume();
+        FitBlinkOverlayToScreen();
+
+        // triggerObject의 SpriteRenderer, Collider2D 캐시
+        if (triggerObject != null)
         {
-            blinkImage.material = new Material(blinkImage.material);
-            blinkImage.material.SetFloat(blinkAmountProp, 0.5f);
-        }
-        if (globalVolume != null && globalVolume.profile.TryGet(out dof))
-        {
-            dof.gaussianMaxRadius.value = 0f;
+            triggerSpriteRenderer = triggerObject.GetComponent<SpriteRenderer>();
+            triggerCollider = triggerObject.GetComponent<Collider2D>();
         }
     }
 
@@ -84,51 +106,184 @@ public class JumpscareManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        FindAndBindVolume();
         ResetJumpscareState();
+        FitBlinkOverlayToScreen();
 
-        // 현재 씬 데이터 찾기
+        bool isTargetScene = false;
+
         foreach (var data in targetScenes)
         {
             if (data.sceneName == scene.name)
             {
+                isTargetScene = true;
                 float randomValue = Random.Range(0f, 100f);
                 if (randomValue <= data.spawnChance)
                 {
-                    SpawnTriggerSprite(data.spawnPosition);
+                    SpawnTrigger(data.spawnPosition);
                 }
                 break;
             }
+        }
+
+        // targetScene이 아니면 점프스케어 관련 오브젝트를 완전히 숨김
+        if (!isTargetScene)
+        {
+            HideAllJumpscareObjects();
+        }
+    }
+
+    /// <summary>
+    /// 눈깜빡임 오버레이 Sprite를 카메라 화면 전체를 덮도록 크기를 조절합니다.
+    /// Sprite를 카메라 바로 앞(z = 카메라z + 1)에 배치합니다.
+    /// </summary>
+    private void FitBlinkOverlayToScreen()
+    {
+        if (blinkOverlay == null) return;
+
+        mainCam = Camera.main;
+        if (mainCam == null) return;
+
+        // 카메라 바로 앞에 배치
+        Vector3 camPos = mainCam.transform.position;
+        blinkOverlay.transform.position = new Vector3(camPos.x, camPos.y, camPos.z + 1f);
+
+        // Sprite 크기를 카메라 뷰에 맞춤
+        float worldHeight = mainCam.orthographicSize * 2f;
+        float worldWidth = worldHeight * mainCam.aspect;
+
+        if (blinkOverlay.sprite != null)
+        {
+            Vector2 spriteSize = blinkOverlay.sprite.bounds.size;
+            blinkOverlay.transform.localScale = new Vector3(
+                worldWidth / spriteSize.x,
+                worldHeight / spriteSize.y,
+                1f
+            );
+        }
+    }
+
+    /// <summary>
+    /// 현재 씬에서 Global Volume을 찾아 DepthOfField를 바인딩합니다.
+    /// </summary>
+    private void FindAndBindVolume()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        Volume[] allVolumes = FindObjectsByType<Volume>(FindObjectsSortMode.None);
+
+        globalVolume = null;
+        dof = null;
+
+        // isGlobal이 true이고 DepthOfField를 가진 Volume을 우선 탐색
+        foreach (var v in allVolumes)
+        {
+            if (v.isGlobal && v.profile != null && v.profile.TryGet(out DepthOfField foundDof))
+            {
+                globalVolume = v;
+                dof = foundDof;
+                break;
+            }
+        }
+
+        // isGlobal Volume에서 못 찾았으면, 아무 Volume이라도 DoF가 있는 것을 사용
+        if (dof == null)
+        {
+            foreach (var v in allVolumes)
+            {
+                if (v.profile != null && v.profile.TryGet(out DepthOfField foundDof))
+                {
+                    globalVolume = v;
+                    dof = foundDof;
+                    break;
+                }
+            }
+        }
+
+        if (globalVolume != null && dof != null)
+        {
+            dof.active = true;
+            dof.gaussianMaxRadius.overrideState = true;
+            dof.gaussianMaxRadius.value = 0f;
+        }
+        else
+        {
+            Debug.LogWarning($"[JumpscareManager] 씬 '{sceneName}'에서 DepthOfField를 가진 Volume을 찾지 못했습니다!");
+        }
+    }
+
+    private void InitBlinkMaterial()
+    {
+        if (blinkOverlay != null && blinkOverlay.material != null)
+        {
+            // 인스턴스 Material 생성 (원본 Material을 오염시키지 않기 위함)
+            blinkOverlay.material = new Material(blinkOverlay.material);
+            blinkOverlay.material.SetFloat(blinkAmountProp, 0.5f);
         }
     }
 
     private void ResetJumpscareState()
     {
+        isBlinkSequenceRunning = false;
         StopAllCoroutines();
         hasTriggered = false;
-        if (triggerButtonRect != null) triggerButtonRect.gameObject.SetActive(false);
-        if (jumpscareAnimator != null) jumpscareAnimator.gameObject.SetActive(false);
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        isJumpscareInProgress = false;
 
-        // [추가됨] 씬이 이동하거나 리셋될 때 화면을 다시 맑게(눈 뜬 상태) 되돌림
-        if (blinkImage != null && blinkImage.material != null)
-            blinkImage.material.SetFloat(blinkAmountProp, 0.5f);
+        SetTriggerVisible(false);
+        if (jumpscareAnimator != null) jumpscareAnimator.gameObject.SetActive(false);
+        if (gameOverObject != null) gameOverObject.SetActive(false);
+
+        if (blinkOverlay != null && blinkOverlay.material != null)
+            blinkOverlay.material.SetFloat(blinkAmountProp, 0.5f);
         if (dof != null)
             dof.gaussianMaxRadius.value = 0f;
+
+        SetHideObjectsByTag(false);
+
+        // 이전 점프스케어에서 꺼놓은 SayDialog 복원
+        RestoreSayDialog();
     }
 
-    private void SpawnTriggerSprite(Vector2 spawnPos)
+    private void SpawnTrigger(Vector2 spawnPos)
     {
-        triggerButtonRect.anchoredPosition = spawnPos;
-        triggerButtonRect.gameObject.SetActive(true);
+        // HideAllJumpscareObjects로 꺼졌을 수 있으므로 먼저 활성화
+        if (triggerObject != null) triggerObject.SetActive(true);
+        if (blinkOverlay != null) blinkOverlay.gameObject.SetActive(true);
 
-        Button btn = triggerButtonRect.GetComponent<Button>();
-        if (btn != null)
-        {
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(ExecuteJumpscare);
-        }
+        // 월드 좌표로 배치 (부모 Z 위치의 영향을 받지 않도록)
+        triggerObject.transform.position = new Vector3(spawnPos.x, spawnPos.y, 0f);
+        SetTriggerVisible(true);
+
+        SetHideObjectsByTag(true);
 
         StartCoroutine(WaitAndExecuteScare());
+    }
+
+    private void Update()
+    {
+        if (!Input.GetMouseButtonDown(0)) return;
+        if (Camera.main == null) return;
+        if (isJumpscareInProgress) return; // 점프스케어 진행 중 클릭 차단
+
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D hit = Physics2D.OverlapPoint(worldPos);
+        if (hit == null) return;
+
+        // 트리거 오브젝트 클릭 감지
+        if (!hasTriggered && triggerObject != null
+            && triggerCollider != null && triggerCollider.enabled
+            && hit.gameObject == triggerObject)
+        {
+            ExecuteJumpscare();
+            return;
+        }
+
+        // 리트라이 클릭 감지
+        if (retryClickObject != null && retryClickObject.activeSelf
+            && hit.gameObject == retryClickObject)
+        {
+            SceneManager.LoadScene(retrySceneName);
+        }
     }
 
     private IEnumerator WaitAndExecuteScare()
@@ -143,29 +298,57 @@ public class JumpscareManager : MonoBehaviour
         hasTriggered = true;
 
         StopAllCoroutines();
-        triggerButtonRect.gameObject.SetActive(false);
 
-        // 애니메이션 위치를 씬 데이터에 맞춰 이동
-        RectTransform animRect = jumpscareAnimator.GetComponent<RectTransform>();
-        animRect.anchoredPosition = triggerButtonRect.anchoredPosition;
+        // 클릭 차단 시작
+        isJumpscareInProgress = true;
 
-        // [수정됨] 직접 애니메이션을 켜는 대신, 눈 깜빡임 시퀀스 실행
+        // SayDialog 비활성화
+        DisableSayDialog();
+
+        // triggerObject를 끄지 않고, 보이는 부분만 숨김
+        SetTriggerVisible(false);
+
+        // 점프스케어 애니메이터를 트리거가 있던 위치에 배치 (월드 좌표)
+        jumpscareAnimator.transform.position = triggerObject.transform.position;
+
         StartCoroutine(FullJumpscareSequence());
     }
 
-    // [추가됨] 눈 감기 -> 애니메이션 켜기 -> 눈 뜨기 통합 시퀀스
     private IEnumerator FullJumpscareSequence()
     {
+        // 눈 감기
         yield return StartCoroutine(AnimateBlink(0.5f, 0f, 0f, 2.0f, blinkDuration));
         yield return new WaitForSeconds(closedDuration);
-        
+
+        // Animator 활성화 & 재생 시작
         jumpscareAnimator.gameObject.SetActive(true);
         jumpscareAnimator.SetTrigger("Scare");
-        
+
+        // 눈 뜨기
         yield return StartCoroutine(AnimateBlink(0f, 0.5f, 2.0f, 0f, blinkDuration));
     }
 
-    // [추가됨] 셰이더와 포스트 프로세싱 수치를 서서히 변경하는 함수
+    /// <summary>
+    /// Animation Event에서 호출하는 메서드입니다.
+    /// 애니메이션 클립의 2컷, 3컷, 4컷 시작 키프레임에 이벤트를 배치하세요.
+    /// </summary>
+    public void OnFrameTransition()
+    {
+        if (isBlinkSequenceRunning) return;
+        StartCoroutine(FrameTransitionBlink());
+    }
+
+    private IEnumerator FrameTransitionBlink()
+    {
+        isBlinkSequenceRunning = true;
+
+        yield return StartCoroutine(AnimateBlink(0.5f, 0f, 0f, 2.0f, blinkDuration));
+        yield return new WaitForSeconds(closedDuration);
+        yield return StartCoroutine(AnimateBlink(0f, 0.5f, 2.0f, 0f, blinkDuration));
+
+        isBlinkSequenceRunning = false;
+    }
+
     private IEnumerator AnimateBlink(float bStart, float bEnd, float blStart, float blEnd, float duration)
     {
         float elapsed = 0f;
@@ -173,29 +356,87 @@ public class JumpscareManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            
-            if (blinkImage != null && blinkImage.material != null)
-                blinkImage.material.SetFloat(blinkAmountProp, Mathf.Lerp(bStart, bEnd, t));
-            
-            if (dof != null) 
+
+            if (blinkOverlay != null && blinkOverlay.material != null)
+                blinkOverlay.material.SetFloat(blinkAmountProp, Mathf.Lerp(bStart, bEnd, t));
+
+            if (dof != null)
                 dof.gaussianMaxRadius.value = Mathf.Lerp(blStart, blEnd, t);
-                
+
             yield return null;
         }
 
-        if (blinkImage != null && blinkImage.material != null)
-            blinkImage.material.SetFloat(blinkAmountProp, bEnd);
-        
-        if (dof != null) 
+        if (blinkOverlay != null && blinkOverlay.material != null)
+            blinkOverlay.material.SetFloat(blinkAmountProp, bEnd);
+
+        if (dof != null)
             dof.gaussianMaxRadius.value = blEnd;
     }
 
     public void OnJumpscareFinished()
     {
         jumpscareAnimator.gameObject.SetActive(false);
-        gameOverPanel.SetActive(true);
+        if (gameOverObject != null) gameOverObject.SetActive(true);
 
-        retryButton.onClick.RemoveAllListeners();
-        retryButton.onClick.AddListener(() => SceneManager.LoadScene(retrySceneName));
+        // GameOver 표시 후 클릭 차단 해제
+        isJumpscareInProgress = false;
+    }
+
+    /// <summary>
+    /// triggerObject 자체는 활성 상태를 유지하면서,
+    /// SpriteRenderer와 Collider2D만 켜고 끕니다.
+    /// (자식인 Jumpscare 오브젝트에 영향을 주지 않기 위함)
+    /// </summary>
+    private void SetTriggerVisible(bool visible)
+    {
+        if (triggerSpriteRenderer != null) triggerSpriteRenderer.enabled = visible;
+        if (triggerCollider != null) triggerCollider.enabled = visible;
+    }
+
+    private void SetHideObjectsByTag(bool hide)
+    {
+        if (string.IsNullOrEmpty(hideObjectTag)) return;
+
+        GameObject[] targets = GameObject.FindGameObjectsWithTag(hideObjectTag);
+        foreach (var obj in targets)
+        {
+            if (obj != null)
+                obj.SetActive(!hide);
+        }
+    }
+
+    /// <summary>
+    /// 씬에서 Fungus SayDialog를 찾아 비활성화합니다.
+    /// </summary>
+    private void DisableSayDialog()
+    {
+        // Fungus의 SayDialog는 "SayDialog" 이름으로 찾을 수 있음
+        if (sayDialogObject == null)
+            sayDialogObject = GameObject.Find("SayDialog");
+
+        if (sayDialogObject != null && sayDialogObject.activeSelf)
+            sayDialogObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 비활성화했던 SayDialog를 다시 켭니다.
+    /// </summary>
+    private void RestoreSayDialog()
+    {
+        if (sayDialogObject != null && !sayDialogObject.activeSelf)
+            sayDialogObject.SetActive(true);
+        sayDialogObject = null;
+    }
+
+    /// <summary>
+    /// targetScene이 아닌 씬에서 점프스케어 관련 오브젝트를 완전히 숨깁니다.
+    /// triggerObject 자체를 비활성화하여 자식(Jumpscare 등)까지 모두 숨깁니다.
+    /// </summary>
+    private void HideAllJumpscareObjects()
+    {
+        if (triggerObject != null) triggerObject.SetActive(false);
+        if (jumpscareAnimator != null) jumpscareAnimator.gameObject.SetActive(false);
+        if (gameOverObject != null) gameOverObject.SetActive(false);
+        if (blinkOverlay != null) blinkOverlay.gameObject.SetActive(false);
     }
 }
