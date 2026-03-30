@@ -53,5 +53,5 @@ public class ClickedBubble : MonoBehaviour
     public void ClickedTutor()   => SafeLoadScene("TutorRoom");
     public void ClickedChild()   => SafeLoadScene("ChildRoom");
     public void ClickedWife()    => SafeLoadScene("WifeRoom");
-    public void ClickedBed()     => SafeLoadScene("Bedroom");
+    public void ClickedBed()     => SafeLoadScene("BedRoom");
 }

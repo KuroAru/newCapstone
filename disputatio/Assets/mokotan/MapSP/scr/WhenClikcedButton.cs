@@ -40,7 +40,8 @@ public class WhenClikcedButton : MonoBehaviour
 
     void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (Instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -87,13 +88,19 @@ public class WhenClikcedButton : MonoBehaviour
 
         if (panelToActivate != null && targetCanvas != null)
         {
+            RectTransform rect = panelToActivate.GetComponent<RectTransform>();
+            if (rect == null)
+            {
+                Debug.LogWarning("WhenClikcedButton: panelToActivate에 RectTransform이 없습니다.");
+                return;
+            }
+
             // 열기 전 최신 변수 상태 반영
             UpdateAllRoomStates();
 
             panelToActivate.SetActive(true);
             panelToActivate.transform.SetParent(targetCanvas, false); //
 
-            RectTransform rect = panelToActivate.GetComponent<RectTransform>();
             rect.anchoredPosition = Vector2.zero;
             rect.localScale = Vector3.one;
             rect.SetAsLastSibling();
@@ -127,7 +134,7 @@ public class WhenClikcedButton : MonoBehaviour
     public void GoTutor() => MoveScene("TutorRoom");
     public void GoChild() => MoveScene("ChildRoom");
     public void GoWife() => MoveScene("WifeRoom");
-    public void GoBed() => MoveScene("Bedroom");
+    public void GoBed() => MoveScene("BedRoom");
 
     public void UpdateAllRoomStates()
     {
