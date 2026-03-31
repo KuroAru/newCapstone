@@ -9,7 +9,8 @@ using UnityEngine.Rendering.Universal;
 public struct JumpscareSceneData
 {
     public string sceneName;        // 씬 이름
-    public Vector2 spawnPosition;   // 등장 위치 (월드 좌표)
+    [Tooltip("트리거 월드 XY. (0,0)이면 스폰 시 현재 위치의 XY를 유지하고 Z만 카메라 기준 평면으로 맞춥니다.")]
+    public Vector2 spawnPosition;   // 등장 위치 (월드 XY; Z는 카메라 오프셋으로 별도 처리)
     [Range(0f, 100f)]
     public float spawnChance;       // 해당 씬에서의 등장 확률
 }
@@ -17,6 +18,9 @@ public struct JumpscareSceneData
 public class JumpscareManager : MonoBehaviour
 {
     public static JumpscareManager Instance;
+
+    private const float SpawnPositionZeroEpsilonSq = 1e-6f;
+    private const string SpriteUnlitShaderName = "Universal Render Pipeline/2D/Sprite-Unlit-Default";
 
     [Header("씬별 설정 목록")]
     public List<JumpscareSceneData> targetScenes;
@@ -34,6 +38,18 @@ public class JumpscareManager : MonoBehaviour
     public float blinkDuration = 0.2f;
     public float closedDuration = 0.1f;
     public string retrySceneName = "MainScene";
+
+    [Header("트리거 깊이 (2D 오쏘)")]
+    [Tooltip("트리거 월드 Z = Main Camera Z + 이 값. (예: 카메라 z=-10, 스프라이트 평면 z=0 → 10)")]
+    [SerializeField] private float triggerWorldZOffsetFromCamera = 10f;
+
+    [Header("트리거 스프라이트")]
+    [Tooltip("Lit 씬 조명 없이도 보이게 URP Sprite-Unlit을 씁니다. 끄면 프리팹 머티리얼을 유지합니다.")]
+    [SerializeField] private bool useUnlitMaterialForTrigger = true;
+#if UNITY_EDITOR
+    [Tooltip("에디터/개발 빌드에서만 스폰 직후 트리거 렌더 상태를 한 프레임 뒤 로그합니다.")]
+    [SerializeField] private bool logTriggerRenderingAfterSpawn;
+#endif
 
     [Header("오브젝트 할당")]
     [Tooltip("적 클릭 트리거용 오브젝트 (SpriteRenderer + Collider2D 필요)")]
@@ -92,6 +108,8 @@ public class JumpscareManager : MonoBehaviour
             triggerSpriteRenderer = triggerObject.GetComponent<SpriteRenderer>();
             triggerCollider = triggerObject.GetComponent<Collider2D>();
         }
+
+        ApplyUnlitTriggerMaterialIfNeeded();
     }
 
     private void OnEnable()
@@ -250,14 +268,88 @@ public class JumpscareManager : MonoBehaviour
         if (triggerObject != null) triggerObject.SetActive(true);
         if (blinkOverlay != null) blinkOverlay.gameObject.SetActive(true);
 
-        // 월드 좌표로 배치 (부모 Z 위치의 영향을 받지 않도록)
-        triggerObject.transform.position = new Vector3(spawnPos.x, spawnPos.y, 0f);
+        if (triggerObject != null)
+        {
+            float worldZ = GetTriggerWorldPlaneZ();
+            Vector3 cur = triggerObject.transform.position;
+            bool explicitWorldXY = spawnPos.sqrMagnitude > SpawnPositionZeroEpsilonSq;
+            float wx = explicitWorldXY ? spawnPos.x : cur.x;
+            float wy = explicitWorldXY ? spawnPos.y : cur.y;
+            triggerObject.transform.position = new Vector3(wx, wy, worldZ);
+        }
+
         SetTriggerVisible(true);
 
         SetHideObjectsByTag(true);
 
+#if UNITY_EDITOR
+        if (logTriggerRenderingAfterSpawn && triggerObject != null)
+            StartCoroutine(DebugLogTriggerRenderingState());
+#endif
+
         StartCoroutine(WaitAndExecuteScare());
     }
+
+    /// <summary>
+    /// 메인 카메라와 동일한 2D 스프라이트 평면(일반적으로 z=0)에 맞춘 트리거 월드 Z.
+    /// </summary>
+    private float GetTriggerWorldPlaneZ()
+    {
+        if (mainCam == null)
+            mainCam = Camera.main;
+        if (mainCam == null)
+            return 0f;
+        return mainCam.transform.position.z + triggerWorldZOffsetFromCamera;
+    }
+
+    private void ApplyUnlitTriggerMaterialIfNeeded()
+    {
+        if (!useUnlitMaterialForTrigger || triggerSpriteRenderer == null)
+            return;
+
+        var shader = Shader.Find(SpriteUnlitShaderName);
+        if (shader == null)
+        {
+            Debug.LogWarning($"[JumpscareManager] 셰이더를 찾을 수 없습니다: '{SpriteUnlitShaderName}'. 트리거 머티리얼을 바꾸지 않습니다.");
+            return;
+        }
+
+        triggerSpriteRenderer.material = new Material(shader);
+    }
+
+#if UNITY_EDITOR
+    private IEnumerator DebugLogTriggerRenderingState()
+    {
+        yield return null;
+
+        if (triggerSpriteRenderer == null || triggerObject == null)
+            yield break;
+
+        var cam = Camera.main;
+        if (cam == null)
+        {
+            Debug.Log("[JumpscareManager] DebugTrigger: Main Camera 없음");
+            yield break;
+        }
+
+        Vector3 vp = cam.WorldToViewportPoint(triggerObject.transform.position);
+        Debug.Log("=== [JumpscareManager] triggerObject 렌더링 디버그 (에디터) ===");
+        Debug.Log($"SpriteRenderer.enabled: {triggerSpriteRenderer.enabled}");
+        Debug.Log($"Sprite: {(triggerSpriteRenderer.sprite != null ? triggerSpriteRenderer.sprite.name : "null")}");
+        Debug.Log($"Color: {triggerSpriteRenderer.color}");
+        Debug.Log($"Material: {(triggerSpriteRenderer.sharedMaterial != null ? triggerSpriteRenderer.sharedMaterial.name : "null")}");
+        Debug.Log($"Sorting Layer: {triggerSpriteRenderer.sortingLayerName}");
+        Debug.Log($"Order in Layer: {triggerSpriteRenderer.sortingOrder}");
+        Debug.Log($"World Position: {triggerObject.transform.position}");
+        Debug.Log($"Local Scale: {triggerObject.transform.localScale}");
+        Debug.Log($"isVisible (renderer): {triggerSpriteRenderer.isVisible}");
+        Debug.Log($"Viewport: {vp} — xy는 화면 안일 수 있으나, z<=0이면 카메라 전방/깊이 기준으로는 프러스텀 밖일 수 있음 (카메라 near/far·오쏘 설정과 함께 판단)");
+        Debug.Log($"Camera Culling Mask: {cam.cullingMask}");
+        Debug.Log($"triggerObject Layer: {triggerObject.layer} ({LayerMask.LayerToName(triggerObject.layer)})");
+        int mask = cam.cullingMask;
+        Debug.Log($"Camera가 이 Layer를 렌더링하는가: {((mask & (1 << triggerObject.layer)) != 0)}");
+    }
+#endif
 
     private void Update()
     {
