@@ -16,10 +16,43 @@ except ImportError:  # pragma: no cover - non-Windows / no pywin32
 
 HWP_COM_PROGID = "HWPFrame.HwpObject"
 SECURITY_MODULE_PAIR = ("FilePathCheckDLL", "SecurityModule")
+# Hangul: suppress script/UI message boxes during automation (see SetMessageBoxMode).
+HWP_MSGBOX_MODE_SUPPRESS_ALL = 0xFFFF
 
 
 class HwpAutomationError(Exception):
     """Raised when HWP automation fails in a recoverable, user-facing way."""
+
+
+def configure_hwp_automation_ui(hwp: object) -> int:
+    """
+    Hide the main window and suppress Hangul message boxes during COM automation.
+    Returns the previous GetMessageBoxMode() value for restore_hwp_message_box_mode().
+    """
+    prev = 0
+    try:
+        prev = int(hwp.GetMessageBoxMode())
+    except Exception:
+        prev = 0
+    try:
+        hwp.SetMessageBoxMode(HWP_MSGBOX_MODE_SUPPRESS_ALL)
+    except Exception:
+        try:
+            hwp.SetMessageBoxMode(1)
+        except Exception:
+            pass
+    try:
+        hwp.XHwpWindows.Item(0).Visible = False
+    except Exception:
+        pass
+    return prev
+
+
+def restore_hwp_message_box_mode(hwp: object, previous: int) -> None:
+    try:
+        hwp.SetMessageBoxMode(previous)
+    except Exception:
+        pass
 
 
 def _require_windows() -> None:
@@ -64,9 +97,10 @@ def fill_template(
     fields = _normalize_field_data(data)
 
     hwp = win32.gencache.EnsureDispatch(HWP_COM_PROGID)
+    msg_prev: int | None = None
     try:
         hwp.RegisterModule(*SECURITY_MODULE_PAIR)
-        hwp.XHwpWindows.Item(0).Visible = False
+        msg_prev = configure_hwp_automation_ui(hwp)
 
         hwp.Open(str(tpl))
 
@@ -75,6 +109,11 @@ def fill_template(
 
         hwp.SaveAs(str(out))
     finally:
+        if msg_prev is not None:
+            try:
+                restore_hwp_message_box_mode(hwp, msg_prev)
+            except Exception:
+                pass
         try:
             hwp.Quit()
         except Exception:
@@ -92,10 +131,16 @@ def probe_hwp_com() -> str:
         )
 
     hwp = win32.gencache.EnsureDispatch(HWP_COM_PROGID)
+    msg_prev: int | None = None
     try:
         hwp.RegisterModule(*SECURITY_MODULE_PAIR)
-        hwp.XHwpWindows.Item(0).Visible = False
+        msg_prev = configure_hwp_automation_ui(hwp)
     finally:
+        if msg_prev is not None:
+            try:
+                restore_hwp_message_box_mode(hwp, msg_prev)
+            except Exception:
+                pass
         try:
             hwp.Quit()
         except Exception:

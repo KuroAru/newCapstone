@@ -1,0 +1,37 @@
+{
+  "name": "hwp_fill_weekly_capstone_template",
+  "description": "Fill the capstone weekly report HWP template (named 누름틀: report_date, goal_detail_1–4, goal_rate_1–4, member_g1, author_name, prog_detail_1–4, prog_rate_1–4, s3_task_1–3, s3_deliver_1–3, s4_problem/solution/pending, next_week, s6_evidence) from a UTF-8 weekly .txt with sections 1–6. Uses PutFieldText and saves a new .hwp.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "template_path": {
+        "title": "Template Path",
+        "type": "string",
+        "description": "Absolute path to the .hwp template with matching field names."
+      },
+      "weekly_txt_path": {
+        "title": "Weekly Txt Path",
+        "type": "string",
+        "description": "UTF-8 weekly report text (1. 기본 정보 … 6. 참고 자료)."
+      },
+      "output_path": {
+        "title": "Output Path",
+        "type": "string",
+        "description": "Where to save the filled .hwp."
+      }
+    },
+    "required": ["template_path", "weekly_txt_path", "output_path"],
+    "title": "hwp_fill_weekly_capstone_templateArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": ["result"],
+    "title": "hwp_fill_weekly_capstone_templateOutput"
+  }
+}

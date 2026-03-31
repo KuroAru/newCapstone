@@ -44,6 +44,7 @@ def test_fill_template_happy_path(
     out = tmp_path / "sub" / "o.hwp"
 
     mock_hwp = MagicMock()
+    mock_hwp.GetMessageBoxMode.return_value = 0
     mock_win32.gencache.EnsureDispatch.return_value = mock_hwp
 
     msg = fill_template(tpl, out, {"Title": "Hello"})
