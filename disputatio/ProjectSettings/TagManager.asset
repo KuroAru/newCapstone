@@ -66,5 +66,8 @@ TagManager:
   - name: mouseEffect
     uniqueID: 3556583173
     locked: 0
+  - name: Enemy
+    uniqueID: 4269135820
+    locked: 0
   m_RenderingLayers:
   - Default

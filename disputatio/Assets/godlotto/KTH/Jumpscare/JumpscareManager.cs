@@ -22,6 +22,8 @@ public class JumpscareManager : MonoBehaviour
 
     private const float SpawnPositionZeroEpsilonSq = 1e-6f;
     private const string SpriteUnlitShaderName = "Universal Render Pipeline/2D/Sprite-Unlit-Default";
+    /// <summary>눈깜빡임·게임오버 전면 스프라이트 평면 Z = 카메라 Z + 이 값 (Blink와 동일).</summary>
+    private const float OverlayPlaneZOffsetFromCamera = 1f;
 
     [Header("씬별 설정 목록")]
     public List<JumpscareSceneData> targetScenes;
@@ -164,6 +166,7 @@ public class JumpscareManager : MonoBehaviour
         InitBlinkMaterial();
         FindAndBindVolume();
         FitBlinkOverlayToScreen();
+        FitGameOverOverlayToScreen();
 
         // triggerObject의 SpriteRenderer, Collider2D 캐시
         if (triggerObject != null)
@@ -190,6 +193,7 @@ public class JumpscareManager : MonoBehaviour
         FindAndBindVolume();
         ResetJumpscareState();
         FitBlinkOverlayToScreen();
+        FitGameOverOverlayToScreen();
 
         bool isTargetScene = false;
 
@@ -230,27 +234,42 @@ public class JumpscareManager : MonoBehaviour
 
     /// <summary>
     /// 눈깜빡임 오버레이 Sprite를 카메라 화면 전체를 덮도록 크기를 조절합니다.
-    /// Sprite를 카메라 바로 앞(z = 카메라z + 1)에 배치합니다.
+    /// Sprite를 카메라 바로 앞에 배치합니다.
     /// </summary>
     private void FitBlinkOverlayToScreen()
     {
         if (blinkOverlay == null) return;
+        FitFullscreenSpriteRendererToMainCamera(blinkOverlay);
+    }
+
+    /// <summary>
+    /// 게임오버 전면 스프라이트를 현재 Main Camera ortho 뷰에 맞춥니다 (DontDestroyOnLoad 시 씬별 카메라 대응).
+    /// </summary>
+    private void FitGameOverOverlayToScreen()
+    {
+        if (gameOverObject == null) return;
+        SpriteRenderer sr = gameOverObject.GetComponent<SpriteRenderer>();
+        if (sr == null) return;
+        FitFullscreenSpriteRendererToMainCamera(sr);
+    }
+
+    private void FitFullscreenSpriteRendererToMainCamera(SpriteRenderer sr)
+    {
+        if (sr == null) return;
 
         mainCam = Camera.main;
         if (mainCam == null) return;
 
-        // 카메라 바로 앞에 배치
         Vector3 camPos = mainCam.transform.position;
-        blinkOverlay.transform.position = new Vector3(camPos.x, camPos.y, camPos.z + 1f);
+        sr.transform.position = new Vector3(camPos.x, camPos.y, camPos.z + OverlayPlaneZOffsetFromCamera);
 
-        // Sprite 크기를 카메라 뷰에 맞춤
         float worldHeight = mainCam.orthographicSize * 2f;
         float worldWidth = worldHeight * mainCam.aspect;
 
-        if (blinkOverlay.sprite != null)
+        if (sr.sprite != null)
         {
-            Vector2 spriteSize = blinkOverlay.sprite.bounds.size;
-            blinkOverlay.transform.localScale = new Vector3(
+            Vector2 spriteSize = sr.sprite.bounds.size;
+            sr.transform.localScale = new Vector3(
                 worldWidth / spriteSize.x,
                 worldHeight / spriteSize.y,
                 1f
@@ -545,6 +564,7 @@ public class JumpscareManager : MonoBehaviour
     public void OnJumpscareFinished()
     {
         jumpscareAnimator.gameObject.SetActive(false);
+        FitGameOverOverlayToScreen();
         if (gameOverObject != null) gameOverObject.SetActive(true);
 
         // GameOver 표시 후 클릭 차단 해제
