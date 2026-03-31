@@ -21,6 +21,10 @@ public class KitchenChatbot : BaseChatbot
     {
         string finalSystemPrompt = chatHistory[0].content;
 
+        TextAsset promptAsset = Resources.Load<TextAsset>("KitchenPrompt");
+        if (promptAsset != null)
+            finalSystemPrompt += "\n\n" + promptAsset.text;
+
         if (kitchenFlowchart != null)
         {
             bool giveFood = kitchenFlowchart.GetBooleanVariable("giveFood");

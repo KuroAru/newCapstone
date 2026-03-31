@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3305127905486966838}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -18, y: -81, z: 13.331004}
+  m_LocalPosition: {x: -18, y: -81, z: 0}
   m_LocalScale: {x: 1920, y: 1080, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
@@ -355,9 +355,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5043438640802526754}
   - component: {fileID: 4910625284953360225}
+  - component: {fileID: 8833221144556677889}
   m_Layer: 0
   m_Name: JumpscareManager
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -371,7 +372,7 @@ Transform:
   m_GameObject: {fileID: 4773293380519465482}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 979.64215, y: 614.33276, z: -13.331004}
+  m_LocalPosition: {x: 979.64215, y: 614.33276, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -394,19 +395,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetScenes:
   - sceneName: Hall_Right
-    spawnPosition: {x: 0, y: 0}
-    spawnChance: 100
+    spawnPosition: {x: 960, y: 540}
+    spawnChance: 20
+  defaultSpawnChanceForMokotanScenes: 20
+  guaranteedJumpscareAfterSeconds: 60
   blinkOverlay: {fileID: 6443540971245444807}
   waitTimeToScare: 60
   animationDuration: 2
   blinkDuration: 0.1
   closedDuration: 0.1
   retrySceneName: Hall_playerble
+  triggerWorldZOffsetFromCamera: 10
+  useUnlitMaterialForTrigger: 1
+  logTriggerRenderingAfterSpawn: 0
   triggerObject: {fileID: 6141002263032770990}
   jumpscareAnimator: {fileID: 3986437672589504778}
   gameOverObject: {fileID: 3305127905486966838}
   retryClickObject: {fileID: 4501913471019271080}
   hideObjectTag: HideOnEnemy
+--- !u!114 &8833221144556677889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4773293380519465482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e9f3a4b5c6d7e8091a2b3c4d5e6f708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6141002263032770990
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,7 +443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3267303914949139538
 Transform:
   m_ObjectHideFlags: 0
@@ -435,8 +453,8 @@ Transform:
   m_GameObject: {fileID: 6141002263032770990}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -143, z: 13.331004}
-  m_LocalScale: {x: 40, y: 40, z: 1}
+  m_LocalPosition: {x: 0, y: -143, z: 0}
+  m_LocalScale: {x: 30, y: 30, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8865987676877059290}
@@ -483,8 +501,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -362872839
-  m_SortingLayer: -2
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -1775718864, guid: c05a24b6928264d4298a9b511dad94f2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -591,7 +609,7 @@ Transform:
   m_GameObject: {fileID: 8989362064705125111}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20, y: -77, z: 13.331004}
+  m_LocalPosition: {x: -20, y: -77, z: 0}
   m_LocalScale: {x: 1920, y: 1080, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

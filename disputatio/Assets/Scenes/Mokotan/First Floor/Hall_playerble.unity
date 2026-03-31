@@ -924,11 +924,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 67.521454, y: 33.67436}
+  scrollPos: {x: 245.41917, y: -73.30004}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.8200002
+  zoom: 0.88000005
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1684,7 +1684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 142.0806
+    x: 139.449
     y: 68.371506
     width: 78.03
     height: 40
@@ -7017,7 +7017,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 586.10846
+    x: 585.0446
     y: 23.493164
     width: 135.11
     height: 40
@@ -8769,8 +8769,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 288.0944
-    y: 469.5912
+    x: 279.61395
+    y: 479.43228
     width: 74.76
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -9077,7 +9077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scope: 0
+  scope: 2
   key: MapClicked
   value: 0
 --- !u!114 &265606226
@@ -11229,6 +11229,7 @@ GameObject:
   - component: {fileID: 1057626380}
   - component: {fileID: 1057626382}
   - component: {fileID: 1057626383}
+  - component: {fileID: 1057626384}
   m_Layer: 0
   m_Name: FeildMap
   m_TagString: HideOnEnemy
@@ -11368,6 +11369,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 203.20001, y: 124.33085}
   m_EdgeRadius: 0
+--- !u!114 &1057626384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057626379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8d9e0f1a2b3456789abcdef01234567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fungusBoolKey: MapClicked
+  flowchartOverride: {fileID: 265605999}
 --- !u!1 &1082711971
 GameObject:
   m_ObjectHideFlags: 0
@@ -12345,7 +12360,7 @@ GameObject:
   - component: {fileID: 1283729601}
   - component: {fileID: 1283729600}
   - component: {fileID: 1283729599}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: BasementDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13139,6 +13154,7 @@ GameObject:
   - component: {fileID: 1594444091}
   - component: {fileID: 1594444119}
   - component: {fileID: 1594444120}
+  - component: {fileID: 1594444121}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -13539,11 +13555,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 7311.8164, y: 506.24774}
+  scrollPos: {x: 7588.245, y: 728.2477}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 400
-  zoom: 0.28
+  zoom: 0.25
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -13576,6 +13592,7 @@ MonoBehaviour:
   - {fileID: 1594444101}
   - {fileID: 1594444094}
   - {fileID: 1594444119}
+  - {fileID: 1594444121}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -14265,7 +14282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 265605999}
+  selectedFlowchart: {fileID: 7047298147727563761, guid: 33c19f8ce2890114a8cdc7ca0d23393c, type: 3}
 --- !u!4 &1993636090
 Transform:
   m_ObjectHideFlags: 1
@@ -14289,29 +14306,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3267303914949139538, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3267303914949139538, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 4773293380519465482, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_Name
       value: JumpscareManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: blinkDuration
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: targetScenes.Array.data[0].spawnPosition.x
-      value: 960
-      objectReference: {fileID: 0}
-    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: targetScenes.Array.data[0].spawnPosition.y
-      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 5043438640802526754, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14351,10 +14348,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5043438640802526754, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6141002263032770990, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

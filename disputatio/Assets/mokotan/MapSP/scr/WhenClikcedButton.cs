@@ -127,7 +127,7 @@ public class WhenClikcedButton : MonoBehaviour
     public void GoTutor() => MoveScene("TutorRoom");
     public void GoChild() => MoveScene("ChildRoom");
     public void GoWife() => MoveScene("WifeRoom");
-    public void GoBed() => MoveScene("Bedroom");
+    public void GoBed() => MoveScene("BedRoom");
 
     public void UpdateAllRoomStates()
     {

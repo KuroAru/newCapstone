@@ -1,0 +1,44 @@
+{
+  "name": "hwp_apply_weekly_txt",
+  "description": "Apply a UTF-8 weekly report .txt (sections 1–6) into an .hwp file that uses the same layout as 오합지졸 주간보고서. Saves a new .hwp (Hangul replaces line-by-line; duplicate lines in section 2 may need manual edit).",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "hwp_path": {
+        "title": "Hwp Path",
+        "type": "string"
+      },
+      "weekly_txt_path": {
+        "title": "Weekly Txt Path",
+        "type": "string"
+      },
+      "output_path": {
+        "title": "Output Path",
+        "type": "string"
+      },
+      "report_date_line_old": {
+        "title": "Report Date Line Old",
+        "type": "string",
+        "description": "Exact '보고 일자' line in the current HWP (e.g. 2026년  3 월 17일). Optional."
+      },
+      "report_date_line_new": {
+        "title": "Report Date Line New",
+        "type": "string",
+        "description": "Replacement line for 보고 일자. Optional."
+      }
+    },
+    "required": ["hwp_path", "weekly_txt_path", "output_path"],
+    "title": "hwp_apply_weekly_txtArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": ["result"],
+    "title": "hwp_apply_weekly_txtOutput"
+  }
+}
