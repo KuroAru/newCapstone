@@ -1129,11 +1129,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 67.521454, y: 33.67436}
+  scrollPos: {x: 245.41917, y: -73.30004}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.8200002
+  zoom: 0.88000005
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1889,7 +1889,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 142.0806
+    x: 139.449
     y: 68.371506
     width: 78.03
     height: 40
@@ -7222,7 +7222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 586.10846
+    x: 585.0446
     y: 23.493164
     width: 135.11
     height: 40
@@ -8974,8 +8974,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 288.0944
-    y: 469.5912
+    x: 279.61395
+    y: 479.43228
     width: 74.76
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -9282,7 +9282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scope: 0
+  scope: 2
   key: MapClicked
   value: 0
 --- !u!114 &265606226
@@ -11977,6 +11977,7 @@ GameObject:
   - component: {fileID: 1057626380}
   - component: {fileID: 1057626382}
   - component: {fileID: 1057626383}
+  - component: {fileID: 1057626384}
   m_Layer: 0
   m_Name: FeildMap
   m_TagString: HideOnEnemy
@@ -12116,6 +12117,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 203.20001, y: 124.33085}
   m_EdgeRadius: 0
+--- !u!114 &1057626384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057626379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8d9e0f1a2b3456789abcdef01234567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fungusBoolKey: MapClicked
+  flowchartOverride: {fileID: 265605999}
 --- !u!1 &1082711971
 GameObject:
   m_ObjectHideFlags: 0
@@ -14020,6 +14035,7 @@ GameObject:
   - component: {fileID: 1594444091}
   - component: {fileID: 1594444119}
   - component: {fileID: 1594444120}
+  - component: {fileID: 1594444121}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -14421,7 +14437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   scrollPos: {x: 7311.8164, y: 506.24774}
-  variablesScrollPos: {x: 0, y: 0}
+  variablesScrollPos: {x: 0, y: 39}
   variablesExpanded: 1
   blockViewHeight: 400
   zoom: 0.28
@@ -14457,6 +14473,7 @@ MonoBehaviour:
   - {fileID: 1594444101}
   - {fileID: 1594444094}
   - {fileID: 1594444119}
+  - {fileID: 1594444121}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -14467,6 +14484,21 @@ MonoBehaviour:
   hideCommands: []
   luaEnvironment: {fileID: 0}
   luaBindingName: flowchart
+--- !u!4 &1594444118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594444090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1594444119
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -14495,21 +14527,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flowchart: {fileID: 1594444117}
---- !u!4 &1594444118
-Transform:
-  m_ObjectHideFlags: 0
+--- !u!114 &1594444121
+MonoBehaviour:
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594444090}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d02d9822eec54c98afe95bb497211b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scope: 2
+  key: MapClicked
+  value: 0
 --- !u!1 &1623893869
 GameObject:
   m_ObjectHideFlags: 0
@@ -15282,7 +15314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 265605999}
+  selectedFlowchart: {fileID: 1594444117}
 --- !u!4 &1993636090
 Transform:
   m_ObjectHideFlags: 1
