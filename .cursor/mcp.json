@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "hwp-automation": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["${workspaceFolder}/tools/hwp-mcp/run.py"],
+      "env": {}
+    }
+  }
+}
