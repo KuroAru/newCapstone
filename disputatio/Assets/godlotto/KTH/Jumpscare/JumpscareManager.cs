@@ -12,7 +12,8 @@ public struct JumpscareSceneData
     [Tooltip("트리거 월드 XY. (0,0)이면 스폰 시 현재 위치의 XY를 유지하고 Z만 카메라 기준 평면으로 맞춥니다.")]
     public Vector2 spawnPosition;   // 등장 위치 (월드 XY; Z는 카메라 오프셋으로 별도 처리)
     [Range(0f, 100f)]
-    public float spawnChance;       // 해당 씬에서의 등장 확률
+    [Tooltip("씬 진입 직후 첫 판정에서의 등장 확률(%). 실패 시 같은 씬에 일정 시간 이상 머무르면 100%로 등장합니다.")]
+    public float spawnChance;       // 진입 직후 등장 확률; 장시간 체류 시 보장 스폰은 매니저 설정
 }
 
 public class JumpscareManager : MonoBehaviour
@@ -24,6 +25,32 @@ public class JumpscareManager : MonoBehaviour
 
     [Header("씬별 설정 목록")]
     public List<JumpscareSceneData> targetScenes;
+
+    [Header("Mokotan 점프스케어 씬 자동 등록")]
+    [Tooltip("코드에 정의된 Mokotan 복도·층 씬이 targetScenes에 없을 때 추가하며, 이때 사용할 진입 직후 spawnChance입니다. 이미 있는 sceneName은 건드리지 않습니다.")]
+    [Range(0f, 100f)]
+    [SerializeField] private float defaultSpawnChanceForMokotanScenes = 20f;
+
+    [Tooltip("진입 직후 스폰에 실패한 경우, 같은 활성 씬에 이 시간(초) 이상 머무르면 등장 확률 100%로 트리거를 띄웁니다.")]
+    [SerializeField] private float guaranteedJumpscareAfterSeconds = 60f;
+
+    /// <summary>
+    /// 에셋 파일명(확장자 제외)과 동일한 Scene.name을 가정합니다. Awake에서 targetScenes에 없는 이름만 병합합니다.
+    /// </summary>
+    private static readonly string[] MokotanJumpscareSceneNames =
+    {
+        "Hall_Left",
+        "Hall_Left2",
+        "Hallway_Left2",
+        "Hall_Right",
+        "Hall_Right2",
+        "Hallway_Right2",
+        "Hallway_Right",
+        "2floorRight",
+        "2floorLeft",
+        "2floorHallway_Right",
+        "2floorHallway_Left",
+    };
 
     [Header("눈깜빡임 오버레이 (SpriteRenderer)")]
     [Tooltip("카메라 앞에 배치할 전체화면 눈깜빡임 Sprite")]
@@ -89,10 +116,46 @@ public class JumpscareManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            EnsureMokotanJumpscareScenesRegistered();
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// MokotanJumpscareSceneNames에 있으나 targetScenes에 없는 씬을 기본 spawn 설정으로 추가합니다.
+    /// </summary>
+    private void EnsureMokotanJumpscareScenesRegistered()
+    {
+        if (targetScenes == null)
+            targetScenes = new List<JumpscareSceneData>();
+
+        foreach (string sceneName in MokotanJumpscareSceneNames)
+        {
+            if (string.IsNullOrEmpty(sceneName))
+                continue;
+
+            bool exists = false;
+            foreach (var entry in targetScenes)
+            {
+                if (entry.sceneName == sceneName)
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists)
+                continue;
+
+            targetScenes.Add(new JumpscareSceneData
+            {
+                sceneName = sceneName,
+                spawnPosition = Vector2.zero,
+                spawnChance = defaultSpawnChanceForMokotanScenes
+            });
         }
     }
 
@@ -140,6 +203,10 @@ public class JumpscareManager : MonoBehaviour
                 {
                     SpawnTrigger(data.spawnPosition);
                 }
+                else if (guaranteedJumpscareAfterSeconds > 0f)
+                {
+                    StartCoroutine(GuaranteedSpawnAfterStay(scene.name, data.spawnPosition));
+                }
                 break;
             }
         }
@@ -149,6 +216,16 @@ public class JumpscareManager : MonoBehaviour
         {
             HideAllJumpscareObjects();
         }
+    }
+
+    private IEnumerator GuaranteedSpawnAfterStay(string expectedSceneName, Vector2 spawnPosition)
+    {
+        yield return new WaitForSeconds(guaranteedJumpscareAfterSeconds);
+        if (hasTriggered)
+            yield break;
+        if (SceneManager.GetActiveScene().name != expectedSceneName)
+            yield break;
+        SpawnTrigger(spawnPosition);
     }
 
     /// <summary>

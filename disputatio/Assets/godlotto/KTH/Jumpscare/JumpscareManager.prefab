@@ -395,7 +395,9 @@ MonoBehaviour:
   targetScenes:
   - sceneName: Hall_Right
     spawnPosition: {x: 0, y: 0}
-    spawnChance: 100
+    spawnChance: 20
+  defaultSpawnChanceForMokotanScenes: 20
+  guaranteedJumpscareAfterSeconds: 60
   blinkOverlay: {fileID: 6443540971245444807}
   waitTimeToScare: 60
   animationDuration: 2

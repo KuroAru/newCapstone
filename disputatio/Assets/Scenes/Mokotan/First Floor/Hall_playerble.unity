@@ -14436,11 +14436,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 7311.8164, y: 506.24774}
-  variablesScrollPos: {x: 0, y: 39}
+  scrollPos: {x: 7588.245, y: 728.2477}
+  variablesScrollPos: {x: 0, y: 88}
   variablesExpanded: 1
   blockViewHeight: 400
-  zoom: 0.28
+  zoom: 0.25
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -15665,11 +15665,31 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].sceneName
+      value: Hall_Right
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].spawnChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: targetScenes.Array.data[0].spawnPosition.x
       value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: targetScenes.Array.data[0].spawnPosition.y
+      value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].spawnPosition.x
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].spawnPosition.y
       value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 5043438640802526754, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
