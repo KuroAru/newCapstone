@@ -1,18 +1,41 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using Fungus;
 
 public class MainMenu : MonoBehaviour
 {
     public Button[] menuButtons; // Start, Load, Setting, Exit
 
+    [SerializeField] private SaveSlotManager saveSlotManager;
+
     private int currentButtonIndex = 0;
     private Vector3 lastMousePosition;
 
-    void Awake() 
+    void Awake()
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
+        EnsureFungusSaveMenuForLoad();
+    }
+
+    /// <summary>
+    /// MainMenu 씬에는 SaveMenu 프리팹이 없을 수 있음. SaveSlotManager.Load가 Fungus SaveMenu를 필요로 하므로 Resources에서 한 번만 생성합니다.
+    /// </summary>
+    private static void EnsureFungusSaveMenuForLoad()
+    {
+        if (Object.FindObjectOfType<SaveMenu>(true) != null)
+            return;
+
+        var prefab = Resources.Load<GameObject>("Prefabs/SaveMenu");
+        if (prefab == null)
+        {
+            Debug.LogWarning("[MainMenu] Resources/Prefabs/SaveMenu 를 찾을 수 없습니다. Fungus Resources 경로를 확인하세요.");
+            return;
+        }
+
+        var instance = Object.Instantiate(prefab);
+        instance.name = "SaveMenu";
+        instance.SetActive(false);
     }
 
     void Start()
@@ -108,7 +131,19 @@ public class MainMenu : MonoBehaviour
 
     public void OnLoadButton()
     {
-        Debug.Log("게임 불러오기... (기능 구현 필요)");
+        UnlockCursorForSceneChange();
+
+        var manager = saveSlotManager != null
+            ? saveSlotManager
+            : Object.FindObjectOfType<SaveSlotManager>(true);
+
+        if (manager == null)
+        {
+            Debug.LogWarning("[MainMenu] SaveSlotManager를 찾을 수 없습니다. 씬에 SaveSlotManager가 있는지 확인하세요.");
+            return;
+        }
+
+        manager.Load();
     }
 
     public void OnSettingButton()
