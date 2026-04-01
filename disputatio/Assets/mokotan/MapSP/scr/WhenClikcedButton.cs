@@ -94,9 +94,12 @@ public class WhenClikcedButton : MonoBehaviour
             panelToActivate.transform.SetParent(targetCanvas, false); //
 
             RectTransform rect = panelToActivate.GetComponent<RectTransform>();
-            rect.anchoredPosition = Vector2.zero;
-            rect.localScale = Vector3.one;
-            rect.SetAsLastSibling();
+            if (rect != null)
+            {
+                rect.anchoredPosition = Vector2.zero;
+                rect.localScale = Vector3.one;
+                rect.SetAsLastSibling();
+            }
 
             if (globalFlowchart != null) globalFlowchart.SetBooleanVariable("isCalled", true);
         }

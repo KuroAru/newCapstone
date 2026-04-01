@@ -14,16 +14,16 @@ public class ControlFloor : MonoBehaviour
     public void ActivateFloor1()
     {
         SetFloorActive(1);
-        up.SetActive(true);
-        down.SetActive(false);
+        if (up != null) up.SetActive(true);
+        if (down != null) down.SetActive(false);
     }
 
     // 2층 활성화 함수
     public void ActivateFloor2()
     {
         SetFloorActive(2);
-        up.SetActive(false);
-        down.SetActive(true);
+        if (up != null) up.SetActive(false);
+        if (down != null) down.SetActive(true);
     }
 
     // 공통 로직: 선택한 층만 켜고 나머지는 끕니다.

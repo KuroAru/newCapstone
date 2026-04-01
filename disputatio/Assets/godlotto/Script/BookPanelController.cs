@@ -1,20 +1,51 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class BookPanelController : MonoBehaviour
 {
     [Header("페이지 오브젝트 목록")]
     public GameObject[] pages;
 
+    [Header("가정부 방 스크랩북 (선택)")]
+    [Tooltip("비어 있으면 CookBook_Panel에서 Resources/MaidRoomCookbookScrapbook 를 자동 로드")]
+    [SerializeField] private TextAsset scrapbookContentJson;
+    [SerializeField] private TextMeshProUGUI scrapbookPageTextOverlay;
+
     private int currentPageIndex = 0;
 
     // 책마다 다른 키로 저장하기 위한 변수
     private string PREF_KEY;
 
+    private string[] _scrapbookPageBodies;
+
+    [Serializable]
+    private class ScrapbookPagesJson
+    {
+        public string[] pages;
+    }
+
     void Awake()
     {
         // ✅ 책(오브젝트) 이름마다 고유한 저장 키를 생성
         PREF_KEY = "LastBookPage_" + gameObject.name;
+
+        if (scrapbookContentJson == null && gameObject.name == "CookBook_Panel")
+            scrapbookContentJson = Resources.Load<TextAsset>("MaidRoomCookbookScrapbook");
+
+        if (scrapbookPageTextOverlay == null)
+        {
+            var t = transform.Find("CookBookScrapText");
+            if (t != null)
+                scrapbookPageTextOverlay = t.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (scrapbookContentJson != null)
+        {
+            var dto = JsonUtility.FromJson<ScrapbookPagesJson>(scrapbookContentJson.text);
+            _scrapbookPageBodies = dto?.pages;
+        }
     }
 
     void OnEnable()
@@ -54,6 +85,19 @@ public class BookPanelController : MonoBehaviour
         {
             pages[i].SetActive(i == index);
         }
+
+        UpdateScrapbookOverlay(index);
+    }
+
+    private void UpdateScrapbookOverlay(int index)
+    {
+        if (scrapbookPageTextOverlay == null || _scrapbookPageBodies == null || _scrapbookPageBodies.Length == 0)
+            return;
+
+        if (index >= 0 && index < _scrapbookPageBodies.Length && !string.IsNullOrEmpty(_scrapbookPageBodies[index]))
+            scrapbookPageTextOverlay.text = _scrapbookPageBodies[index];
+        else
+            scrapbookPageTextOverlay.text = string.Empty;
     }
 
     private void SaveCurrentPage()
