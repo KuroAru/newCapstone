@@ -19,16 +19,14 @@ public class DragManager2D : MonoBehaviour
     private DraggableSnap2D current;
     private Vector3 grabOffset;
     private Vector3 originalPos;
-
-    // SnapTarget 레이어 마스크 (에디터에서 레이어 이름만 맞춰두면 됨)
     private int layerMaskWithoutSnapTargets;
+
+    private const float SortingLayerWeight = 10000f;
 
     void Awake()
     {
         cam = Camera.main;
-
-        // SnapTarget 레이어를 완전히 제외한 마스크 구성
-        int snapTargetMask = LayerMask.GetMask("SnapTarget"); // ← 레이어 이름만 "SnapTarget"으로 지정하세요.
+        int snapTargetMask = LayerMask.GetMask("SnapTarget");
         layerMaskWithoutSnapTargets = ~snapTargetMask;
     }
 
@@ -37,10 +35,18 @@ public class DragManager2D : MonoBehaviour
         DraggableSnap2D.RefreshSpriteDepthByWorldY();
     }
 
-    /// <summary>
-    /// Input.mousePosition.z == 0인 채로 ScreenToWorldPoint를 쓰면 정사영 카메라에서 깊이가 어긋나
-    /// OverlapPoint가 빈 배열을 반환할 수 있음. 카메라 레이와 월드 Z 평면 교차로 보정한다.
-    /// </summary>
+    void Update()
+    {
+        if (cam == null)
+            cam = Camera.main;
+        if (Input.GetMouseButtonDown(0))
+            TryBeginDrag();
+        if (Input.GetMouseButton(0))
+            OnDrag();
+        if (Input.GetMouseButtonUp(0))
+            EndDrag();
+    }
+
     private Vector3 MouseWorldOnDragPlane()
     {
         if (cam == null)
@@ -58,43 +64,26 @@ public class DragManager2D : MonoBehaviour
         return cam.ScreenToWorldPoint(fallback);
     }
 
-    void Update()
+    private void TryBeginDrag()
     {
-        if (cam == null) cam = Camera.main;
-        if (Input.GetMouseButtonDown(0)) TryBeginDrag();
-        if (Input.GetMouseButton(0)   ) OnDrag();
-        if (Input.GetMouseButtonUp(0) ) EndDrag();
-    }
-
-    void TryBeginDrag()
-    {
-        if (current != null) return; // 이미 드래그 중
+        if (current != null)
+            return;
 
         Vector3 mw = MouseWorldOnDragPlane();
-
-        // SnapTarget 레이어를 '완전히 제외'하고 포인트 히트
         Collider2D[] hits = Physics2D.OverlapPointAll(mw, layerMaskWithoutSnapTargets);
+        if (hits == null || hits.Length == 0)
+            return;
 
-        if (hits == null || hits.Length == 0) return;
-
-        // '드래그 가능한 것'만 후보로 필터링 + 화면상 가장 앞(정렬 우선) 순서로 선택
         Collider2D bestCol = null;
         float bestOrder = float.NegativeInfinity;
 
         foreach (var h in hits)
         {
             var drag = h.GetComponent<DraggableSnap2D>();
-            if (drag == null || drag.isSnapped && drag.lockAfterSnap) continue;
+            if (drag == null || (drag.isSnapped && drag.lockAfterSnap))
+                continue;
 
-            float order = -h.transform.position.z; // 기본값: 카메라에 가까울수록 앞
-
-            var sr = h.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                int layerOrder = SortingLayer.GetLayerValueFromID(sr.sortingLayerID);
-                order = layerOrder * 10000f + sr.sortingOrder;
-            }
-
+            float order = ComputePickPriority(h);
             if (order > bestOrder)
             {
                 bestOrder = order;
@@ -102,21 +91,36 @@ public class DragManager2D : MonoBehaviour
             }
         }
 
-        if (bestCol == null) return;
+        if (bestCol == null)
+            return;
 
         current = bestCol.GetComponent<DraggableSnap2D>();
-        if (current == null) return;
+        if (current == null)
+            return;
 
         originalPos = current.transform.position;
-
         Vector3 mouseWorld = MouseWorldOnDragPlane();
         grabOffset = current.transform.position - mouseWorld;
         grabOffset.z = 0f;
     }
 
-    void OnDrag()
+    /// <summary>마우스 아래 여러 콜라이더가 겹칠 때, 화면 앞쪽(정렬 우선) 후보 점수.</summary>
+    private static float ComputePickPriority(Collider2D h)
     {
-        if (current == null) return;
+        var sr = h.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            int layerOrder = SortingLayer.GetLayerValueFromID(sr.sortingLayerID);
+            return layerOrder * SortingLayerWeight + sr.sortingOrder;
+        }
+
+        return -h.transform.position.z;
+    }
+
+    private void OnDrag()
+    {
+        if (current == null)
+            return;
 
         Vector3 mouseWorld = MouseWorldOnDragPlane();
         Vector3 targetPos = mouseWorld + grabOffset;
@@ -126,41 +130,17 @@ public class DragManager2D : MonoBehaviour
         DraggableSnap2D.RefreshSpriteDepthByWorldY();
     }
 
-    void EndDrag()
+    private void EndDrag()
     {
-        if (current == null) return;
+        if (current == null)
+            return;
 
-        // 드롭 시점에서 SnapTarget 레이어 콜라이더만 검사 (다른 레이어 오브젝트와의 오탐 방지)
-        int snapMask = LayerMask.GetMask("SnapTarget");
-        var hits = snapMask != 0
-            ? Physics2D.OverlapCircleAll(current.transform.position, snapSearchRadius, snapMask)
-            : Physics2D.OverlapCircleAll(current.transform.position, snapSearchRadius);
-        SnapTarget bestTarget = null;
-        float bestDistSq = float.MaxValue;
-        Vector2 p = current.transform.position;
-
-        foreach (var h in hits)
-        {
-            var t = h.GetComponent<SnapTarget>();
-            if (t == null || !t.CanAccept(current)) continue;
-
-            float d = ((Vector2)t.transform.position - p).sqrMagnitude;
-            if (d < bestDistSq)
-            {
-                bestDistSq = d;
-                bestTarget = t;
-            }
-        }
+        SnapTarget bestTarget = FindBestSnapTarget(current.transform.position, current);
 
         if (bestTarget != null)
-        {
-            // 🔴 이전처럼 여기서 위치/변수/잠금 직접 처리하지 말고…
-            // ✅ 한 줄로 위임: DraggableSnap2D가 모든 후속 처리(Flowchart true 포함) 수행
             current.OnSnappedTo(bestTarget);
-        }
         else
         {
-            // 실패 시 원위치 복귀
             current.rb.linearVelocity = Vector2.zero;
             current.rb.MovePosition(originalPos);
         }
@@ -169,12 +149,38 @@ public class DragManager2D : MonoBehaviour
         current = null;
     }
 
+    private SnapTarget FindBestSnapTarget(Vector2 draggablePosition, DraggableSnap2D draggable)
+    {
+        int snapMask = LayerMask.GetMask("SnapTarget");
+        var hits = snapMask != 0
+            ? Physics2D.OverlapCircleAll(draggablePosition, snapSearchRadius, snapMask)
+            : Physics2D.OverlapCircleAll(draggablePosition, snapSearchRadius);
+
+        SnapTarget bestTarget = null;
+        float bestDistSq = float.MaxValue;
+
+        foreach (var h in hits)
+        {
+            var t = h.GetComponent<SnapTarget>();
+            if (t == null || !t.CanAccept(draggable))
+                continue;
+
+            float d = ((Vector2)t.transform.position - draggablePosition).sqrMagnitude;
+            if (d < bestDistSq)
+            {
+                bestDistSq = d;
+                bestTarget = t;
+            }
+        }
+
+        return bestTarget;
+    }
+
     void OnDrawGizmosSelected()
     {
-        if (current != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(current.transform.position, snapSearchRadius);
-        }
+        if (current == null)
+            return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(current.transform.position, snapSearchRadius);
     }
 }

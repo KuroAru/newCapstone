@@ -13,7 +13,7 @@ public class HideIfFungusBoolTrue : MonoBehaviour
 
     private void Start()
     {
-        Flowchart fc = flowchartOverride != null ? flowchartOverride : FlowchartLocator.Find();
+        Flowchart fc = FlowchartLocator.Resolve(flowchartOverride);
         if (fc == null)
             return;
 

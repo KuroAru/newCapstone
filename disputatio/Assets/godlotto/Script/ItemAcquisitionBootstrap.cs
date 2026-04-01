@@ -13,7 +13,7 @@ public class ItemAcquisitionBootstrap : MonoBehaviour
 
     void Start()
     {
-        Flowchart fc = flowchart != null ? flowchart : FlowchartLocator.Find();
+        Flowchart fc = FlowchartLocator.Resolve(flowchart);
         if (fc == null)
             return;
 

@@ -29,9 +29,10 @@ public class SealManager : MonoBehaviour
 
     void Start()
     {
+        flowchart = FlowchartLocator.Resolve(flowchart);
         if (flowchart == null)
         {
-            Debug.LogWarning("SealManager: Flowchart가 연결되지 않았습니다.");
+            Debug.LogWarning("SealManager: Flowchart를 찾을 수 없습니다.");
             return;
         }
 

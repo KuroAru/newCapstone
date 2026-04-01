@@ -3,33 +3,6 @@ using UnityEngine;
 /// <summary>
 /// SnapTarget: DraggableSnap2D가 닿으면 스냅되는 투명 타겟.
 /// </summary>
-public enum SnapKind
-{
-    [InspectorName("1st Seal")]
-    Seal1,
-
-    [InspectorName("2nd Seal")]
-    Seal2,
-
-    [InspectorName("3rd Seal")]
-    Seal3,
-
-    [InspectorName("4th Seal")]
-    Seal4,
-
-    [InspectorName("5th Seal")]
-    Seal5,
-
-    [InspectorName("6th Seal")]
-    Seal6,
-
-    [InspectorName("7th Seal")]
-    Seal7,
-
-    [InspectorName("Any")]
-    Any
-}
-
 [RequireComponent(typeof(BoxCollider2D))]
 public class SnapTarget : MonoBehaviour
 {
@@ -50,7 +23,11 @@ public class SnapTarget : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (!TryGetComponent<BoxCollider2D>(out var box))
+            return;
         Gizmos.color = new Color(0, 1, 0, 0.25f);
-        Gizmos.DrawCube(transform.position, GetComponent<BoxCollider2D>().size);
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawCube(box.offset, box.size);
+        Gizmos.matrix = Matrix4x4.identity;
     }
 }

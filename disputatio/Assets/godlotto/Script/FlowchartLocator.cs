@@ -28,4 +28,12 @@ public static class FlowchartLocator
 
         return fc;
     }
+
+    /// <summary>
+    /// 인스펙터에 연결된 Flowchart가 있으면 그것을, 없으면 글로벌 Variablemanager Flowchart를 반환합니다.
+    /// </summary>
+    public static Flowchart Resolve(Flowchart preferred)
+    {
+        return preferred != null ? preferred : Find();
+    }
 }

@@ -15,7 +15,7 @@ public class InventoryManager : MonoBehaviour
     public Transform slotsHolder;
     public GameObject slotPrefab;
     public int maxSlots = 12;
-    [SerializeField] public Flowchart targetflowchart;
+    [SerializeField] private Flowchart targetflowchart;
 
     public bool pressTab = false;
 
@@ -28,8 +28,7 @@ public class InventoryManager : MonoBehaviour
         if (instance != null) { Destroy(gameObject); return; }
         instance = this;
 
-        if (targetflowchart == null)
-            targetflowchart = FlowchartLocator.Find();
+        targetflowchart = FlowchartLocator.Resolve(targetflowchart);
     }
 
     void Start()
