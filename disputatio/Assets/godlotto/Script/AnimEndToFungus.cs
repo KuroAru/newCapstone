@@ -1,16 +1,19 @@
-// AnimEndToFungus.cs
 using UnityEngine;
 using Fungus;
 
+/// <summary>
+/// 애니메이션 이벤트에서 호출해 Fungus 메시지를 보냅니다.
+/// </summary>
 public class AnimEndToFungus : MonoBehaviour
 {
-    public Flowchart flowchart;          // Scene B에 있는 Flowchart 참조
+    [Tooltip("비우면 FlowchartLocator(Variablemanager)를 사용합니다.")]
+    [SerializeField] private Flowchart flowchart;
     public string messageName = "AnimFinished";
 
-    // 애니메이션 이벤트에서 호출
     public void OnAnimEnd()
     {
-        if (flowchart != null)
-            flowchart.SendFungusMessage(messageName);
+        Flowchart fc = FlowchartLocator.Resolve(flowchart);
+        if (fc != null)
+            fc.SendFungusMessage(messageName);
     }
 }

@@ -24,6 +24,7 @@ public class IntegratedSettingUI : MonoBehaviour
     public GameObject panelRoot; 
     
     [Header("Fungus Integration")]
+    [Tooltip("비우면 FlowchartLocator(Variablemanager)를 사용합니다.")]
     public Flowchart targetFlowchart;
     public string fungusVariableName = "isCalled";
     public Fungus.DialogInput dialogInput;
@@ -143,7 +144,8 @@ public class IntegratedSettingUI : MonoBehaviour
         if (panelRoot != null) panelRoot.SetActive(true);
         
         if (dialogInput != null) dialogInput.enabled = false;
-        if (targetFlowchart != null) targetFlowchart.SetBooleanVariable(fungusVariableName, true);
+        Flowchart fcOpen = FlowchartLocator.Resolve(targetFlowchart);
+        if (fcOpen != null) fcOpen.SetBooleanVariable(fungusVariableName, true);
 
         Time.timeScale = 0f; 
         UnlockCursor();
@@ -154,7 +156,8 @@ public class IntegratedSettingUI : MonoBehaviour
     {
         if (panelRoot != null) panelRoot.SetActive(false);
         
-        if (targetFlowchart != null) targetFlowchart.SetBooleanVariable(fungusVariableName, false);
+        Flowchart fcClose = FlowchartLocator.Resolve(targetFlowchart);
+        if (fcClose != null) fcClose.SetBooleanVariable(fungusVariableName, false);
         if (dialogInput != null) dialogInput.enabled = true;
         
         Time.timeScale = 1f;
@@ -182,7 +185,8 @@ public class IntegratedSettingUI : MonoBehaviour
     private IEnumerator GoToMainMenuProcess()
     {
         Time.timeScale = 1f;
-        if (targetFlowchart != null) targetFlowchart.SetBooleanVariable(fungusVariableName, false);
+        Flowchart fcMenu = FlowchartLocator.Resolve(targetFlowchart);
+        if (fcMenu != null) fcMenu.SetBooleanVariable(fungusVariableName, false);
         
         yield return null;
 

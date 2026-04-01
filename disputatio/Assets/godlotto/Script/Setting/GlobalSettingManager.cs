@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
-using System.Linq;
 
 public class GlobalSettingManager : MonoBehaviour
 {
     public static GlobalSettingManager Instance;
 
     [Header("Core Components")]
-    public AudioMixer audioMixer; // ★ 인스펙터에서 연결 필수!
+    [Tooltip("Exposed BGM/SFX 파라미터가 있는 AudioMixer")]
+    public AudioMixer audioMixer;
 
     // 현재 설정값들을 메모리에 들고 있음 (씬이 바뀌어도 유지됨)
     public float bgmVolume { get; private set; }
@@ -65,27 +65,8 @@ public class GlobalSettingManager : MonoBehaviour
 
     private void GenerateResolutionList()
     {
-        var allResolutions = Screen.resolutions;
-        var uniqueResolutions = allResolutions
-            .GroupBy(r => new { r.width, r.height })
-            .Select(group => group.OrderByDescending(r => r.refreshRateRatio.value).First());
-
-        List<Vector2Int> commonResolutions = new List<Vector2Int>()
-        {
-            new Vector2Int(1280, 720), new Vector2Int(1366, 768),
-            new Vector2Int(1600, 900), new Vector2Int(1920, 1080),
-            new Vector2Int(2560, 1440), new Vector2Int(3840, 2160)
-        };
-
-        availableResolutions = uniqueResolutions
-            .Where(r => commonResolutions.Any(c => c.x == r.width && c.y == r.height))
-            .ToList();
-
-        resolutionOptions = new List<string>();
-        foreach (var r in availableResolutions)
-        {
-            resolutionOptions.Add($"{r.width} x {r.height}");
-        }
+        availableResolutions = ResolutionListUtility.BuildPreferredResolutionList();
+        resolutionOptions = ResolutionListUtility.BuildLabels(availableResolutions);
     }
 
     // 현재 화면과 일치하는 해상도 인덱스 찾기
@@ -135,11 +116,8 @@ public class GlobalSettingManager : MonoBehaviour
 
     private void ApplyAudioSettings()
     {
-        if (audioMixer != null)
-        {
-            audioMixer.SetFloat("BGMVolume", bgmVolume == 0 ? -80 : Mathf.Log10(bgmVolume) * 20);
-            audioMixer.SetFloat("SFXVolume", sfxVolume == 0 ? -80 : Mathf.Log10(sfxVolume) * 20);
-        }
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", bgmVolume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", sfxVolume);
     }
 
     private void ApplyGraphicSettings()

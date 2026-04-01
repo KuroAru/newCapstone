@@ -5,8 +5,6 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using System.Linq; // ★★★ 이 줄을 꼭 추가해주세요! ★★★
-
 public class SettingManager : MonoBehaviour
 {
     [Header("UI Components")]
@@ -30,7 +28,7 @@ public class SettingManager : MonoBehaviour
     {
         LoadSettings();
         AssignListeners();
-        InitializeResolutionDropdown(); // ★★★ 함수 이름 변경 ★★★
+        InitializeResolutionDropdown();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -63,18 +61,17 @@ public class SettingManager : MonoBehaviour
         bgmSlider.onValueChanged.AddListener(SetBgmVolume);
         sfxSlider.onValueChanged.AddListener(SetSfxVolume);
         fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
-        // 리스너 추가는 InitializeResolutionDropdown에서 하므로 여기서는 제거합니다.
     }
 
     public void SetBgmVolume(float volume)
     {
-        audioMixer.SetFloat("BGMVolume", volume == 0 ? -80 : Mathf.Log10(volume) * 20);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", volume);
         PlayerPrefs.SetFloat("BGMVolume", volume);
     }
 
     public void SetSfxVolume(float volume)
     {
-        audioMixer.SetFloat("SFXVolume", volume == 0 ? -80 : Mathf.Log10(volume) * 20);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", volume);
         PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 
@@ -84,56 +81,20 @@ public class SettingManager : MonoBehaviour
         PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
     }
 
-    // ★★★ 이 아래 해상도 관련 함수들이 모두 수정되었습니다. ★★★
-
     private void InitializeResolutionDropdown()
     {
-        // 1. 시스템이 지원하는 모든 해상도를 가져옵니다.
-        var allResolutions = Screen.resolutions;
-
-        // 2. Parsec 등으로 인한 주사율 중복을 제거합니다.
-        //    (너비/높이가 같으면 주사율이 가장 높은 것 1개만 남깁니다)
-        var uniqueResolutions = allResolutions
-            .GroupBy(r => new { r.width, r.height })
-            .Select(group => group.OrderByDescending(r => r.refreshRateRatio.value).First());
-
-        // 3. 우리가 원하는 일반적인 해상도 목록만 필터링합니다.
-        List<Vector2Int> commonResolutions = new List<Vector2Int>()
-        {
-            new Vector2Int(1280, 720),
-            new Vector2Int(1366, 768),
-            new Vector2Int(1600, 900),
-            new Vector2Int(1920, 1080),
-            new Vector2Int(2560, 1440),
-            new Vector2Int(3840, 2160) // 사용자가 제공한 목록 기준
-        };
-
-        // 4. 중복 제거된 해상도 중에서 '일반 해상도'에 포함되는 것만 골라냅니다.
-        resolutions = uniqueResolutions
-            .Where(r => commonResolutions.Any(c => c.x == r.width && c.y == r.height))
-            .ToList(); // 최종 목록 생성
-
-        // 5. 드롭다운 옵션을 구성합니다.
+        resolutions = ResolutionListUtility.BuildPreferredResolutionList();
         resolutionDropdown.ClearOptions();
-        List<string> options = new List<string>();
-        int defaultResolutionIndex = 0; // 저장된 값이 없을 경우의 기본값
-
+        List<string> options = ResolutionListUtility.BuildLabels(resolutions);
+        int defaultResolutionIndex = 0;
         for (int i = 0; i < resolutions.Count; i++)
         {
             var r = resolutions[i];
-            options.Add($"{r.width} x {r.height}");
-
-            // 현재 화면 해상도와 일치하는 인덱스를 찾아 기본값으로 설정
-            if (r.width == Screen.currentResolution.width &&
-                r.height == Screen.currentResolution.height)
-            {
+            if (r.width == Screen.currentResolution.width && r.height == Screen.currentResolution.height)
                 defaultResolutionIndex = i;
-            }
         }
 
         resolutionDropdown.AddOptions(options);
-
-        // 6. 저장된 해상도 값을 불러옵니다.
         currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", defaultResolutionIndex);
         
         // 저장된 값이 유효하지 않을 경우(예: 모니터 변경) 기본값으로 리셋
@@ -145,11 +106,8 @@ public class SettingManager : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
-        // 7. 리스너를 추가하고 해상도를 적용합니다.
-        resolutionDropdown.onValueChanged.RemoveAllListeners(); // 중복 방지
+        resolutionDropdown.onValueChanged.RemoveAllListeners();
         resolutionDropdown.onValueChanged.AddListener(OnResolutionDropdownChanged);
-        
-        // 8. 저장된 해상도를 즉시 적용합니다.
         SetResolution(currentResolutionIndex);
     }
 

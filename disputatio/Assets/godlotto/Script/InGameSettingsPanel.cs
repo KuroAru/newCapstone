@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Fungus;
-using System.Linq;
 
 public class InGameSettingsPanel : MonoBehaviour
 {
@@ -61,7 +60,7 @@ public class InGameSettingsPanel : MonoBehaviour
     {
         LoadSettings();
         AssignListeners(); // 볼륨, 전체화면 리스너 등록
-        InitializeResolutionDropdown(); // ★★★ 여기가 수정되었습니다 ★★★
+        InitializeResolutionDropdown();
     }
 
     void Update()
@@ -119,8 +118,9 @@ public class InGameSettingsPanel : MonoBehaviour
         if (dialogInput != null)
             dialogInput.enabled = !isPanelOpen;
 
-        if (targetFlowchart != null)
-            targetFlowchart.SetBooleanVariable(fungusVariableName, isPanelOpen);
+        Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
+        if (fc != null)
+            fc.SetBooleanVariable(fungusVariableName, isPanelOpen);
     }
 
     public void OpenSettingPanel()
@@ -188,13 +188,13 @@ public class InGameSettingsPanel : MonoBehaviour
 
     public void SetBgmVolume(float volume)
     {
-        audioMixer.SetFloat("BGMVolume", volume == 0 ? -80 : Mathf.Log10(volume) * 20);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", volume);
         PlayerPrefs.SetFloat("BGMVolume", volume);
     }
 
     public void SetSfxVolume(float volume)
     {
-        audioMixer.SetFloat("SFXVolume", volume == 0 ? -80 : Mathf.Log10(volume) * 20);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", volume);
         PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 
@@ -204,63 +204,26 @@ public class InGameSettingsPanel : MonoBehaviour
         PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
     }
 
-    // ▼▼▼ [핵심 수정 부분] ▼▼▼
     private void InitializeResolutionDropdown()
     {
-        // 1. 해상도 목록 생성 (SettingManager와 동일한 로직)
-        var allResolutions = Screen.resolutions;
-        var uniqueResolutions = allResolutions
-            .GroupBy(r => new { r.width, r.height })
-            .Select(group => group.OrderByDescending(r => r.refreshRateRatio.value).First());
-
-        List<Vector2Int> commonResolutions = new List<Vector2Int>()
-        {
-            new Vector2Int(1280, 720),
-            new Vector2Int(1366, 768),
-            new Vector2Int(1600, 900),
-            new Vector2Int(1920, 1080),
-            new Vector2Int(2560, 1440),
-            new Vector2Int(3840, 2160)
-        };
-
-        resolutions = uniqueResolutions
-            .Where(r => commonResolutions.Any(c => c.x == r.width && c.y == r.height))
-            .ToList();
-
-        // 2. 드롭다운 옵션 추가
+        resolutions = ResolutionListUtility.BuildPreferredResolutionList();
         resolutionDropdown.ClearOptions();
-        List<string> options = new List<string>();
-        
-        int currentScreenIndex = 0; // 현재 화면 해상도와 일치하는 인덱스를 찾을 변수
-
+        List<string> options = ResolutionListUtility.BuildLabels(resolutions);
+        int currentScreenIndex = 0;
         for (int i = 0; i < resolutions.Count; i++)
         {
             var r = resolutions[i];
-            options.Add($"{r.width} x {r.height}");
-
-            // ★ 수정됨: 저장된 값이 아니라, '지금 현재 화면의 해상도'와 일치하는지 확인합니다.
-            // SettingManager에서 이미 해상도를 바꿨다면 Screen.width/height는 바뀐 값을 가지고 있습니다.
             if (r.width == Screen.width && r.height == Screen.height)
-            {
                 currentScreenIndex = i;
-            }
         }
 
         resolutionDropdown.AddOptions(options);
-
-        // 3. 드롭다운의 값을 '현재 화면 해상도'에 해당하는 인덱스로 설정
-        // 이렇게 하면 1600x900 상태로 들어왔을 때 드롭다운도 1600x900을 가리킵니다.
         currentResolutionIndex = currentScreenIndex;
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
-        // 4. 리스너 연결
         resolutionDropdown.onValueChanged.RemoveAllListeners();
         resolutionDropdown.onValueChanged.AddListener(OnResolutionDropdownChanged);
-
-        // ★ 삭제됨: SetResolution(currentResolutionIndex); 
-        // 시작하자마자 해상도를 강제로 다시 적용하지 않습니다. 
-        // 이미 메인 메뉴에서 설정된 해상도가 유지되어야 하기 때문입니다.
     }
 
     private void OnResolutionDropdownChanged(int index)
@@ -288,8 +251,9 @@ public class InGameSettingsPanel : MonoBehaviour
     private IEnumerator GoToMainMenu()
     {
         Time.timeScale = 1f;
-        if (targetFlowchart != null)
-            targetFlowchart.SetBooleanVariable(fungusVariableName, false);
+        Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
+        if (fc != null)
+            fc.SetBooleanVariable(fungusVariableName, false);
 
         CleanupDontDestroyObjects();
         Debug.Log("모든 DontDestroyOnLoad 오브젝트 삭제 완료");
