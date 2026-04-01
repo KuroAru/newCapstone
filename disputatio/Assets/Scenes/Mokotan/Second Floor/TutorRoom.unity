@@ -9818,8 +9818,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localServerUrl: http://15.165.237.11:8000/chat
   chatSayDialog: {fileID: 0}
-  globalFlowchart: {fileID: 0}
   userInputField: {fileID: 2019333630}
+  globalFlowchart: {fileID: 0}
 --- !u!1 &1227302856
 GameObject:
   m_ObjectHideFlags: 1

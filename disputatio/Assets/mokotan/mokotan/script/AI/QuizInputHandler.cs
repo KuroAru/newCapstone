@@ -13,6 +13,9 @@ public class QuizInputHandler : MonoBehaviour
     [SerializeField] private string fungusVariableName = "PlayerAnswer"; // Fungus String 변수 이름
     [SerializeField] private TutorChatbot tutorChatbot; // TutorChatbot 스크립트 인스턴스
 
+    /// <summary>onEndEdit와 onSubmit이 같은 프레임에 둘 다 호출될 때 중복 전송 방지.</summary>
+    private int _lastHandledSubmitFrame = -1;
+
     void Awake()
     {
         if (inputField == null)
@@ -27,7 +30,8 @@ public class QuizInputHandler : MonoBehaviour
 
         if (inputField != null)
         {
-            inputField.onEndEdit.AddListener(OnInputSubmit); // 입력 완료 시 이벤트 등록
+            inputField.onEndEdit.AddListener(OnInputSubmit);
+            inputField.onSubmit.AddListener(OnInputSubmit);
             inputField.interactable = true; // 상호작용 강제 활성화
             // inputPanel.SetActive(false); // [수정] 시작 시 자동 비활성화 제거 (테스트 및 버그 방지)
         }
@@ -49,8 +53,18 @@ public class QuizInputHandler : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (inputField == null) return;
+        inputField.onEndEdit.RemoveListener(OnInputSubmit);
+        inputField.onSubmit.RemoveListener(OnInputSubmit);
+    }
+
     private void OnInputSubmit(string inputText)
     {
+        if (Time.frameCount == _lastHandledSubmitFrame)
+            return;
+
         if (string.IsNullOrWhiteSpace(inputText))
         {
             // 빈 입력은 무시하거나, 메시지를 표시할 수 있습니다.
@@ -60,6 +74,8 @@ public class QuizInputHandler : MonoBehaviour
             inputField.ActivateInputField(); // 다시 활성화
             return;
         }
+
+        _lastHandledSubmitFrame = Time.frameCount;
 
         // Fungus String 변수에 플레이어의 답변 저장
         if (targetFlowchart != null)
