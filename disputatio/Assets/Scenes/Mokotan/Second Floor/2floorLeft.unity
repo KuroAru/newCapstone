@@ -1348,7 +1348,6 @@ GameObject:
   - component: {fileID: 687597812}
   - component: {fileID: 687597814}
   - component: {fileID: 687597813}
-  - component: {fileID: 687597815}
   - component: {fileID: 687597816}
   - component: {fileID: 687597820}
   - component: {fileID: 687597819}
@@ -1359,12 +1358,10 @@ GameObject:
   - component: {fileID: 687597830}
   - component: {fileID: 687597829}
   - component: {fileID: 687597828}
-  - component: {fileID: 687597827}
   - component: {fileID: 687597822}
   - component: {fileID: 687597825}
   - component: {fileID: 687597824}
   - component: {fileID: 687597823}
-  - component: {fileID: 687597826}
   - component: {fileID: 687597832}
   - component: {fileID: 687597835}
   - component: {fileID: 687597834}
@@ -1395,21 +1392,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 4.785164, y: -2.5584252}
+  scrollPos: {x: 209.27739, y: 49.726265}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
-  blockViewHeight: 280
-  zoom: 0.7899997
+  blockViewHeight: 277
+  zoom: 0.8199997
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 687597767}
-  selectedCommands:
-  - {fileID: 687597842}
+  selectedBlocks: []
+  selectedCommands: []
   variables:
   - {fileID: 687597774}
   - {fileID: 687597803}
@@ -3379,7 +3374,7 @@ MonoBehaviour:
   itemId: 140
   blockName: Showcase1_Clicked
   description: 
-  eventHandler: {fileID: 687597815}
+  eventHandler: {fileID: 0}
   commandList:
   - {fileID: 687597814}
   - {fileID: 687597813}
@@ -3780,22 +3775,6 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
---- !u!114 &687597815
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687597759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49012bdc794e429686c1eff7d9ced90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentBlock: {fileID: 687597812}
-  suppressBlockAutoSelect: 0
-  clickableObject: {fileID: 300760582}
-  waitFrames: 1
 --- !u!114 &687597816
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -4076,7 +4055,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 69.167755
+    x: 67.94824
     y: 280.05438
     width: 162.33
     height: 40
@@ -4085,7 +4064,7 @@ MonoBehaviour:
   itemId: 180
   blockName: Showcase3_Clicked
   description: 
-  eventHandler: {fileID: 687597826}
+  eventHandler: {fileID: 0}
   commandList:
   - {fileID: 687597825}
   - {fileID: 687597824}
@@ -4507,38 +4486,6 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
---- !u!114 &687597826
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687597759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49012bdc794e429686c1eff7d9ced90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentBlock: {fileID: 687597822}
-  suppressBlockAutoSelect: 0
-  clickableObject: {fileID: 1681727176}
-  waitFrames: 1
---- !u!114 &687597827
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687597759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49012bdc794e429686c1eff7d9ced90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentBlock: {fileID: 687597831}
-  suppressBlockAutoSelect: 0
-  clickableObject: {fileID: 1315200165}
-  waitFrames: 1
 --- !u!114 &687597828
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -4978,7 +4925,7 @@ MonoBehaviour:
   itemId: 179
   blockName: Showcase2_Clicked
   description: 
-  eventHandler: {fileID: 687597827}
+  eventHandler: {fileID: 0}
   commandList:
   - {fileID: 687597830}
   - {fileID: 687597829}
@@ -5647,7 +5594,7 @@ MonoBehaviour:
   resumeOnLoad: 1
 --- !u!114 &687597841
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -5675,7 +5622,7 @@ MonoBehaviour:
   callMode: 0
 --- !u!114 &687597842
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
