@@ -52,6 +52,22 @@ public class BookPanelController : MonoBehaviour
 
     [SerializeField] private Sprite[] pageRecipeIllustrationSprites;
 
+    [Header("CookBook_Panel 왼쪽 페이지 레이아웃 (부모=풀스크린, X≈0.25=왼쪽 장 가로 중앙)")]
+
+    [Tooltip("각 CookBookPage 자식 RecipeIllustration: 앵커 고정점(정규화). 피벗 0.5, SizeDelta로 그림 최대 크기")]
+
+    [SerializeField] private Vector2 cookBookRecipeIllustrationAnchor = new Vector2(0.25f, 0.59f);
+
+    [SerializeField] private Vector2 cookBookRecipeIllustrationSizeDelta = new Vector2(290f, 188f);
+
+    [Tooltip("CookBook_Panel 직속 레시피 TMP 영역(정규화). 그림 아래에 오도록 AnchorMax.y < 일러스트 하단")]
+
+    [SerializeField] private Vector2 cookBookRecipeTextAnchorMin = new Vector2(0.11f, 0.13f);
+
+    [SerializeField] private Vector2 cookBookRecipeTextAnchorMax = new Vector2(0.39f, 0.488f);
+
+    [SerializeField] private Vector4 cookBookRecipeTextMargin = new Vector4(10f, 4f, 10f, 8f);
+
 
 
     private int currentPageIndex = 0;
@@ -70,7 +86,6 @@ public class BookPanelController : MonoBehaviour
 
     private const float CookBookMemoFontSize = 28f;
 
-    // 왼쪽 페이지 중앙(≈x0.252) 아래로 레시피 블록 — 일러스트는 씬 RecipeIllustration이 같은 X에 고정 박스
     private const float CookBookRecipeFontSize = 26f;
 
 
@@ -80,15 +95,6 @@ public class BookPanelController : MonoBehaviour
     private static readonly Vector2 CookBookMemoAnchorMax = new Vector2(0.84f, 0.82f);
 
     private static readonly Vector4 CookBookMemoMargin = new Vector4(12f, 16f, 12f, 16f);
-
-
-
-    // 왼쪽 페이지 세로 중심과 맞춘 좁은 열(가운데 정렬 TMP)
-    private static readonly Vector2 CookBookRecipeAnchorMin = new Vector2(0.118f, 0.11f);
-
-    private static readonly Vector2 CookBookRecipeAnchorMax = new Vector2(0.386f, 0.465f);
-
-    private static readonly Vector4 CookBookRecipeMargin = new Vector4(12f, 4f, 12f, 8f);
 
 
 
@@ -175,6 +181,8 @@ public class BookPanelController : MonoBehaviour
         ApplyPageBackgroundSprites();
 
         ApplyRecipeIllustrationSprites();
+
+        ApplyCookBookRecipeIllustrationLayout();
 
 
 
@@ -350,6 +358,8 @@ public class BookPanelController : MonoBehaviour
 
         tmp.margin = CookBookMemoMargin;
 
+        tmp.extraPadding = false;
+
     }
 
 
@@ -366,9 +376,9 @@ public class BookPanelController : MonoBehaviour
 
         var rt = scrapbookRecipeTextOverlay.rectTransform;
 
-        rt.anchorMin = CookBookRecipeAnchorMin;
+        rt.anchorMin = cookBookRecipeTextAnchorMin;
 
-        rt.anchorMax = CookBookRecipeAnchorMax;
+        rt.anchorMax = cookBookRecipeTextAnchorMax;
 
         rt.pivot = new Vector2(0.5f, 1f);
 
@@ -398,9 +408,9 @@ public class BookPanelController : MonoBehaviour
 
         tmp.verticalAlignment = VerticalAlignmentOptions.Top;
 
-        tmp.margin = CookBookRecipeMargin;
+        tmp.margin = cookBookRecipeTextMargin;
 
-        tmp.extraPadding = true;
+        tmp.extraPadding = false;
 
     }
 
@@ -581,6 +591,58 @@ public class BookPanelController : MonoBehaviour
             img.sprite = sp;
 
             img.enabled = sp != null;
+
+        }
+
+    }
+
+
+
+    /// <summary>
+
+    /// 씬에 박아 둔 RecipeIllustration RectTransform을 덮어쓰기 — 왼쪽 장 가운데·스케일은 SizeDelta로 통일.
+
+    /// </summary>
+
+    private void ApplyCookBookRecipeIllustrationLayout()
+
+    {
+
+        if (gameObject.name != "CookBook_Panel" || pages == null)
+
+            return;
+
+
+
+        foreach (var page in pages)
+
+        {
+
+            if (page == null)
+
+                continue;
+
+            var tr = page.transform.Find(RecipeIllustrationChildName);
+
+            if (tr == null)
+
+                continue;
+
+            var rt = tr as RectTransform;
+
+            if (rt == null)
+
+                continue;
+
+            rt.anchorMin = cookBookRecipeIllustrationAnchor;
+
+            rt.anchorMax = cookBookRecipeIllustrationAnchor;
+
+            rt.pivot = new Vector2(0.5f, 0.5f);
+
+            rt.anchoredPosition = Vector2.zero;
+
+            rt.sizeDelta = cookBookRecipeIllustrationSizeDelta;
 
         }
 

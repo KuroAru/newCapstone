@@ -11090,7 +11090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &872639923
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11186,6 +11186,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  cookBookRecipeIllustrationAnchor: {x: 0.3, y: 0.68}
+  cookBookRecipeIllustrationSizeDelta: {x: 500, y: 400}
+  cookBookRecipeTextAnchorMin: {x: 0.2, y: 0.13}
+  cookBookRecipeTextAnchorMax: {x: 0.4, y: 0.488}
+  cookBookRecipeTextMargin: {x: 10, y: 4, z: 10, w: 8}
 --- !u!1 &888108242
 GameObject:
   m_ObjectHideFlags: 0
