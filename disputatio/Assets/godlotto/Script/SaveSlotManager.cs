@@ -17,6 +17,13 @@ public class SaveSlotManager : MonoBehaviour
     [Header("SaveMenu 참조")]
     public Fungus.SaveMenu saveMenu;
 
+    [Header("설정 패널에 세이브 UI 붙이기")]
+    [Tooltip("예: Opening_Office의 SavePannel 루트 RectTransform. 지정 시 ESC 설정을 열 때 이 UI를 설정 패널 안으로 옮깁니다.")]
+    public RectTransform saveUiReparentRoot;
+
+    [Tooltip("세이브 패널을 여는 플로팅 버튼 루트(예: Save.prefab RectTransform). saveUiReparentRoot와 별도인 경우 플레이 중 숨김·설정 패널 호스트로 같이 옮깁니다.")]
+    public RectTransform savePanelOpenerRoot;
+
     private string baseSaveKey = "FungusSaveData_Slot";
     private string currentSaveKey;
 

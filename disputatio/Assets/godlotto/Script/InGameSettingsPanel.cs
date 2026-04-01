@@ -30,8 +30,11 @@ public class InGameSettingsPanel : MonoBehaviour
     [SerializeField] SaveSlotManager saveSlotManager;
     [SerializeField] Button saveGameButton;
     [SerializeField] Button loadGameButton;
-    [Tooltip("켜면 Fungus SaveMenu의 기본 토글·패널 HUD를 숨깁니다 (ESC 설정에서만 세이브/로드).")]
+    [Tooltip("켜면 Save 프리팹의 코너 토글은 숨기고, ESC 설정이 열릴 때 세이브 UI를 설정 패널 쪽에 표시합니다.")]
     [SerializeField] bool hideFungusSaveMenuHud = true;
+
+    [Tooltip("비우면 settingPanel의 RectTransform 아래에 세이브 UI를 붙입니다. 전용 빈 오브젝트(레이아웃 앵커)를 두어도 됩니다.")]
+    [SerializeField] RectTransform saveMenuHostUnderSettings;
 
     [Header("Keyboard Navigation")]
     public Selectable[] navigableElements;
@@ -46,7 +49,17 @@ public class InGameSettingsPanel : MonoBehaviour
 
     // ✅ 플레이 시간 관련 변수
     private float playTime = 0f;       
-    private bool isCounting = true;    
+    private bool isCounting = true;
+
+    Transform saveUiLiftOriginalParent;
+    int saveUiLiftOriginalSiblingIndex;
+    RectTransform saveUiLiftTarget;
+    bool saveUiLiftHasCache;
+
+    Transform saveOpenerLiftOriginalParent;
+    int saveOpenerLiftOriginalSiblingIndex;
+    RectTransform saveOpenerLiftTarget;
+    bool saveOpenerLiftHasCache;
 
     void Awake()
     {
@@ -156,14 +169,172 @@ public class InGameSettingsPanel : MonoBehaviour
             saveSlotManager = FindObjectOfType<SaveSlotManager>(true);
     }
 
+    private SaveMenu ResolveSaveMenu()
+    {
+        ResolveSaveSlotManager();
+        if (saveSlotManager != null && saveSlotManager.saveMenu != null)
+            return saveSlotManager.saveMenu;
+        return FindObjectOfType<SaveMenu>(true);
+    }
+
+    private RectTransform ResolveSaveMenuHost()
+    {
+        if (saveMenuHostUnderSettings != null)
+            return saveMenuHostUnderSettings;
+        return settingPanel != null ? settingPanel.transform as RectTransform : null;
+    }
+
+    private static void StretchSaveUiToHost(RectTransform rt)
+    {
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        rt.localScale = Vector3.one;
+    }
+
+    private void LiftSaveUiIntoSettingsHost()
+    {
+        var host = ResolveSaveMenuHost();
+        if (host == null)
+            return;
+
+        ResolveSaveSlotManager();
+        var menu = ResolveSaveMenu();
+
+        if (saveSlotManager != null && saveSlotManager.saveUiReparentRoot != null)
+        {
+            var target = saveSlotManager.saveUiReparentRoot;
+            if (!saveUiLiftHasCache)
+            {
+                saveUiLiftOriginalParent = target.parent;
+                saveUiLiftOriginalSiblingIndex = target.GetSiblingIndex();
+                saveUiLiftTarget = target;
+                saveUiLiftHasCache = true;
+            }
+
+            target.SetParent(host, false);
+            StretchSaveUiToHost(target);
+            target.gameObject.SetActive(true);
+            LiftSavePanelOpenerIntoSettingsHost(host);
+            return;
+        }
+
+        if (menu != null)
+            menu.TryReparentSaveMenuGroupTo(host);
+
+        LiftSavePanelOpenerIntoSettingsHost(host);
+    }
+
+    /// <summary>
+    /// Save.prefab 등 세이브 패널 오픈 전용 플로팅 버튼을 설정 패널 호스트로 옮깁니다 (전체 스트레치 없음).
+    /// </summary>
+    private void LiftSavePanelOpenerIntoSettingsHost(RectTransform host)
+    {
+        if (host == null)
+            return;
+
+        ResolveSaveSlotManager();
+        if (saveSlotManager == null || saveSlotManager.savePanelOpenerRoot == null)
+            return;
+
+        var target = saveSlotManager.savePanelOpenerRoot;
+        if (!saveOpenerLiftHasCache)
+        {
+            saveOpenerLiftOriginalParent = target.parent;
+            saveOpenerLiftOriginalSiblingIndex = target.GetSiblingIndex();
+            saveOpenerLiftTarget = target;
+            saveOpenerLiftHasCache = true;
+        }
+
+        target.SetParent(host, false);
+        target.SetAsLastSibling();
+        target.gameObject.SetActive(true);
+    }
+
+    private void ReturnSaveUiFromSettingsHost()
+    {
+        ReturnSavePanelOpenerFromSettingsHost();
+
+        if (saveUiLiftHasCache && saveUiLiftTarget != null)
+        {
+            saveUiLiftTarget.SetParent(saveUiLiftOriginalParent, false);
+            if (saveUiLiftOriginalParent != null)
+            {
+                int idx = Mathf.Clamp(saveUiLiftOriginalSiblingIndex, 0, saveUiLiftOriginalParent.childCount - 1);
+                saveUiLiftTarget.SetSiblingIndex(idx);
+            }
+
+            saveUiLiftTarget.gameObject.SetActive(false);
+            saveUiLiftHasCache = false;
+            saveUiLiftTarget = null;
+            saveUiLiftOriginalParent = null;
+        }
+
+        var menu = ResolveSaveMenu();
+        menu?.RestoreSaveMenuGroupParentIfReparented();
+    }
+
+    private void ReturnSavePanelOpenerFromSettingsHost()
+    {
+        if (!saveOpenerLiftHasCache || saveOpenerLiftTarget == null)
+            return;
+
+        saveOpenerLiftTarget.SetParent(saveOpenerLiftOriginalParent, false);
+        if (saveOpenerLiftOriginalParent != null)
+        {
+            int idx = Mathf.Clamp(saveOpenerLiftOriginalSiblingIndex, 0, saveOpenerLiftOriginalParent.childCount - 1);
+            saveOpenerLiftTarget.SetSiblingIndex(idx);
+        }
+
+        saveOpenerLiftTarget.gameObject.SetActive(false);
+        saveOpenerLiftHasCache = false;
+        saveOpenerLiftTarget = null;
+        saveOpenerLiftOriginalParent = null;
+    }
+
     private void TryHideFungusSaveMenuHud()
     {
         if (!hideFungusSaveMenuHud)
             return;
 
-        var menu = FindObjectOfType<SaveMenu>(true);
+        ResolveSaveSlotManager();
+        if (saveSlotManager != null && saveSlotManager.saveUiReparentRoot != null)
+            saveSlotManager.saveUiReparentRoot.gameObject.SetActive(false);
+
+        if (saveSlotManager != null && saveSlotManager.savePanelOpenerRoot != null)
+            saveSlotManager.savePanelOpenerRoot.gameObject.SetActive(false);
+
+        var menu = ResolveSaveMenu();
         if (menu != null)
             menu.HideInGameHud();
+    }
+
+    private void SyncSaveMenuWithSettingsPanelOpen(bool open)
+    {
+        if (!hideFungusSaveMenuHud)
+            return;
+
+        var menu = ResolveSaveMenu();
+
+        if (open)
+        {
+            if (saveSlotManager != null)
+                saveSlotManager.EnsureSlotKeyApplied();
+
+            LiftSaveUiIntoSettingsHost();
+
+            if (menu != null)
+                menu.ShowSaveMenuPanelForSettings();
+        }
+        else
+        {
+            if (menu != null)
+                menu.HideSaveMenuPanelForSettings();
+
+            ReturnSaveUiFromSettingsHost();
+        }
     }
 
     /// <summary>
@@ -228,6 +399,8 @@ public class InGameSettingsPanel : MonoBehaviour
         Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
         if (fc != null)
             fc.SetBooleanVariable(fungusVariableName, isPanelOpen);
+
+        SyncSaveMenuWithSettingsPanelOpen(isPanelOpen);
 
         if (isPanelOpen)
             RefreshSaveLoadInteractable();

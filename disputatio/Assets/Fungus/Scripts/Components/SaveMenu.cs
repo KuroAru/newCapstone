@@ -211,9 +211,9 @@ namespace Fungus
         }
 
         /// <summary>
-        /// Hides the floating save-menu toggle and collapses the menu panel (e.g. when Save/Load is handled elsewhere).
+        /// Collapses the save menu panel, hides the corner toggle, and clears menu-active state (normal gameplay / settings closed).
         /// </summary>
-        public virtual void HideInGameHud()
+        public virtual void HideSaveMenuPanelForSettings()
         {
             if (fadeTween != null)
             {
@@ -232,6 +232,104 @@ namespace Fungus
                 saveMenuButton.gameObject.SetActive(false);
 
             saveMenuActive = false;
+        }
+
+        /// <summary>
+        /// Shows the Save prefab button panel (saveMenuGroup) while keeping the corner toggle hidden — for ESC settings integration.
+        /// </summary>
+        public virtual void ShowSaveMenuPanelForSettings()
+        {
+            if (fadeTween != null)
+            {
+                LeanTween.cancel(fadeTween.id, true);
+                fadeTween = null;
+            }
+
+            if (saveMenuButton != null)
+                saveMenuButton.gameObject.SetActive(false);
+
+            if (saveMenuGroup != null)
+            {
+                saveMenuGroup.alpha = 1f;
+                saveMenuGroup.blocksRaycasts = true;
+                saveMenuGroup.interactable = true;
+            }
+
+            saveMenuActive = true;
+        }
+
+        /// <summary>
+        /// Same as <see cref="HideSaveMenuPanelForSettings"/> (floating toggle off, panel collapsed).
+        /// </summary>
+        public virtual void HideInGameHud()
+        {
+            HideSaveMenuPanelForSettings();
+        }
+
+        /// <summary>
+        /// 설정 패널 등에 붙일 때 사용 — <c>saveMenuGroup</c>의 RectTransform.
+        /// </summary>
+        public virtual RectTransform SaveMenuGroupRectTransform =>
+            saveMenuGroup != null ? saveMenuGroup.transform as RectTransform : null;
+
+        protected Transform saveMenuGroupCachedOriginalParent;
+        protected int saveMenuGroupCachedSiblingIndex;
+        protected bool saveMenuGroupReparentCached;
+
+        /// <summary>
+        /// <c>saveMenuGroup</c>을 다른 UI 아래로 옮깁니다 (처음 한 번 원래 부모를 기억).
+        /// </summary>
+        public virtual bool TryReparentSaveMenuGroupTo(RectTransform newParent)
+        {
+            if (saveMenuGroup == null || newParent == null)
+                return false;
+
+            var rt = saveMenuGroup.transform as RectTransform;
+            if (rt == null)
+                return false;
+
+            if (!saveMenuGroupReparentCached)
+            {
+                saveMenuGroupCachedOriginalParent = rt.parent;
+                saveMenuGroupCachedSiblingIndex = rt.GetSiblingIndex();
+                saveMenuGroupReparentCached = true;
+            }
+
+            rt.SetParent(newParent, false);
+            StretchRectToParentLayout(rt);
+            return true;
+        }
+
+        /// <summary>
+        /// <see cref="TryReparentSaveMenuGroupTo"/> 로 옮긴 경우 원래 부모로 되돌립니다.
+        /// </summary>
+        public virtual void RestoreSaveMenuGroupParentIfReparented()
+        {
+            if (!saveMenuGroupReparentCached || saveMenuGroup == null)
+                return;
+
+            var rt = saveMenuGroup.transform as RectTransform;
+            if (rt == null)
+                return;
+
+            rt.SetParent(saveMenuGroupCachedOriginalParent, false);
+            if (saveMenuGroupCachedOriginalParent != null)
+            {
+                int idx = Mathf.Clamp(saveMenuGroupCachedSiblingIndex, 0, saveMenuGroupCachedOriginalParent.childCount - 1);
+                rt.SetSiblingIndex(idx);
+            }
+
+            saveMenuGroupReparentCached = false;
+        }
+
+        static void StretchRectToParentLayout(RectTransform rt)
+        {
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+            rt.localScale = Vector3.one;
         }
 
         /// <summary>
