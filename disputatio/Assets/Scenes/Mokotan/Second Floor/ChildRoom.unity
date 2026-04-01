@@ -368,6 +368,7 @@ GameObject:
   - component: {fileID: 29881713}
   - component: {fileID: 29881712}
   - component: {fileID: 29881711}
+  - component: {fileID: 29881715}
   m_Layer: 0
   m_Name: 6th seal
   m_TagString: Untagged
@@ -518,6 +519,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &29881715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29881710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fedf45bd417c16c41993d23b1893ef68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kind: 5
+  lockAfterSnap: 1
+  targetFlowchart: {fileID: 687597760}
+  fungusVarName: seal6
+  isSnapped: 0
+  rb: {fileID: 0}
+  originalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &57187457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,7 +1908,8 @@ GameObject:
   - component: {fileID: 316330120}
   - component: {fileID: 316330119}
   - component: {fileID: 316330118}
-  m_Layer: 8
+  - component: {fileID: 316330122}
+  m_Layer: 7
   m_Name: 7th seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1925,6 +1946,21 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
+--- !u!114 &316330122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316330117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptKind: 6
+  lockWhenOccupied: 1
+  occupied: 0
 --- !u!212 &316330119
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2727,6 +2763,7 @@ GameObject:
   - component: {fileID: 563577042}
   - component: {fileID: 563577041}
   - component: {fileID: 563577040}
+  - component: {fileID: 563577044}
   m_Layer: 0
   m_Name: 7th seal
   m_TagString: Untagged
@@ -2877,6 +2914,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &563577044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563577039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fedf45bd417c16c41993d23b1893ef68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kind: 6
+  lockAfterSnap: 1
+  targetFlowchart: {fileID: 687597760}
+  fungusVarName: seal7
+  isSnapped: 0
+  rb: {fileID: 0}
+  originalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &578390729
 GameObject:
   m_ObjectHideFlags: 0
@@ -2889,7 +2945,7 @@ GameObject:
   - component: {fileID: 578390732}
   - component: {fileID: 578390731}
   - component: {fileID: 578390730}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: 2nd seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12507,7 +12563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 084945c024d1866489086bd697752125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapSearchRadius: 0.2
+  snapSearchRadius: 120
 --- !u!4 &818358284
 Transform:
   m_ObjectHideFlags: 0
@@ -12854,7 +12910,8 @@ GameObject:
   - component: {fileID: 1189791326}
   - component: {fileID: 1189791325}
   - component: {fileID: 1189791324}
-  m_Layer: 8
+  - component: {fileID: 1189791328}
+  m_Layer: 7
   m_Name: 6th seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12891,6 +12948,21 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
+--- !u!114 &1189791328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189791323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptKind: 5
+  lockWhenOccupied: 1
+  occupied: 0
 --- !u!212 &1189791325
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13121,7 +13193,7 @@ GameObject:
   - component: {fileID: 1265589908}
   - component: {fileID: 1265589907}
   - component: {fileID: 1265589906}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: 4th seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13271,7 +13343,8 @@ GameObject:
   - component: {fileID: 1280579633}
   - component: {fileID: 1280579632}
   - component: {fileID: 1280579635}
-  m_Layer: 8
+  - component: {fileID: 1280579636}
+  m_Layer: 7
   m_Name: 5th seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13424,6 +13497,21 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
+--- !u!114 &1280579636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280579630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptKind: 4
+  lockWhenOccupied: 1
+  occupied: 0
 --- !u!1 &1291419085
 GameObject:
   m_ObjectHideFlags: 0
@@ -14275,7 +14363,7 @@ GameObject:
   - component: {fileID: 1662381625}
   - component: {fileID: 1662381624}
   - component: {fileID: 1662381623}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: 3rd seal Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15525,6 +15613,7 @@ GameObject:
   - component: {fileID: 2127894688}
   - component: {fileID: 2127894687}
   - component: {fileID: 2127894686}
+  - component: {fileID: 2127894690}
   m_Layer: 0
   m_Name: 5th seal
   m_TagString: Untagged
@@ -15675,6 +15764,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2127894690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127894684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fedf45bd417c16c41993d23b1893ef68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kind: 4
+  lockAfterSnap: 1
+  targetFlowchart: {fileID: 687597760}
+  fungusVarName: seal5
+  isSnapped: 0
+  rb: {fileID: 0}
+  originalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2140710413
 GameObject:
   m_ObjectHideFlags: 0

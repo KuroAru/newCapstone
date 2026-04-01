@@ -10,7 +10,7 @@ using UnityEngine;
 public class DragManager2D : MonoBehaviour
 {
     [Header("스냅 탐색 반경(드롭 시 근처 타겟 보정)")]
-    public float snapSearchRadius = 0.2f;
+    public float snapSearchRadius = 100f;
 
     [Tooltip("2D 드래그용 월드 평면의 Z (씬에 맞게 조정). ChildRoom 등 픽셀 좌표·z=0 스프라이트 기준.")]
     [SerializeField] private float dragPlaneWorldZ = 0f;
@@ -30,6 +30,11 @@ public class DragManager2D : MonoBehaviour
         // SnapTarget 레이어를 완전히 제외한 마스크 구성
         int snapTargetMask = LayerMask.GetMask("SnapTarget"); // ← 레이어 이름만 "SnapTarget"으로 지정하세요.
         layerMaskWithoutSnapTargets = ~snapTargetMask;
+    }
+
+    void Start()
+    {
+        DraggableSnap2D.RefreshSpriteDepthByWorldY();
     }
 
     /// <summary>
@@ -118,41 +123,51 @@ public class DragManager2D : MonoBehaviour
         targetPos.z = current.transform.position.z;
 
         current.rb.MovePosition(targetPos);
+        DraggableSnap2D.RefreshSpriteDepthByWorldY();
     }
 
     void EndDrag()
-{
-    if (current == null) return;
-
-    // 드롭 시점에서 근처의 스냅 타겟 탐색
-    var hits = Physics2D.OverlapCircleAll(current.transform.position, snapSearchRadius);
-    SnapTarget bestTarget = null;
-
-    foreach (var h in hits)
     {
-        var t = h.GetComponent<SnapTarget>();
-        if (t != null && t.CanAccept(current))
+        if (current == null) return;
+
+        // 드롭 시점에서 SnapTarget 레이어 콜라이더만 검사 (다른 레이어 오브젝트와의 오탐 방지)
+        int snapMask = LayerMask.GetMask("SnapTarget");
+        var hits = snapMask != 0
+            ? Physics2D.OverlapCircleAll(current.transform.position, snapSearchRadius, snapMask)
+            : Physics2D.OverlapCircleAll(current.transform.position, snapSearchRadius);
+        SnapTarget bestTarget = null;
+        float bestDistSq = float.MaxValue;
+        Vector2 p = current.transform.position;
+
+        foreach (var h in hits)
         {
-            bestTarget = t;
-            break;
+            var t = h.GetComponent<SnapTarget>();
+            if (t == null || !t.CanAccept(current)) continue;
+
+            float d = ((Vector2)t.transform.position - p).sqrMagnitude;
+            if (d < bestDistSq)
+            {
+                bestDistSq = d;
+                bestTarget = t;
+            }
         }
-    }
 
-    if (bestTarget != null)
-    {
-        // 🔴 이전처럼 여기서 위치/변수/잠금 직접 처리하지 말고…
-        // ✅ 한 줄로 위임: DraggableSnap2D가 모든 후속 처리(Flowchart true 포함) 수행
-        current.OnSnappedTo(bestTarget);
-    }
-    else
-    {
-        // 실패 시 원위치 복귀
-        current.rb.linearVelocity = Vector2.zero;
-        current.rb.MovePosition(originalPos);
-    }
+        if (bestTarget != null)
+        {
+            // 🔴 이전처럼 여기서 위치/변수/잠금 직접 처리하지 말고…
+            // ✅ 한 줄로 위임: DraggableSnap2D가 모든 후속 처리(Flowchart true 포함) 수행
+            current.OnSnappedTo(bestTarget);
+        }
+        else
+        {
+            // 실패 시 원위치 복귀
+            current.rb.linearVelocity = Vector2.zero;
+            current.rb.MovePosition(originalPos);
+        }
 
-    current = null;
-}
+        DraggableSnap2D.RefreshSpriteDepthByWorldY();
+        current = null;
+    }
 
     void OnDrawGizmosSelected()
     {
