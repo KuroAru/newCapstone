@@ -1287,6 +1287,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2985594566526904671, guid: c02bb81fb98599f4bad4bbdd01f2744b, type: 3}
   m_PrefabInstance: {fileID: 436546938}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &436546941 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4419980225969595842, guid: c02bb81fb98599f4bad4bbdd01f2744b, type: 3}
+  m_PrefabInstance: {fileID: 436546938}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &474750412
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,10 +2430,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -22.980515, y: 34.79087}
+  scrollPos: {x: -26.223782, y: 34.79087}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
-  blockViewHeight: 280
+  blockViewHeight: 314
   zoom: 0.8222221
   scrollViewRect:
     serializedVersion: 2
@@ -2430,10 +2441,8 @@ MonoBehaviour:
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 687597939}
-  selectedCommands:
-  - {fileID: 687597937}
+  selectedBlocks: []
+  selectedCommands: []
   variables:
   - {fileID: 687597774}
   - {fileID: 687597836}
@@ -13461,6 +13470,7 @@ MonoBehaviour:
   localServerUrl: http://15.165.237.11:8000/chat
   chatSayDialog: {fileID: 1657043896}
   wifeFlowchart: {fileID: 687597760}
+  userInputField: {fileID: 436546941}
 --- !u!1 &770858635
 GameObject:
   m_ObjectHideFlags: 0
