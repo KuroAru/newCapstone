@@ -898,18 +898,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 333.3041, y: 273.55582}
+  scrollPos: {x: 458.72873, y: 83.63356}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
-  blockViewHeight: 280
-  zoom: 0.8200002
+  blockViewHeight: 213
+  zoom: 0.7900002
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
+  selectedBlocks:
+  - {fileID: 687597816}
   selectedCommands: []
   variables:
   - {fileID: 687597774}
@@ -4201,11 +4202,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e6d7c8b9a0f1e2d3c4b5a6978877665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
+  cam: {fileID: 57187459}
   referenceResolution: {x: 1920, y: 1080}
   insetFromTopLeft: {x: 32, y: 32}
   zOffset: 0
-
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
