@@ -12,6 +12,9 @@ public class DragManager2D : MonoBehaviour
     [Header("스냅 탐색 반경(드롭 시 근처 타겟 보정)")]
     public float snapSearchRadius = 0.2f;
 
+    [Tooltip("2D 드래그용 월드 평면의 Z (씬에 맞게 조정). ChildRoom 등 픽셀 좌표·z=0 스프라이트 기준.")]
+    [SerializeField] private float dragPlaneWorldZ = 0f;
+
     private Camera cam;
     private DraggableSnap2D current;
     private Vector3 grabOffset;
@@ -29,6 +32,27 @@ public class DragManager2D : MonoBehaviour
         layerMaskWithoutSnapTargets = ~snapTargetMask;
     }
 
+    /// <summary>
+    /// Input.mousePosition.z == 0인 채로 ScreenToWorldPoint를 쓰면 정사영 카메라에서 깊이가 어긋나
+    /// OverlapPoint가 빈 배열을 반환할 수 있음. 카메라 레이와 월드 Z 평면 교차로 보정한다.
+    /// </summary>
+    private Vector3 MouseWorldOnDragPlane()
+    {
+        if (cam == null)
+            return Vector3.zero;
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Vector3 planePoint = new Vector3(0f, 0f, dragPlaneWorldZ);
+        Plane plane = new Plane(-cam.transform.forward, planePoint);
+
+        if (plane.Raycast(ray, out float enter))
+            return ray.GetPoint(enter);
+
+        Vector3 fallback = Input.mousePosition;
+        fallback.z = Mathf.Abs(cam.transform.position.z - dragPlaneWorldZ);
+        return cam.ScreenToWorldPoint(fallback);
+    }
+
     void Update()
     {
         if (cam == null) cam = Camera.main;
@@ -41,9 +65,7 @@ public class DragManager2D : MonoBehaviour
     {
         if (current != null) return; // 이미 드래그 중
 
-        // 마우스 월드 좌표
-        Vector3 mw = cam.ScreenToWorldPoint(Input.mousePosition);
-        mw.z = 0f;
+        Vector3 mw = MouseWorldOnDragPlane();
 
         // SnapTarget 레이어를 '완전히 제외'하고 포인트 히트
         Collider2D[] hits = Physics2D.OverlapPointAll(mw, layerMaskWithoutSnapTargets);
@@ -82,18 +104,18 @@ public class DragManager2D : MonoBehaviour
 
         originalPos = current.transform.position;
 
-        Vector3 mouse = cam.ScreenToWorldPoint(Input.mousePosition);
-        mouse.z = current.transform.position.z;
-        grabOffset = current.transform.position - mouse;
+        Vector3 mouseWorld = MouseWorldOnDragPlane();
+        grabOffset = current.transform.position - mouseWorld;
+        grabOffset.z = 0f;
     }
 
     void OnDrag()
     {
         if (current == null) return;
 
-        Vector3 mouse = cam.ScreenToWorldPoint(Input.mousePosition);
-        mouse.z = current.transform.position.z;
-        Vector3 targetPos = mouse + grabOffset;
+        Vector3 mouseWorld = MouseWorldOnDragPlane();
+        Vector3 targetPos = mouseWorld + grabOffset;
+        targetPos.z = current.transform.position.z;
 
         current.rb.MovePosition(targetPos);
     }

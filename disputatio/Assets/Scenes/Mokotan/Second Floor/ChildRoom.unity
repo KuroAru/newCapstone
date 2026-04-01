@@ -368,7 +368,7 @@ GameObject:
   - component: {fileID: 29881713}
   - component: {fileID: 29881712}
   - component: {fileID: 29881711}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 6th seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1328,7 +1328,7 @@ GameObject:
   - component: {fileID: 266823517}
   - component: {fileID: 266823516}
   - component: {fileID: 266823515}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 3rd seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1425,7 +1425,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 398.66666, y: 240.33333}
   m_EdgeRadius: 0
 --- !u!212 &266823518
 SpriteRenderer:
@@ -2727,7 +2727,7 @@ GameObject:
   - component: {fileID: 563577042}
   - component: {fileID: 563577041}
   - component: {fileID: 563577040}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 7th seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12673,7 +12673,7 @@ GameObject:
   - component: {fileID: 1180844265}
   - component: {fileID: 1180844264}
   - component: {fileID: 1180844263}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 2nd seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12770,7 +12770,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 303.66666, y: 228.66667}
   m_EdgeRadius: 0
 --- !u!212 &1180844266
 SpriteRenderer:
@@ -13437,7 +13437,7 @@ GameObject:
   - component: {fileID: 1291419087}
   - component: {fileID: 1291419090}
   - component: {fileID: 1291419091}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 1st seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13488,7 +13488,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 403, y: 240.33333}
   m_EdgeRadius: 0
 --- !u!212 &1291419088
 SpriteRenderer:
@@ -15525,7 +15525,7 @@ GameObject:
   - component: {fileID: 2127894688}
   - component: {fileID: 2127894687}
   - component: {fileID: 2127894686}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 5th seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15688,7 +15688,7 @@ GameObject:
   - component: {fileID: 2140710416}
   - component: {fileID: 2140710415}
   - component: {fileID: 2140710414}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: 4th seal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15785,7 +15785,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 388.66666, y: 328.66666}
   m_EdgeRadius: 0
 --- !u!212 &2140710417
 SpriteRenderer:
