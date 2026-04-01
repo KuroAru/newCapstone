@@ -11,10 +11,9 @@ public class DropZone : MonoBehaviour, IDropHandler
     public GameObject rotateRightButtonObject;
     public GameObject rotateLeftButtonObject;
 
-    // ★★★ 이 아래 두 줄이 추가되었습니다! ★★★
     [Header("사용 횟수 설정")]
-    public int maxUses = 2; // 최대 사용 횟수 (인스펙터에서 2로 설정)
-    private int currentUses = 0; // 현재 사용 횟수를 저장할 변수
+    public int maxUses = 2;
+    private int currentUses = 0;
 
     void Start()
     {
@@ -34,19 +33,23 @@ public class DropZone : MonoBehaviour, IDropHandler
                 currentUses++;
                 Debug.Log(requiredItem.itemName + " 아이템을 사용했습니다. (" + currentUses + "/" + maxUses + ")");
 
-                // 기존의 퍼즐 활성화 로직은 그대로 실행합니다.
-                filterCardObject.SetActive(true);
-                filterCardObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                filterCardObject.transform.localScale = Vector3.one;
+                if (filterCardObject != null)
+                {
+                    filterCardObject.SetActive(true);
+                    var rt = filterCardObject.GetComponent<RectTransform>();
+                    if (rt != null)
+                        rt.anchoredPosition = Vector2.zero;
+                    filterCardObject.transform.localScale = Vector3.one;
+                }
 
                 if (rotateRightButtonObject != null) rotateRightButtonObject.SetActive(true);
                 if (rotateLeftButtonObject != null) rotateLeftButtonObject.SetActive(true);
 
-                // ★★★ 마지막 사용일 때만 아이템을 제거하도록 조건을 추가합니다 ★★★
                 if (currentUses >= maxUses)
                 {
                     Debug.Log("마지막 사용! 인벤토리에서 아이템을 제거합니다.");
-                    InventoryManager.instance.RemoveItem(requiredItem);
+                    if (InventoryManager.instance != null)
+                        InventoryManager.instance.RemoveItem(requiredItem);
                 }
             }
             else

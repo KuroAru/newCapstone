@@ -25,7 +25,7 @@ public class SceneTracker : MonoBehaviour
     // 현재 씬을 떠나기 직전에 이름 저장
     private void OnSceneUnloaded(Scene current)
     {
-        Flowchart global = GameObject.Find(globalFlowchartName)?.GetComponent<Flowchart>();
+        Flowchart global = FlowchartLocator.FindByGameObjectName(globalFlowchartName);
         if (global != null)
         {
             global.SetStringVariable(prevVarKey, current.name);

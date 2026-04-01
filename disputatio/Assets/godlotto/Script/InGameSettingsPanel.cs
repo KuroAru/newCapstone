@@ -91,8 +91,8 @@ public class InGameSettingsPanel : MonoBehaviour
 
     private void LoadSettings()
     {
-        bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 0.75f);
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
+        bgmSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.BgmVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
+        sfxSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.SfxVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
         
         // ★ 중요: 전체화면 여부도 PlayerPrefs를 맹신하지 않고 현재 상태를 반영하는 것이 안전합니다.
         // 하지만 여기선 PlayerPrefs와 현재 상태를 동기화합니다.
@@ -188,20 +188,20 @@ public class InGameSettingsPanel : MonoBehaviour
 
     public void SetBgmVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", volume);
-        PlayerPrefs.SetFloat("BGMVolume", volume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.BgmVolume, volume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.BgmVolume, volume);
     }
 
     public void SetSfxVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", volume);
-        PlayerPrefs.SetFloat("SFXVolume", volume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.SfxVolume, volume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.SfxVolume, volume);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
-        PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.Fullscreen, isFullscreen ? 1 : 0);
     }
 
     private void InitializeResolutionDropdown()
@@ -239,7 +239,7 @@ public class InGameSettingsPanel : MonoBehaviour
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         
         // 인게임에서 바꿀 때만 PlayerPrefs에 저장
-        PlayerPrefs.SetInt("ResolutionIndex", currentResolutionIndex);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.ResolutionIndex, currentResolutionIndex);
     }
 
     public void BackToMainMenu()

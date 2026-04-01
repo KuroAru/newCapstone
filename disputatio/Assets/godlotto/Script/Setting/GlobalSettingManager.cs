@@ -41,12 +41,12 @@ public class GlobalSettingManager : MonoBehaviour
         GenerateResolutionList();
 
         // 2. 저장된 값 불러오기 (없으면 기본값)
-        bgmVolume = PlayerPrefs.GetFloat("BGMVolume", 0.75f);
-        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
-        isFullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
+        bgmVolume = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.BgmVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
+        sfxVolume = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.SfxVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
+        isFullscreen = PlayerPrefs.GetInt(SettingPlayerPrefsKeys.Fullscreen, SettingPlayerPrefsKeys.FullscreenDefaultEnabled) == 1;
         
         // 해상도 인덱스는 저장된 값이 유효한지 체크
-        int savedResIndex = PlayerPrefs.GetInt("ResolutionIndex", -1);
+        int savedResIndex = PlayerPrefs.GetInt(SettingPlayerPrefsKeys.ResolutionIndex, -1);
         
         // 저장된게 없으면 현재 화면 해상도를 찾음
         if (savedResIndex == -1)
@@ -89,14 +89,14 @@ public class GlobalSettingManager : MonoBehaviour
     {
         bgmVolume = value;
         ApplyAudioSettings();
-        PlayerPrefs.SetFloat("BGMVolume", bgmVolume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.BgmVolume, bgmVolume);
     }
 
     public void SetSFX(float value)
     {
         sfxVolume = value;
         ApplyAudioSettings();
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.SfxVolume, sfxVolume);
     }
 
     public void SetResolutionIndex(int index)
@@ -104,20 +104,20 @@ public class GlobalSettingManager : MonoBehaviour
         if (index < 0 || index >= availableResolutions.Count) return;
         currentResolutionIndex = index;
         ApplyGraphicSettings();
-        PlayerPrefs.SetInt("ResolutionIndex", currentResolutionIndex);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.ResolutionIndex, currentResolutionIndex);
     }
 
     public void SetFullscreen(bool isFull)
     {
         isFullscreen = isFull;
         ApplyGraphicSettings();
-        PlayerPrefs.SetInt("Fullscreen", isFull ? 1 : 0);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.Fullscreen, isFull ? 1 : 0);
     }
 
     private void ApplyAudioSettings()
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", bgmVolume);
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", sfxVolume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.BgmVolume, bgmVolume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.SfxVolume, sfxVolume);
     }
 
     private void ApplyGraphicSettings()

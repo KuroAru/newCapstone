@@ -16,7 +16,7 @@ public class BackNavigator : MonoBehaviour
 
     public void GoBack()
     {
-        Flowchart global = GameObject.Find(globalFlowchartName)?.GetComponent<Flowchart>();
+        Flowchart global = FlowchartLocator.FindByGameObjectName(globalFlowchartName);
         if (global == null)
         {
             Debug.LogWarning($"전역 Flowchart '{globalFlowchartName}'를 찾지 못했습니다.");

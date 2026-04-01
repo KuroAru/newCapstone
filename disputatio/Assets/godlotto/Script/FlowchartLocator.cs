@@ -15,18 +15,7 @@ public static class FlowchartLocator
     /// </summary>
     public static Flowchart Find()
     {
-        GameObject go = GameObject.Find(GlobalFlowchartName);
-        if (go == null)
-        {
-            Debug.LogWarning($"[FlowchartLocator] '{GlobalFlowchartName}' GameObject를 찾을 수 없습니다.");
-            return null;
-        }
-
-        Flowchart fc = go.GetComponent<Flowchart>();
-        if (fc == null)
-            Debug.LogWarning($"[FlowchartLocator] '{GlobalFlowchartName}'에 Flowchart 컴포넌트가 없습니다.");
-
-        return fc;
+        return FindByGameObjectName(GlobalFlowchartName);
     }
 
     /// <summary>
@@ -35,5 +24,26 @@ public static class FlowchartLocator
     public static Flowchart Resolve(Flowchart preferred)
     {
         return preferred != null ? preferred : Find();
+    }
+
+    /// <summary>
+    /// <paramref name="gameObjectName"/>이 비어 있으면 <see cref="Find"/>와 같고,
+    /// 있으면 해당 이름의 오브젝트에서 Flowchart를 찾습니다.
+    /// </summary>
+    public static Flowchart FindByGameObjectName(string gameObjectName)
+    {
+        string name = string.IsNullOrEmpty(gameObjectName) ? GlobalFlowchartName : gameObjectName;
+        GameObject go = GameObject.Find(name);
+        if (go == null)
+        {
+            Debug.LogWarning($"[FlowchartLocator] '{name}' GameObject를 찾을 수 없습니다.");
+            return null;
+        }
+
+        Flowchart fc = go.GetComponent<Flowchart>();
+        if (fc == null)
+            Debug.LogWarning($"[FlowchartLocator] '{name}'에 Flowchart 컴포넌트가 없습니다.");
+
+        return fc;
     }
 }

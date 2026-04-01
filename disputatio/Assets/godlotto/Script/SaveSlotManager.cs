@@ -22,13 +22,16 @@ public class SaveSlotManager : MonoBehaviour
 
     private void Awake()
     {
+        ResolveRefs();
+        ApplyCurrentSlotKey();
+    }
+
+    private void ResolveRefs()
+    {
         if (saveMenu == null)
             saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
-
         if (flowchart == null)
             flowchart = FindObjectOfType<Flowchart>(true);
-
-        ApplyCurrentSlotKey();
     }
 
     /// <summary>
@@ -48,20 +51,14 @@ public class SaveSlotManager : MonoBehaviour
         currentSaveKey = $"{baseSaveKey}{slot}";
 
         if (saveMenu != null)
-        {
-            var field = typeof(Fungus.SaveMenu).GetField("saveDataKey",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (field != null)
-                field.SetValue(saveMenu, currentSaveKey);
-        }
+            saveMenu.SetSaveKey(currentSaveKey);
 
         Debug.Log($"[SaveSlotManager] saveDataKey → {currentSaveKey}");
     }
 
     public void Save()
     {
-        if (saveMenu == null)
-            saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
+        ResolveRefs();
 
         if (saveMenu == null)
         {
@@ -78,10 +75,7 @@ public class SaveSlotManager : MonoBehaviour
     {
         Debug.Log("[SaveSlotManager] Load() 실행 시도됨");
 
-        if (saveMenu == null)
-            saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
-        if (flowchart == null)
-            flowchart = FindObjectOfType<Flowchart>(true);
+        ResolveRefs();
 
         if (saveMenu == null)
         {
@@ -140,8 +134,7 @@ public class SaveSlotManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoadedForRestore;
         Debug.Log($"[SaveSlotManager] 씬 '{scene.name}' 로드 완료 → 세이브 데이터 복원 시작");
 
-        saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
-        flowchart = FindObjectOfType<Flowchart>(true);
+        ResolveRefs();
         InternalLoadNow();
     }
 

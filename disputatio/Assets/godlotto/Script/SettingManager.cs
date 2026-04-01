@@ -48,9 +48,9 @@ public class SettingManager : MonoBehaviour
 
     private void LoadSettings()
     {
-        bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 0.75f);
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
-        fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
+        bgmSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.BgmVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
+        sfxSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.SfxVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
+        fullscreenToggle.isOn = PlayerPrefs.GetInt(SettingPlayerPrefsKeys.Fullscreen, SettingPlayerPrefsKeys.FullscreenDefaultEnabled) == 1;
 
         SetBgmVolume(bgmSlider.value);
         SetSfxVolume(sfxSlider.value);
@@ -65,20 +65,20 @@ public class SettingManager : MonoBehaviour
 
     public void SetBgmVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "BGMVolume", volume);
-        PlayerPrefs.SetFloat("BGMVolume", volume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.BgmVolume, volume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.BgmVolume, volume);
     }
 
     public void SetSfxVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, "SFXVolume", volume);
-        PlayerPrefs.SetFloat("SFXVolume", volume);
+        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.SfxVolume, volume);
+        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.SfxVolume, volume);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
-        PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.Fullscreen, isFullscreen ? 1 : 0);
     }
 
     private void InitializeResolutionDropdown()
@@ -95,7 +95,7 @@ public class SettingManager : MonoBehaviour
         }
 
         resolutionDropdown.AddOptions(options);
-        currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", defaultResolutionIndex);
+        currentResolutionIndex = PlayerPrefs.GetInt(SettingPlayerPrefsKeys.ResolutionIndex, defaultResolutionIndex);
         
         // 저장된 값이 유효하지 않을 경우(예: 모니터 변경) 기본값으로 리셋
         if (currentResolutionIndex >= resolutions.Count || currentResolutionIndex < 0)
@@ -129,7 +129,7 @@ public class SettingManager : MonoBehaviour
         currentResolutionIndex = index;
         Resolution resolution = resolutions[index];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        PlayerPrefs.SetInt("ResolutionIndex", currentResolutionIndex);
+        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.ResolutionIndex, currentResolutionIndex);
     }
 
     public void BackToMainMenu()
