@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using Fungus;
+using TMPro;
 
 public class BypassCertificate : CertificateHandler {
     protected override bool ValidateCertificate(byte[] certificateData) => true;
@@ -45,6 +46,9 @@ public abstract class BaseChatbot : MonoBehaviour
     [Header("Base UI Settings")]
     [SerializeField] protected SayDialog chatSayDialog;
 
+    [Header("Chat Input")]
+    [SerializeField] private TMP_InputField userInputField;
+
     protected List<OpenAIMessage> chatHistory = new List<OpenAIMessage>();
 
     [Serializable]
@@ -54,8 +58,52 @@ public abstract class BaseChatbot : MonoBehaviour
         public bool use_tools = true;
     }
 
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         InitializeChatHistory();
+        if (userInputField != null)
+            userInputField.onSubmit.AddListener(OnInputFieldSubmit);
+    }
+
+    /// <summary>
+    /// TMP onSubmit may pass an empty string while IME is active or for some line types;
+    /// always read the live field text in OnSendButtonClick.
+    /// </summary>
+    private void OnInputFieldSubmit(string _)
+    {
+        OnSendButtonClick();
+    }
+
+    public void OnSendButtonClick()
+    {
+        if (userInputField == null)
+        {
+            Debug.LogWarning($"{GetType().Name}: userInputField가 연결되지 않았습니다.");
+            return;
+        }
+
+        string message = userInputField.text;
+
+        if (string.IsNullOrEmpty(message))
+        {
+            Debug.LogWarning("입력값이 비어있습니다.");
+            return;
+        }
+
+        if (isRequestInProgress)
+        {
+            Debug.LogWarning("현재 이미 요청 중입니다.");
+            return;
+        }
+
+        StartCoroutine(GetGPTResponse(message));
+        userInputField.text = "";
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (userInputField != null)
+            userInputField.onSubmit.RemoveListener(OnInputFieldSubmit);
     }
 
     protected virtual void InitializeChatHistory() {

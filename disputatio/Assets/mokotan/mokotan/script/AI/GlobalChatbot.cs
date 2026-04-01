@@ -2,48 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Fungus;
-using TMPro;
 
 public class GlobalChatbot : BaseChatbot
 {
     [Header("GlobalBot UI")]
     [SerializeField] public Flowchart globalFlowchart;
-    [SerializeField] private TMP_InputField userInputField;
-
-    protected override void Start()
-    {
-        base.Start();
-        if (userInputField != null) userInputField.onSubmit.AddListener(OnSubmit);
-    }
-
-    /// <summary>
-    /// TMP onSubmit may pass an empty string while IME is active or for some line types;
-    /// always read the live field text in OnSendButtonClick.
-    /// </summary>
-    private void OnSubmit(string _)
-    {
-        OnSendButtonClick();
-    }
-
-    public void OnSendButtonClick()
-    {
-        string message = userInputField.text;
-
-        if (string.IsNullOrEmpty(message))
-        {
-            Debug.LogWarning("입력값이 비어있습니다.");
-            return;
-        }
-
-        if (isRequestInProgress)
-        {
-            Debug.LogWarning("현재 이미 요청 중입니다.");
-            return;
-        }
-
-        StartCoroutine(GetGPTResponse(message));
-        userInputField.text = "";
-    }
 
     private const int BottleItemId = 1;
     private const string FallbackSystemPrompt = "당신은 저택의 도우미입니다.";
@@ -115,10 +78,5 @@ public class GlobalChatbot : BaseChatbot
     {
         if (args == null || !args.ContainsKey("emotion")) return;
         Debug.Log($"Chester emote: {args["emotion"]}");
-    }
-
-    private void OnDestroy()
-    {
-        if (userInputField != null) userInputField.onSubmit.RemoveListener(OnSubmit);
     }
 }

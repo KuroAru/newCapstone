@@ -720,13 +720,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4108741738346859279}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909188ddab9be584699994f0c1097ec4, type: 3}
+  m_Script: {fileID: 11500000, guid: bbea7620df1cabb44b75933bd613cb99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   localServerUrl: http://15.165.237.11:8000/chat
   chatSayDialog: {fileID: 0}
-  globalFlowchart: {fileID: 0}
   userInputField: {fileID: 4419980225969595842}
+  globalFlowchart: {fileID: 0}
 --- !u!1 &6376229811461422220
 GameObject:
   m_ObjectHideFlags: 0
