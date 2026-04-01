@@ -1,4 +1,4 @@
-﻿// This code is part of the Fungus library (https://github.com/snozbot/fungus)
+// This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
 #if UNITY_5_3_OR_NEWER
@@ -208,6 +208,30 @@ namespace Fungus
         {
             currentSlot = slot;
             SetSaveKey($"FungusSaveData_Slot{slot}");
+        }
+
+        /// <summary>
+        /// Hides the floating save-menu toggle and collapses the menu panel (e.g. when Save/Load is handled elsewhere).
+        /// </summary>
+        public virtual void HideInGameHud()
+        {
+            if (fadeTween != null)
+            {
+                LeanTween.cancel(fadeTween.id, true);
+                fadeTween = null;
+            }
+
+            if (saveMenuGroup != null)
+            {
+                saveMenuGroup.alpha = 0f;
+                saveMenuGroup.blocksRaycasts = false;
+                saveMenuGroup.interactable = false;
+            }
+
+            if (saveMenuButton != null)
+                saveMenuButton.gameObject.SetActive(false);
+
+            saveMenuActive = false;
         }
 
         /// <summary>

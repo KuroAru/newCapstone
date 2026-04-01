@@ -25,6 +25,14 @@ public class InGameSettingsPanel : MonoBehaviour
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
 
+    [Header("Save / Load (설정 패널)")]
+    [Tooltip("비우면 씬에서 SaveSlotManager를 자동 탐색합니다.")]
+    [SerializeField] SaveSlotManager saveSlotManager;
+    [SerializeField] Button saveGameButton;
+    [SerializeField] Button loadGameButton;
+    [Tooltip("켜면 Fungus SaveMenu의 기본 토글·패널 HUD를 숨깁니다 (ESC 설정에서만 세이브/로드).")]
+    [SerializeField] bool hideFungusSaveMenuHud = true;
+
     [Header("Keyboard Navigation")]
     public Selectable[] navigableElements;
     private int currentIndex = 0;
@@ -56,11 +64,23 @@ public class InGameSettingsPanel : MonoBehaviour
         isPanelOpen = false;
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoadedForSaveHud;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoadedForSaveHud;
+    }
+
     void Start()
     {
         LoadSettings();
         AssignListeners(); // 볼륨, 전체화면 리스너 등록
         InitializeResolutionDropdown();
+        WireSaveLoadButtons();
+        TryHideFungusSaveMenuHud();
     }
 
     void Update()
@@ -75,6 +95,11 @@ public class InGameSettingsPanel : MonoBehaviour
 
         if (!isPanelOpen) return;
         HandleKeyboardInput();
+    }
+
+    private void OnSceneLoadedForSaveHud(Scene scene, LoadSceneMode mode)
+    {
+        TryHideFungusSaveMenuHud();
     }
 
     public float GetPlayTime() => playTime;
@@ -110,6 +135,88 @@ public class InGameSettingsPanel : MonoBehaviour
         fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
     }
 
+    private void WireSaveLoadButtons()
+    {
+        if (saveGameButton != null)
+        {
+            saveGameButton.onClick.RemoveListener(OnSaveGameClicked);
+            saveGameButton.onClick.AddListener(OnSaveGameClicked);
+        }
+
+        if (loadGameButton != null)
+        {
+            loadGameButton.onClick.RemoveListener(OnLoadGameClicked);
+            loadGameButton.onClick.AddListener(OnLoadGameClicked);
+        }
+    }
+
+    private void ResolveSaveSlotManager()
+    {
+        if (saveSlotManager == null)
+            saveSlotManager = FindObjectOfType<SaveSlotManager>(true);
+    }
+
+    private void TryHideFungusSaveMenuHud()
+    {
+        if (!hideFungusSaveMenuHud)
+            return;
+
+        var menu = FindObjectOfType<SaveMenu>(true);
+        if (menu != null)
+            menu.HideInGameHud();
+    }
+
+    /// <summary>
+    /// Fungus SaveManager 상태에 맞춰 설정 패널의 세이브/로드 버튼 interactable을 갱신합니다.
+    /// </summary>
+    private void RefreshSaveLoadInteractable()
+    {
+        if (saveGameButton == null && loadGameButton == null)
+            return;
+
+        ResolveSaveSlotManager();
+        if (saveSlotManager != null)
+            saveSlotManager.EnsureSlotKeyApplied();
+
+        var fungusSave = FungusManager.Instance != null ? FungusManager.Instance.SaveManager : null;
+        var menu = saveSlotManager != null ? saveSlotManager.saveMenu : null;
+
+        if (saveGameButton != null)
+            saveGameButton.interactable = fungusSave != null && fungusSave.NumSavePoints > 0;
+
+        if (loadGameButton != null)
+        {
+            bool canLoad = fungusSave != null && menu != null && fungusSave.SaveDataExists(menu.SaveDataKey);
+            loadGameButton.interactable = canLoad;
+        }
+    }
+
+    public void OnSaveGameClicked()
+    {
+        ResolveSaveSlotManager();
+        if (saveSlotManager == null)
+        {
+            Debug.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음 — 세이브 불가");
+            return;
+        }
+
+        saveSlotManager.Save();
+        RefreshSaveLoadInteractable();
+    }
+
+    public void OnLoadGameClicked()
+    {
+        ResolveSaveSlotManager();
+        if (saveSlotManager == null)
+        {
+            Debug.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음 — 로드 불가");
+            return;
+        }
+
+        saveSlotManager.Load();
+        RefreshSaveLoadInteractable();
+    }
+
     public void ToggleSettingPanel()
     {
         isPanelOpen = !isPanelOpen;
@@ -121,6 +228,9 @@ public class InGameSettingsPanel : MonoBehaviour
         Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
         if (fc != null)
             fc.SetBooleanVariable(fungusVariableName, isPanelOpen);
+
+        if (isPanelOpen)
+            RefreshSaveLoadInteractable();
     }
 
     public void OpenSettingPanel()

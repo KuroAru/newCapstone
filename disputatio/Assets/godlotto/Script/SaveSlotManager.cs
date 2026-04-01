@@ -56,6 +56,15 @@ public class SaveSlotManager : MonoBehaviour
         Debug.Log($"[SaveSlotManager] saveDataKey → {currentSaveKey}");
     }
 
+    /// <summary>
+    /// Flowchart <c>currentSlot</c>에 맞춰 SaveMenu 키를 맞춥니다. 설정 패널 등에서 로드 버튼 활성 여부를 갱신할 때 사용합니다.
+    /// </summary>
+    public void EnsureSlotKeyApplied()
+    {
+        ResolveRefs();
+        ApplyCurrentSlotKey();
+    }
+
     public void Save()
     {
         ResolveRefs();
