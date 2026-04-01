@@ -54,10 +54,7 @@ public class AutoAudioListenerFixer : MonoBehaviour
             {
                 // 이름이 "Camera"이고 부모가 있는(자식인) 경우만 삭제
                 if (listener.gameObject.name == "Camera" && listener.transform.parent != null)
-                {
-                    Debug.Log($"[AudioFixer] 중복 리스너 자동 제거: {listener.gameObject.name} in {scene.name}");
                     Destroy(listener);
-                }
             }
         }
     }
