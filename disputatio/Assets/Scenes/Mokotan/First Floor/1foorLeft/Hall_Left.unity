@@ -9139,6 +9139,7 @@ GameObject:
   - component: {fileID: 1529174753}
   - component: {fileID: 1529174752}
   - component: {fileID: 1529174751}
+  - component: {fileID: 9000000001}
   m_Layer: 6
   m_Name: Backspace
   m_TagString: Untagged
@@ -10401,6 +10402,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940481894}
   m_CullTransparentMesh: 1
+--- !u!114 &9000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529174750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e6d7c8b9a0f1e2d3c4b5a6978877665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  referenceResolution: {x: 1920, y: 1080}
+  insetFromTopLeft: {x: 32, y: 32}
+  zOffset: 0
+
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

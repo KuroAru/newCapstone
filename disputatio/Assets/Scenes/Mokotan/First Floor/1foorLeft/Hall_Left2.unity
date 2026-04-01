@@ -1131,6 +1131,7 @@ GameObject:
   - component: {fileID: 1856847654}
   - component: {fileID: 1856847653}
   - component: {fileID: 1856847652}
+  - component: {fileID: 9000000001}
   m_Layer: 6
   m_Name: Backspace
   m_TagString: Untagged
@@ -3510,6 +3511,23 @@ MonoBehaviour:
   returnValueType: System.Void
   showInherited: 0
   callMode: 0
+--- !u!114 &9000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856847651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e6d7c8b9a0f1e2d3c4b5a6978877665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  referenceResolution: {x: 1920, y: 1080}
+  insetFromTopLeft: {x: 32, y: 32}
+  zOffset: 0
+
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
