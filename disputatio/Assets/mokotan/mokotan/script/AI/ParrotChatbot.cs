@@ -7,6 +7,9 @@ using UnityEngine.Events;
 /// </summary>
 public class ParrotChatbot : GlobalChatbot
 {
+    /// <summary>공통 90자 규칙과 충돌하므로 이 봇만 초단문 전용 규칙만 사용.</summary>
+    protected override bool AppendCommonChesterVoiceBlock => false;
+
     [Header("Tool Calling hooks (optional)")]
     [Tooltip("Invoked when the model calls emote(emotion). Wire Animator triggers / SFX in the inspector.")]
     [SerializeField] private UnityEvent<string> onEmotionTool;

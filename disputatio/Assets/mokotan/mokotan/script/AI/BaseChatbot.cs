@@ -39,9 +39,16 @@ public class SSEEventData
 
 public abstract class BaseChatbot : MonoBehaviour
 {
+    private const string ChesterVoiceCommonResource = "ChesterVoiceCommon";
+
     [Header("Server Settings")]
     [SerializeField] protected string localServerUrl = "http://15.165.237.11:8000/chat";
     protected bool isRequestInProgress = false;
+
+    /// <summary>
+    /// false면 Resources/ChesterVoiceCommon을 시스템 프롬프트에 붙이지 않음(예: ParrotChatbot 초단문 규칙과 충돌 방지).
+    /// </summary>
+    protected virtual bool AppendCommonChesterVoiceBlock => true;
 
     [Header("Base UI Settings")]
     [SerializeField] protected SayDialog chatSayDialog;
@@ -108,20 +115,52 @@ public abstract class BaseChatbot : MonoBehaviour
 
     protected virtual void InitializeChatHistory() {
         chatHistory.Clear();
-        chatHistory.Add(new OpenAIMessage { role = "system", content = "당신은 저택의 도우미입니다." });
+        chatHistory.Add(new OpenAIMessage {
+            role = "system",
+            content = "당신은 저택의 앵무새 체셔입니다. 방별 지침과 공통 말투 규칙(시스템 끝단)을 모두 따릅니다."
+        });
+    }
+
+    /// <summary>
+    /// 모든 /chat·/chat/stream 요청에 공통으로 붙는 말투 블록(Resources/ChesterVoiceCommon.txt).
+    /// </summary>
+    protected string ComposeSystemPromptWithCommonRules(string roomSpecificPrompt)
+    {
+        if (!AppendCommonChesterVoiceBlock || string.IsNullOrEmpty(roomSpecificPrompt))
+            return roomSpecificPrompt;
+
+        TextAsset common = Resources.Load<TextAsset>(ChesterVoiceCommonResource);
+        if (common == null)
+        {
+            Debug.LogWarning($"[BaseChatbot] Resources/{ChesterVoiceCommonResource}.txt 없음 — 공통 말투 생략");
+            return roomSpecificPrompt;
+        }
+
+        return roomSpecificPrompt + "\n\n" + common.text;
     }
 
     protected void Say(string message, Action onComplete = null)
     {
+        bool restoreInput = userInputField != null && userInputField.gameObject.activeSelf;
+        if (userInputField != null)
+            userInputField.gameObject.SetActive(false);
+
+        void Done()
+        {
+            if (userInputField != null && restoreInput)
+                userInputField.gameObject.SetActive(true);
+            onComplete?.Invoke();
+        }
+
         if (chatSayDialog != null)
         {
             if (!chatSayDialog.gameObject.activeInHierarchy) chatSayDialog.gameObject.SetActive(true);
-            chatSayDialog.Say(message, true, true, false, true, true, null, onComplete);
+            chatSayDialog.Say(message, true, true, false, true, true, null, Done);
         }
         else
         {
             Debug.LogWarning("Inspector에서 Chat Say Dialog를 연결해주세요!");
-            onComplete?.Invoke();
+            Done();
         }
     }
 
@@ -134,7 +173,7 @@ public abstract class BaseChatbot : MonoBehaviour
         isRequestInProgress = true;
 
         chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
-        string finalSystemPrompt = BuildFinalSystemPrompt();
+        string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = userMessage,
@@ -193,7 +232,7 @@ public abstract class BaseChatbot : MonoBehaviour
         isRequestInProgress = true;
 
         chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
-        string finalSystemPrompt = BuildFinalSystemPrompt();
+        string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = userMessage,
