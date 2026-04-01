@@ -48,35 +48,43 @@ public class GlobalChatbot : BaseChatbot
         ProcessCommonFunctionCalls(functionCalls);
     }
 
-    private void ProcessCommonFunctionCalls(List<FunctionCallData> functionCalls)
+    /// <summary>Dispatch give_hint / emote (and log unknown tools). Subclasses may override to extend.</summary>
+    protected virtual void ProcessCommonFunctionCalls(List<FunctionCallData> functionCalls)
     {
         if (functionCalls == null) return;
         foreach (var fc in functionCalls)
         {
+            if (string.IsNullOrEmpty(fc.name))
+                continue;
             switch (fc.name)
             {
                 case "give_hint":
-                    HandleGiveHint(fc.arguments);
+                    ApplyGiveHint(fc.arguments);
                     break;
                 case "emote":
-                    HandleEmote(fc.arguments);
+                    ApplyEmote(fc.arguments);
+                    break;
+                default:
+                    Debug.LogWarning($"[{GetType().Name}] Unhandled tool call: {fc.name}");
                     break;
             }
         }
     }
 
-    private void HandleGiveHint(Dictionary<string, object> args)
+    protected virtual void ApplyGiveHint(Dictionary<string, object> args)
     {
         if (args == null) return;
-        string level = args.ContainsKey("hint_level") ? args["hint_level"].ToString() : "subtle";
-        string target = args.ContainsKey("target_object") ? args["target_object"].ToString() : "";
-        string category = args.ContainsKey("hint_category") ? args["hint_category"].ToString() : "";
+        string level = ChatbotToolArgs.GetString(args, "hint_level", "subtle");
+        string target = ChatbotToolArgs.GetString(args, "target_object");
+        string category = ChatbotToolArgs.GetString(args, "hint_category");
         Debug.Log($"[Hint] level={level}, target={target}, category={category}");
     }
 
-    private void HandleEmote(Dictionary<string, object> args)
+    protected virtual void ApplyEmote(Dictionary<string, object> args)
     {
-        if (args == null || !args.ContainsKey("emotion")) return;
-        Debug.Log($"Chester emote: {args["emotion"]}");
+        if (args == null) return;
+        string emotion = ChatbotToolArgs.GetString(args, "emotion");
+        if (string.IsNullOrEmpty(emotion)) return;
+        Debug.Log($"Chester emote: {emotion}");
     }
 }

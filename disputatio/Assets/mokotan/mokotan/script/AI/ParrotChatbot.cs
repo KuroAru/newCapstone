@@ -1,12 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
-/// 앵무새 전용 프롬프트. GlobalChatbot의 입력 필드·전송 로직을 그대로 씁니다.
+/// 앵무새 전용 프롬프트. GlobalChatbot의 입력 필드·전송·Tool Calling 처리를 그대로 씁니다.
 /// </summary>
 public class ParrotChatbot : GlobalChatbot
 {
+    [Header("Tool Calling hooks (optional)")]
+    [Tooltip("Invoked when the model calls emote(emotion). Wire Animator triggers / SFX in the inspector.")]
+    [SerializeField] private UnityEvent<string> onEmotionTool;
+
+    [Tooltip("Invoked when the model calls give_hint(hint_level, target_object, hint_category).")]
+    [SerializeField] private UnityEvent<string, string, string> onGiveHintTool;
+
     protected override string BuildFinalSystemPrompt()
     {
         return @"[수수께끼 앵무새 규칙]
@@ -16,9 +23,21 @@ public class ParrotChatbot : GlobalChatbot
 4. 말끝에 '깍!', '삐약!', '푸드덕!' 중 하나를 무조건 붙일 것.";
     }
 
-    protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
+    protected override void ApplyGiveHint(Dictionary<string, object> args)
     {
-        Say(responseMessage);
-        yield break;
+        base.ApplyGiveHint(args);
+        if (args == null) return;
+        string level = ChatbotToolArgs.GetString(args, "hint_level", "subtle");
+        string target = ChatbotToolArgs.GetString(args, "target_object");
+        string category = ChatbotToolArgs.GetString(args, "hint_category");
+        onGiveHintTool?.Invoke(level, target, category);
+    }
+
+    protected override void ApplyEmote(Dictionary<string, object> args)
+    {
+        base.ApplyEmote(args);
+        string emotion = ChatbotToolArgs.GetString(args, "emotion");
+        if (!string.IsNullOrEmpty(emotion))
+            onEmotionTool?.Invoke(emotion);
     }
 }
