@@ -70,8 +70,8 @@ public class BookPanelController : MonoBehaviour
 
     private const float CookBookMemoFontSize = 28f;
 
-    // 일러스트(RecipeIllustration) 하단 앵커 y≈0.42 기준, 그 아래 ~ 종이 안쪽까지 레시피만 배치
-    private const float CookBookRecipeFontSize = 27f;
+    // 왼쪽 페이지 중앙(≈x0.252) 아래로 레시피 블록 — 일러스트는 씬 RecipeIllustration이 같은 X에 고정 박스
+    private const float CookBookRecipeFontSize = 26f;
 
 
 
@@ -83,12 +83,12 @@ public class BookPanelController : MonoBehaviour
 
 
 
-    // x를 안쪽으로 넣어 왼쪽 종이 밖(갈색 배경)으로 글자가 새지 않게 함
-    private static readonly Vector2 CookBookRecipeAnchorMin = new Vector2(0.075f, 0.14f);
+    // 왼쪽 페이지 세로 중심과 맞춘 좁은 열(가운데 정렬 TMP)
+    private static readonly Vector2 CookBookRecipeAnchorMin = new Vector2(0.118f, 0.11f);
 
-    private static readonly Vector2 CookBookRecipeAnchorMax = new Vector2(0.452f, 0.405f);
+    private static readonly Vector2 CookBookRecipeAnchorMax = new Vector2(0.386f, 0.465f);
 
-    private static readonly Vector4 CookBookRecipeMargin = new Vector4(10f, 4f, 10f, 12f);
+    private static readonly Vector4 CookBookRecipeMargin = new Vector4(12f, 4f, 12f, 8f);
 
 
 
