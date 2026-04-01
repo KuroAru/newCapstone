@@ -28,28 +28,23 @@ public class UIDialRotator : MonoBehaviour
     private string dialKey;
 
 #if UNITY_EDITOR
-    private static bool editorInitialized = false;
-#endif
-
-    // ✅ 에디터에서 Play 버튼 눌렀을 때 딱 한 번만 초기화
-#if UNITY_EDITOR
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void ResetPrefsOnPlay()
-    {
-        if (!editorInitialized)
-        {
-            Debug.Log("🧹 [UIDialRotator] 에디터 Play 시작 — 다이얼 값 초기화됨 (0 0 0)");
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-            editorInitialized = true;
-        }
-    }
+    [Header("Editor only")]
+    [Tooltip("플레이 시 이 오브젝트의 다이얼 PlayerPrefs 키만 삭제합니다. 전역 DeleteAll은 사용하지 않습니다.")]
+    [SerializeField] private bool editorResetThisDialPrefsOnPlay;
 #endif
 
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
         dialKey = $"Dial_{gameObject.name}_Value"; // 예: Dial_L, Dial_M, Dial_R
+
+#if UNITY_EDITOR
+        if (editorResetThisDialPrefsOnPlay)
+        {
+            PlayerPrefs.DeleteKey(dialKey);
+            PlayerPrefs.Save();
+        }
+#endif
     }
 
     private void OnEnable()
@@ -123,7 +118,6 @@ public class UIDialRotator : MonoBehaviour
             {
                 dragging = false;
                 finalDigit = currentDigit;
-                Debug.Log($"🟢 [UIDialRotator] {gameObject.name} 최종 숫자: {finalDigit}");
 
                 PlayerPrefs.SetInt(dialKey, finalDigit);
                 PlayerPrefs.Save();
