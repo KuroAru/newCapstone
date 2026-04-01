@@ -96,8 +96,11 @@ public class QuizInputHandler : MonoBehaviour
         if (inputPanel != null)
         {
             inputPanel.SetActive(true);
-            inputField.Select(); // Input Field에 포커스 주기
-            inputField.ActivateInputField(); // 입력을 받을 수 있도록 활성화
+            if (inputField != null)
+            {
+                inputField.Select();
+                inputField.ActivateInputField();
+            }
             Debug.Log("Quiz Input Field 활성화.");
         }
         else

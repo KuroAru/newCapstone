@@ -8,14 +8,14 @@ public class InputManager : MonoBehaviour
 
     public void TurnOffEnable()
     {
-        dialogInput.enabled = false;
+        if (dialogInput != null)
+            dialogInput.enabled = false;
     }
 
     public void TurnOnEnable()
     {
-        dialogInput.enabled = true;
+        if (dialogInput != null)
+            dialogInput.enabled = true;
     }
-    }
-    
-    
+}
 

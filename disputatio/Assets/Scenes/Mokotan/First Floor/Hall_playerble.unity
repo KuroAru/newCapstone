@@ -904,6 +904,8 @@ GameObject:
   - component: {fileID: 265606227}
   - component: {fileID: 265606230}
   - component: {fileID: 265606229}
+  - component: {fileID: 265606233}
+  - component: {fileID: 265606234}
   m_Layer: 0
   m_Name: Flowchart_hall
   m_TagString: Untagged
@@ -924,19 +926,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 245.41917, y: -73.30004}
+  scrollPos: {x: 61.514782, y: -27.908104}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.88000005
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
-  selectedCommands: []
+  selectedBlocks:
+  - {fileID: 265606090}
+  selectedCommands:
+  - {fileID: 265606234}
   variables:
   - {fileID: 265606045}
   - {fileID: 265606092}
@@ -969,7 +973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 103.822105
+    x: 104.822105
     y: 186.43805
     width: 128.16
     height: 40
@@ -993,6 +997,7 @@ MonoBehaviour:
   - {fileID: 265606228}
   - {fileID: 265606095}
   - {fileID: 265606227}
+  - {fileID: 265606233}
   - {fileID: 265606212}
   - {fileID: 265606093}
   - {fileID: 265606169}
@@ -1954,7 +1959,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 83.23477
-    y: 311.46405
+    y: 315.46405
     width: 150.11
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -1967,6 +1972,7 @@ MonoBehaviour:
   - {fileID: 265606119}
   - {fileID: 265606091}
   - {fileID: 265606144}
+  - {fileID: 265606234}
   suppressAllAutoSelections: 0
 --- !u!114 &265606091
 MonoBehaviour:
@@ -9097,7 +9103,7 @@ MonoBehaviour:
   storyText: ".....? \uC5EC\uAE30 \uC660 \uC0C8\uAC00 \uC788\uB0D0?"
   description: 
   character: {fileID: 0}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -9812,6 +9818,48 @@ MonoBehaviour:
   vector3Data:
     vector3Ref: {fileID: 0}
     vector3Val: {x: 0, y: 0, z: 0}
+--- !u!114 &265606233
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265605998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd8c931f22994b9d90e2037fffaa770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 203
+  indentLevel: 2
+  _targetGameObject:
+    gameObjectRef: {fileID: 0}
+    gameObjectVal: {fileID: 115742735}
+  activeState:
+    booleanRef: {fileID: 0}
+    booleanVal: 0
+  targetGameObjectOLD: {fileID: 0}
+--- !u!114 &265606234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265605998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd8c931f22994b9d90e2037fffaa770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 204
+  indentLevel: 0
+  _targetGameObject:
+    gameObjectRef: {fileID: 0}
+    gameObjectVal: {fileID: 115742735}
+  activeState:
+    booleanRef: {fileID: 0}
+    booleanVal: 1
+  targetGameObjectOLD: {fileID: 0}
 --- !u!1 &335360409
 GameObject:
   m_ObjectHideFlags: 0
@@ -13154,7 +13202,6 @@ GameObject:
   - component: {fileID: 1594444091}
   - component: {fileID: 1594444119}
   - component: {fileID: 1594444120}
-  - component: {fileID: 1594444121}
   m_Layer: 0
   m_Name: Variablemanager
   m_TagString: Untagged
@@ -13592,7 +13639,6 @@ MonoBehaviour:
   - {fileID: 1594444101}
   - {fileID: 1594444094}
   - {fileID: 1594444119}
-  - {fileID: 1594444121}
   description: 
   stepPause: 0
   colorCommands: 1
@@ -14282,7 +14328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 7047298147727563761, guid: 33c19f8ce2890114a8cdc7ca0d23393c, type: 3}
+  selectedFlowchart: {fileID: 265605999}
 --- !u!4 &1993636090
 Transform:
   m_ObjectHideFlags: 1
@@ -14544,8 +14590,8 @@ SceneRoots:
   - {fileID: 1253420392}
   - {fileID: 1726949386}
   - {fileID: 1283729603}
-  - {fileID: 6012978494958837715}
   - {fileID: 658659235}
+  - {fileID: 6012978494958837715}
   - {fileID: 528861193}
   - {fileID: 1623893871}
   - {fileID: 1957843098}
