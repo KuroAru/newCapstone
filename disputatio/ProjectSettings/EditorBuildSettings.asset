@@ -156,6 +156,21 @@ EditorBuildSettings:
     path: Assets/Scenes/Mokotan/Basement.unity
     guid: 41dec5c3755bc434bbd23c9174e48c66
   - enabled: 1
+    path: Assets/Scenes/Mokotan/Basement/BasementHallway.unity
+    guid: 9377d179c7c445c094a40709bc15ba59
+  - enabled: 1
+    path: Assets/Scenes/Mokotan/Basement/BasementExtractionRoom.unity
+    guid: d2ac977cd82a42f1832b5fc87aea2f33
+  - enabled: 1
+    path: Assets/Scenes/Mokotan/Basement/BasementObservationRoom.unity
+    guid: 7bc13da2c826477f847dd5d285d5e645
+  - enabled: 1
+    path: Assets/Scenes/Mokotan/Basement/BasementBrickRoom.unity
+    guid: 30a1bdddc5f44ea5a3f3c1146bb16b46
+  - enabled: 1
+    path: Assets/Scenes/Mokotan/Basement/BasementResearchRoom.unity
+    guid: c76aa2a4836849298211d6d70de6e607
+  - enabled: 1
     path: Assets/Scenes/godlotto/BetaEnd.unity
     guid: a5f399f5d3c23074bacff7c0b5a524a8
   m_configObjects:
