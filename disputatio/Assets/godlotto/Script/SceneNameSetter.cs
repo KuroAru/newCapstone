@@ -35,20 +35,19 @@ public class SceneNameSetter : MonoBehaviour
 
     private void UpdateSceneVariables(string currentSceneName)
     {
-        if (globalFlowchart == null)
+        Flowchart fc = FlowchartLocator.Find();
+        if (fc == null)
         {
-            globalFlowchart = FindObjectOfType<Flowchart>();
-            if (globalFlowchart == null)
-            {
-                Debug.LogWarning("[SceneNameSetter] 전역 Flowchart를 찾지 못했습니다.");
-                return;
-            }
+            Debug.LogWarning("[SceneNameSetter] Variablemanager Flowchart를 찾지 못했습니다.");
+            return;
         }
+
+        globalFlowchart = fc;
 
         // SceneName 갱신
         if (!string.IsNullOrEmpty(sceneVarName))
         {
-            globalFlowchart.SetStringVariable(sceneVarName, currentSceneName);
+            fc.SetStringVariable(sceneVarName, currentSceneName);
             Debug.Log($"[SceneNameSetter] SceneName → '{currentSceneName}'");
         }
 
@@ -56,7 +55,7 @@ public class SceneNameSetter : MonoBehaviour
         if (!string.IsNullOrEmpty(savePointKeyVarName))
         {
             string saveKey = currentSceneName + "_Start";
-            globalFlowchart.SetStringVariable(savePointKeyVarName, saveKey);
+            fc.SetStringVariable(savePointKeyVarName, saveKey);
             Debug.Log($"[SceneNameSetter] SavePointKey → '{saveKey}'");
         }
     }

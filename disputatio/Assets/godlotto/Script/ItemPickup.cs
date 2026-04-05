@@ -13,6 +13,31 @@ public class ItemPickup : MonoBehaviour, IPointerClickHandler
     public string fungusVariableName;
     public string executeBlockName;
 
+    private void Awake()
+    {
+        SuppressIfAlreadyTaken();
+    }
+
+    /// <summary>
+    /// 지도·씬 이동 후 씬이 다시 로드되면 프리팹이 복구되므로,
+    /// 습득 비트마스크 또는 Fungus bool이 이미 켜져 있으면 오브젝트를 제거합니다.
+    /// </summary>
+    private void SuppressIfAlreadyTaken()
+    {
+        Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
+        if (fc == null)
+            return;
+
+        if (item != null && ItemAcquisitionTracker.IsAcquired(fc, item.itemId))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(fungusVariableName) && fc.GetBooleanVariable(fungusVariableName))
+            Destroy(gameObject);
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         PickUp();

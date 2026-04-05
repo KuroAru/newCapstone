@@ -50,12 +50,8 @@ public class WhenClikcedButton : MonoBehaviour
 
     private void FindGlobalManager()
     {
-        // 'Variablemanager' 오브젝트 안의 Flowchart를 찾습니다.
-        GameObject vmObj = GameObject.Find("Variablemanager");
-        if (vmObj != null)
-        {
-            globalFlowchart = vmObj.GetComponent<Flowchart>();
-        }
+        // 캐시가 씬 전환 후에도 유효하지만, Variablemanager 재탐색이 안전합니다.
+        globalFlowchart = FlowchartLocator.Find();
     }
 
     private void RefreshReferences()
@@ -72,7 +68,8 @@ public class WhenClikcedButton : MonoBehaviour
             if (c != null) targetCanvas = c.transform;
         }
 
-        if (globalFlowchart == null) FindGlobalManager();
+        // 매 씬 로드마다 Variablemanager Flowchart를 다시 묶어 잘못된 차트·stale 참조를 방지합니다.
+        FindGlobalManager();
 
         if (globalFlowchart != null)
         {

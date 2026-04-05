@@ -46,4 +46,24 @@ public static class FlowchartLocator
 
         return fc;
     }
+
+    /// <summary>
+    /// Fungus <see cref="GlobalVariables"/> 저장소의 bool 값.
+    /// Variablemanager Flowchart의 변수 목록에 해당 키가 없어도, 씬 Flowchart가 글로벌로 켠 값을 읽을 수 있습니다.
+    /// </summary>
+    public static bool GetFungusGlobalBoolean(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return false;
+
+        if (FungusManager.Instance == null)
+            return false;
+
+        GlobalVariables globals = FungusManager.Instance.GlobalVariables;
+        if (globals == null)
+            return false;
+
+        Variable v = globals.GetVariable(key);
+        return v is BooleanVariable b && b.Value;
+    }
 }

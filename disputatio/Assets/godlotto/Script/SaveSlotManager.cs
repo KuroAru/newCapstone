@@ -37,8 +37,8 @@ public class SaveSlotManager : MonoBehaviour
     {
         if (saveMenu == null)
             saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
-        if (flowchart == null)
-            flowchart = FindObjectOfType<Flowchart>(true);
+        // currentSlot은 Variablemanager에만 있으므로 임의 씬 Flowchart 참조를 쓰지 않습니다.
+        flowchart = FlowchartLocator.Find();
     }
 
     /// <summary>

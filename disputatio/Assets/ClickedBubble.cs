@@ -30,13 +30,10 @@ public class ClickedBubble : MonoBehaviour
             penel.transform.SetParent(originalParent, false);
         }
 
-        // 3. 현재 씬의 Flowchart를 찾아 변수 초기화
-        // 씬 이동 직전에 현재 씬의 'isCalled'를 풀어줘야 다음 씬에서 오류가 안 납니다.
-        flowchart = GameObject.FindObjectOfType<Flowchart>();
+        // 3. Variablemanager 글로벌 Flowchart에서 isCalled 해제 (임의 씬 Flowchart가 아님)
+        flowchart = FlowchartLocator.Find();
         if (flowchart != null)
-        {
             flowchart.SetBooleanVariable("isCalled", false);
-        }
 
         // 4. 씬 로드
         SceneManager.LoadScene(sceneName);

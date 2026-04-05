@@ -111,8 +111,9 @@ public class DraggableSnap2D : MonoBehaviour
                         col.enabled = false;
                 }
 
-                if (targetFlowchart && !string.IsNullOrEmpty(fungusVarName))
-                    targetFlowchart.SetBooleanVariable(fungusVarName, true);
+                Flowchart snapFc = FlowchartLocator.Resolve(targetFlowchart);
+                if (snapFc != null && !string.IsNullOrEmpty(fungusVarName))
+                    snapFc.SetBooleanVariable(fungusVarName, true);
             }
         }
     }
@@ -195,8 +196,9 @@ public class DraggableSnap2D : MonoBehaviour
         PlayerPrefs.SetInt(key, 1);
         PlayerPrefs.Save();
 
-        if (targetFlowchart && !string.IsNullOrEmpty(fungusVarName))
-            targetFlowchart.SetBooleanVariable(fungusVarName, true);
+        Flowchart snapFc = FlowchartLocator.Resolve(targetFlowchart);
+        if (snapFc != null && !string.IsNullOrEmpty(fungusVarName))
+            snapFc.SetBooleanVariable(fungusVarName, true);
 
         if (sr != null)
             sr.color = new Color(1f, 1f, 1f, 0.9f);
