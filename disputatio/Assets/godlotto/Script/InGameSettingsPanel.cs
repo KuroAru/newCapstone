@@ -428,6 +428,8 @@ public class InGameSettingsPanel : MonoBehaviour
     private IEnumerator GoToMainMenu()
     {
         Time.timeScale = 1f;
+        CloseSettingPanel();
+
         Flowchart fc = FlowchartLocator.Resolve(targetFlowchart);
         if (fc != null)
             fc.SetBooleanVariable(fungusVariableName, false);
