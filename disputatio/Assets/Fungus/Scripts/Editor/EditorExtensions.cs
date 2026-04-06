@@ -86,7 +86,7 @@ namespace Fungus.EditorUtils
         /// <returns></returns>
         public static List<T> FindObjectsOfInterface<T>()
         {
-            return Object.FindObjectsOfType<Object>().OfType<T>().ToList();
+            return UnityEngine.Object.FindObjectsByType<UnityEngine.Object>(FindObjectsInactive.Include, FindObjectsSortMode.None).OfType<T>().ToList();
         }
     }
 }

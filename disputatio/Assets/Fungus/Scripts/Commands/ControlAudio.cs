@@ -65,7 +65,7 @@ namespace Fungus
                 return;
             }
 
-            var audioSources = GameObject.FindObjectsOfType<AudioSource>();
+            var audioSources = UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             for (int i = 0; i < audioSources.Length; i++)
             {
                 var a = audioSources[i];

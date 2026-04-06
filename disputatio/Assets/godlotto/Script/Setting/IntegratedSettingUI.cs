@@ -9,6 +9,9 @@ using Fungus;
 
 public class IntegratedSettingUI : MonoBehaviour
 {
+    const string SettingsCanvasSortingLayerName = "Setting";
+    const int SettingsCanvasSortingOrder = 50;
+
     public enum UIMode { StandaloneScene, PopupPanel }
     [Header("Mode Setting")]
     public UIMode uiMode = UIMode.PopupPanel; 
@@ -33,6 +36,13 @@ public class IntegratedSettingUI : MonoBehaviour
     public Selectable[] navigableElements;
     private int currentIndex = 0;
     private Vector3 lastMousePosition;
+
+    SaveLoadBrowserView _saveLoadBrowser;
+
+    void Awake()
+    {
+        _saveLoadBrowser = GetComponent<SaveLoadBrowserView>();
+    }
 
     void Start()
     {
@@ -63,6 +73,8 @@ public class IntegratedSettingUI : MonoBehaviour
             SyncUIWithManager();
         }
         UnlockCursor();
+        if (uiMode == UIMode.PopupPanel && panelRoot != null && panelRoot.activeInHierarchy)
+            EnsureSettingsCanvasSortsAboveSayDialog();
     }
 
     public void UnlockCursor()
@@ -123,6 +135,12 @@ public class IntegratedSettingUI : MonoBehaviour
             // 패널은 닫지 않도록 return 합니다.
             if (IsDropdownExpanded()) return;
 
+            if (_saveLoadBrowser != null && _saveLoadBrowser.IsOverlayOpen)
+            {
+                _saveLoadBrowser.CloseOverlay();
+                return;
+            }
+
             if (uiMode == UIMode.StandaloneScene)
             {
                 BackToMainMenu();
@@ -142,18 +160,40 @@ public class IntegratedSettingUI : MonoBehaviour
     public void OpenSettingPanel()
     {
         if (panelRoot != null) panelRoot.SetActive(true);
+
+        EnsureSettingsCanvasSortsAboveSayDialog();
+        if (_saveLoadBrowser != null)
+            _saveLoadBrowser.EnsureUiBuilt();
         
         if (dialogInput != null) dialogInput.enabled = false;
         Flowchart fcOpen = FlowchartLocator.Resolve(targetFlowchart);
         if (fcOpen != null) fcOpen.SetBooleanVariable(fungusVariableName, true);
 
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
         UnlockCursor();
         SyncUIWithManager();
     }
 
+    /// <summary>
+    /// 설정 UI 캔버스를 SayDialog(정렬 레이어)보다 위에 그리도록 합니다.
+    /// </summary>
+    void EnsureSettingsCanvasSortsAboveSayDialog()
+    {
+        if (panelRoot == null)
+            return;
+        Canvas canvas = panelRoot.GetComponentInParent<Canvas>();
+        if (canvas == null)
+            return;
+        canvas.overrideSorting = true;
+        canvas.sortingLayerName = SettingsCanvasSortingLayerName;
+        canvas.sortingOrder = SettingsCanvasSortingOrder;
+    }
+
     public void ReturnToGame()
     {
+        if (_saveLoadBrowser != null)
+            _saveLoadBrowser.CloseOverlay();
+
         if (panelRoot != null) panelRoot.SetActive(false);
         
         Flowchart fcClose = FlowchartLocator.Resolve(targetFlowchart);

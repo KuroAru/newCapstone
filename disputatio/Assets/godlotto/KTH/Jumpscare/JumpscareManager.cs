@@ -284,7 +284,7 @@ public class JumpscareManager : MonoBehaviour
     {
         string sceneName = SceneManager.GetActiveScene().name;
 
-        Volume[] allVolumes = FindObjectsByType<Volume>(FindObjectsSortMode.None);
+        Volume[] allVolumes = FindObjectsByType<Volume>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
         globalVolume = null;
         dof = null;

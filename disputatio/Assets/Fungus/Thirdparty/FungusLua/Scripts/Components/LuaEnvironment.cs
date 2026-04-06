@@ -154,7 +154,7 @@ namespace Fungus
         /// </summary>
         public static LuaEnvironment GetLua()
         {
-            var luaEnv = GameObject.FindObjectOfType<LuaEnvironment>();
+            var luaEnv = UnityEngine.Object.FindFirstObjectByType<LuaEnvironment>(FindObjectsInactive.Include);
             if (luaEnv == null)
             {
                 GameObject prefab = Resources.Load<GameObject>("Prefabs/LuaEnvironment");

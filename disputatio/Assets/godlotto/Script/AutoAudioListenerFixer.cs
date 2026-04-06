@@ -46,7 +46,7 @@ public class AutoAudioListenerFixer : MonoBehaviour
         // (안전장치) 이 코드가 실행되는 시점에 내가 파괴될 운명이라면 실행 금지
         if (this == null) return; 
 
-        AudioListener[] listeners = FindObjectsOfType<AudioListener>();
+        AudioListener[] listeners = Object.FindObjectsByType<AudioListener>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
         if (listeners.Length > 1)
         {

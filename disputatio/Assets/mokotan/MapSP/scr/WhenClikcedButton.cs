@@ -64,7 +64,7 @@ public class WhenClikcedButton : MonoBehaviour
         }
         else
         {
-            Canvas c = GameObject.FindObjectOfType<Canvas>();
+            Canvas c = Object.FindFirstObjectByType<Canvas>(FindObjectsInactive.Exclude);
             if (c != null) targetCanvas = c.transform;
         }
 

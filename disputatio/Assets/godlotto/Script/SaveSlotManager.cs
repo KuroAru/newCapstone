@@ -1,170 +1,336 @@
+using System.Collections;
+using System.IO;
 using UnityEngine;
 using Fungus;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Fungus SaveMenu와 연동하여 슬롯별 세이브/로드를 안정적으로 처리하는 매니저.
-/// - currentSlot 기반으로 saveDataKey를 개별화.
-/// - 씬 이동 시 SaveMenu / Flowchart 자동 재탐색.
-/// - 다른 씬 세이브일 경우 자동 전환 후 로드.
-/// - GetSavedSceneName 미구현 문제 해결.
+/// Fungus <see cref="SaveManager"/>를 직접 사용하는 멀티슬롯 세이브/로드.
+/// 슬롯별로 히스토리를 1포인트로 덮어써 VN식 슬롯에 가깝게 동작합니다.
 /// </summary>
 public class SaveSlotManager : MonoBehaviour
 {
-    [Header("Fungus 연동")]
-    public Flowchart flowchart;
+    public const int MaxSlots = 32;
 
-    [Header("SaveMenu 참조")]
-    public Fungus.SaveMenu saveMenu;
+    [Header("Fungus")]
+    [Tooltip("비우면 FlowchartLocator(Variablemanager) 사용. currentSlot 정수 변수가 있는 Flowchart를 지정하세요.")]
+    [SerializeField] Flowchart flowchart;
 
-    [Header("설정 패널에 세이브 UI 붙이기")]
-    [Tooltip("예: Opening_Office의 SavePannel 루트 RectTransform. 지정 시 ESC 설정을 열 때 이 UI를 설정 패널 안으로 옮깁니다.")]
-    public RectTransform saveUiReparentRoot;
+    [Tooltip("스냅샷에 쓸 Save Point 키 — Variablemanager 문자열 변수명 (예: SavePointKey). 없으면 씬명_SettingsSave.")]
+    [SerializeField] string savePointKeyVariableName = "SavePointKey";
 
-    [Tooltip("세이브 패널을 여는 플로팅 버튼 루트(예: Save.prefab RectTransform). saveUiReparentRoot와 별도인 경우 플레이 중 숨김·설정 패널 호스트로 같이 옮깁니다.")]
-    public RectTransform savePanelOpenerRoot;
+    [Header("키 접두사 (Fungus 기본과 동일 패턴)")]
+    [SerializeField] string slotKeyPrefix = FungusSaveStorage.DefaultSlotKeyPrefix;
 
-    private string baseSaveKey = "FungusSaveData_Slot";
-    private string currentSaveKey;
+    [Tooltip("마지막으로 저장/로드한 슬롯 (메인 메뉴 등)")]
+    [SerializeField] string lastUsedSlotPrefsKey = "LastUsedFungusSaveSlot";
 
-    private void Awake()
+    [Header("미리보기 썸네일")]
+    [SerializeField] bool captureSlotThumbnail = true;
+
+    Coroutine _thumbnailCoroutine;
+
+    public string SlotKeyPrefix => slotKeyPrefix;
+
+    /// <summary>
+    /// Fungus <see cref="SaveManager"/>를 찾습니다. Instance 프로퍼티가 아직 채워지지 않았거나(비활성 등) 씬에 단독으로 있을 때도 보완합니다.
+    /// </summary>
+    public SaveManager GetResolvedSaveManager()
     {
-        ResolveRefs();
-        ApplyCurrentSlotKey();
+        FungusManager fm = FungusManager.Instance;
+        if (fm != null)
+        {
+            if (fm.SaveManager != null)
+                return fm.SaveManager;
+            SaveManager onSame = fm.GetComponent<SaveManager>();
+            if (onSame != null)
+                return onSame;
+        }
+        return Object.FindFirstObjectByType<SaveManager>(FindObjectsInactive.Include);
     }
 
-    private void ResolveRefs()
+    public static string SlotDataKey(int slot, string prefix = FungusSaveStorage.DefaultSlotKeyPrefix)
     {
-        if (saveMenu == null)
-            saveMenu = FindObjectOfType<Fungus.SaveMenu>(true);
-        // currentSlot은 Variablemanager에만 있으므로 임의 씬 Flowchart 참조를 쓰지 않습니다.
-        flowchart = FlowchartLocator.Find();
+        if (slot < 1)
+            slot = 1;
+        return prefix + slot;
+    }
+
+    public int GetResolvedSlotIndex()
+    {
+        Flowchart preferred = FlowchartLocator.Resolve(flowchart);
+        if (preferred != null)
+        {
+            int s = preferred.GetIntegerVariable("currentSlot");
+            if (s >= 1 && s <= MaxSlots)
+                return s;
+        }
+
+        Flowchart[] charts = Object.FindObjectsByType<Flowchart>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < charts.Length; i++)
+        {
+            int s = charts[i].GetIntegerVariable("currentSlot");
+            if (s >= 1 && s <= MaxSlots)
+                return s;
+        }
+
+        return 1;
+    }
+
+    public bool SlotHasData(int slot)
+    {
+        SaveManager saveManager = GetResolvedSaveManager();
+        if (saveManager == null)
+            return false;
+        return saveManager.SaveDataExists(SlotDataKey(slot, slotKeyPrefix));
     }
 
     /// <summary>
-    /// currentSlot에 따라 SaveMenu의 saveDataKey를 설정
+    /// Fungus가 인식할 수 있는 키로 현재 상태 스냅샷을 만들고 지정 슬롯 파일에만 기록합니다.
     /// </summary>
-    private void ApplyCurrentSlotKey()
+    public void SaveToSlot(int slot)
     {
-        if (flowchart == null)
+        if (slot < 1 || slot > MaxSlots)
         {
-            Debug.LogWarning("[SaveSlotManager] Flowchart 연결 안 됨");
+            Debug.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
             return;
         }
 
-        int slot = flowchart.GetIntegerVariable("currentSlot");
-        if (slot < 1) slot = 1;
+        SaveManager saveManager = GetResolvedSaveManager();
+        if (saveManager == null)
+        {
+            Debug.LogError("[SaveSlotManager] SaveManager 없음");
+            return;
+        }
 
-        currentSaveKey = $"{baseSaveKey}{slot}";
+        string pointKey = ResolveSnapshotSavePointKey();
+        string description = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
-        if (saveMenu != null)
-            saveMenu.SetSaveKey(currentSaveKey);
+        saveManager.ClearHistory();
+        saveManager.AddSavePoint(pointKey, description);
+        saveManager.Save(SlotDataKey(slot, slotKeyPrefix));
 
-        Debug.Log($"[SaveSlotManager] saveDataKey → {currentSaveKey}");
+        PlayerPrefs.SetInt(lastUsedSlotPrefsKey, slot);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[SaveSlotManager] 슬롯 {slot} 저장 ({pointKey})");
+
+        if (captureSlotThumbnail)
+        {
+            if (_thumbnailCoroutine != null)
+                StopCoroutine(_thumbnailCoroutine);
+            _thumbnailCoroutine = StartCoroutine(CaptureAndWriteSlotThumbnail(slot));
+        }
+    }
+
+    IEnumerator CaptureAndWriteSlotThumbnail(int slot)
+    {
+        float prevScale = Time.timeScale;
+        if (prevScale <= 0f)
+            Time.timeScale = 1f;
+        yield return new WaitForEndOfFrame();
+        Texture2D full = null;
+        try
+        {
+            string dir = Application.persistentDataPath + "/FungusSaves/";
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            string path = FungusSaveSlotSummary.GetThumbnailPath(slot, slotKeyPrefix);
+
+            if (TryWriteThumbnailFromChangeSp(slot, path))
+                yield break;
+
+            full = ScreenCapture.CaptureScreenshotAsTexture();
+            if (full == null)
+                yield break;
+
+            int tw = SaveThumbnailEncoder.ThumbnailMaxWidth;
+            int th = Mathf.Max(1, Mathf.RoundToInt(full.height * (tw / (float)full.width)));
+            Texture2D scaled = ScaleTextureBlit(full, tw, th);
+            File.WriteAllBytes(path, scaled.EncodeToPNG());
+            Destroy(scaled);
+        }
+        finally
+        {
+            if (full != null)
+                Destroy(full);
+            _thumbnailCoroutine = null;
+            Time.timeScale = prevScale;
+        }
     }
 
     /// <summary>
-    /// Flowchart <c>currentSlot</c>에 맞춰 SaveMenu 키를 맞춥니다. 설정 패널 등에서 로드 버튼 활성 여부를 갱신할 때 사용합니다.
+    /// <see cref="ChangeSP"/> 스택 또는 <c>SceneName</c> 매핑 스프라이트로 PNG를 씁니다.
     /// </summary>
-    public void EnsureSlotKeyApplied()
+    bool TryWriteThumbnailFromChangeSp(int slot, string path)
     {
-        ResolveRefs();
-        ApplyCurrentSlotKey();
+        Sprite sp = null;
+        if (ChangeSP.TryPeekSaveThumbnailSprite(out Sprite peeked))
+            sp = peeked;
+
+        if (sp == null)
+        {
+            ChangeSP catalog = ChangeSP.FindCatalog();
+            Flowchart fc = FlowchartLocator.Find();
+            if (catalog != null && fc != null)
+            {
+                string sceneName = fc.GetStringVariable("SceneName");
+                if (!string.IsNullOrEmpty(sceneName))
+                    sp = catalog.GetThumbnailSpriteForSceneName(sceneName);
+            }
+        }
+
+        if (sp == null)
+            return false;
+
+        if (SaveThumbnailEncoder.TryWriteSpriteAsSlotPng(sp, path))
+        {
+            Debug.Log($"[SaveSlotManager] 슬롯 {slot} 썸네일: ChangeSP 스프라이트 저장");
+            return true;
+        }
+
+        return false;
     }
 
+    static Texture2D ScaleTextureBlit(Texture2D src, int w, int h)
+    {
+        RenderTexture rt = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+        RenderTexture prev = RenderTexture.active;
+        Graphics.Blit(src, rt);
+        RenderTexture.active = rt;
+        Texture2D dst = new Texture2D(w, h, TextureFormat.RGB24, false);
+        dst.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+        dst.Apply();
+        RenderTexture.active = prev;
+        RenderTexture.ReleaseTemporary(rt);
+        return dst;
+    }
+
+    /// <summary>
+    /// Flowchart의 currentSlot에 맞춰 저장 (레거시 Fungus CallMethod 호환).
+    /// </summary>
     public void Save()
     {
-        ResolveRefs();
-
-        if (saveMenu == null)
-        {
-            Debug.LogError("[SaveSlotManager] SaveMenu 찾기 실패 → Save 중단");
-            return;
-        }
-
-        ApplyCurrentSlotKey();
-        Debug.Log($"[SaveSlotManager] Save 호출 - {currentSaveKey}");
-        saveMenu.Save();
+        SaveToSlot(GetResolvedSlotIndex());
     }
 
-    public void Load()
+    /// <summary>
+    /// 슬롯을 로드합니다.
+    /// </summary>
+    /// <returns>
+    /// true: 현재 씬에서 로드가 적용됨(호출 측에서 일시정지 해제 권장).
+    /// false: 다른 씬으로 넘어가거나, 실패로 조기 반환.
+    /// </returns>
+    public bool LoadFromSlot(int slot)
     {
-        Debug.Log("[SaveSlotManager] Load() 실행 시도됨");
-
-        ResolveRefs();
-
-        if (saveMenu == null)
+        if (slot < 1 || slot > MaxSlots)
         {
-            Debug.LogError("[SaveSlotManager] SaveMenu 찾기 실패 → Load 중단");
-            return;
+            Debug.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
+            return false;
         }
 
-        saveMenu.gameObject.SetActive(true);
-        saveMenu.enabled = true;
+        SaveManager saveManager = GetResolvedSaveManager();
+        if (saveManager == null)
+        {
+            Debug.LogError("[SaveSlotManager] SaveManager 없음");
+            return false;
+        }
 
-        ApplyCurrentSlotKey();
+        string dataKey = SlotDataKey(slot, slotKeyPrefix);
+        if (!saveManager.SaveDataExists(dataKey))
+        {
+            Debug.LogWarning($"[SaveSlotManager] 슬롯 {slot} 데이터 없음");
+            return false;
+        }
 
-        // ✅ PlayerPrefs에서 직접 씬 이름 추출
-        string targetScene = GetSavedSceneNameFromPrefs(currentSaveKey);
+        PlayerPrefs.SetInt(lastUsedSlotPrefsKey, slot);
+        PlayerPrefs.Save();
+
+        string targetScene = FungusSaveStorage.TryParseSceneNameFromHistoryJson(FungusSaveStorage.ReadHistoryRaw(dataKey));
         string currentScene = SceneManager.GetActiveScene().name;
-
-        Debug.Log($"[SaveSlotManager] 현재 씬: {currentScene}, 저장된 씬: {targetScene}");
 
         if (!string.IsNullOrEmpty(targetScene) && targetScene != currentScene)
         {
-            Debug.Log($"[SaveSlotManager] 다른 씬 감지 → '{targetScene}' 로드 후 복원 예정");
+            Time.timeScale = 1f;
             SceneManager.sceneLoaded += OnSceneLoadedForRestore;
             SceneManager.LoadScene(targetScene);
-            return;
+            _pendingLoadKey = dataKey;
+            return false;
         }
 
-        InternalLoadNow();
+        Time.timeScale = 1f;
+        InternalLoadNow(dataKey);
+        return true;
+    }
+
+    string _pendingLoadKey;
+
+    /// <summary>
+    /// currentSlot 슬롯 로드 (레거시 호환).
+    /// </summary>
+    public void Load()
+    {
+        LoadFromSlot(GetResolvedSlotIndex());
     }
 
     /// <summary>
-    /// PlayerPrefs에서 저장된 데이터 문자열을 직접 파싱하여 씬 이름을 얻는 함수
+    /// 메인 메뉴 등: 마지막 사용 슬롯 또는 1번 슬롯 로드.
     /// </summary>
-    private string GetSavedSceneNameFromPrefs(string key)
+    public void LoadLastOrFirstSlot()
     {
-        string json = PlayerPrefs.GetString(key, "");
-        if (string.IsNullOrEmpty(json))
+        int s = PlayerPrefs.GetInt(lastUsedSlotPrefsKey, 1);
+        if (!SlotHasData(s))
         {
-            Debug.LogWarning($"[SaveSlotManager] {key} 키에 저장된 데이터 없음");
-            return null;
+            for (int i = 1; i <= MaxSlots; i++)
+            {
+                if (SlotHasData(i))
+                {
+                    s = i;
+                    break;
+                }
+            }
         }
 
-        // Fungus SaveData JSON 내에 "sceneName":"XXX" 형태로 저장됨
-        int idx = json.IndexOf("\"sceneName\":\"");
-        if (idx == -1) return null;
-
-        int start = idx + "\"sceneName\":\"".Length;
-        int end = json.IndexOf("\"", start);
-        if (end == -1) return null;
-
-        string sceneName = json.Substring(start, end - start);
-        return sceneName;
+        if (SlotHasData(s))
+            LoadFromSlot(s);
+        else
+            Debug.LogWarning("[SaveSlotManager] 로드할 슬롯 데이터가 없습니다.");
     }
 
     private void OnSceneLoadedForRestore(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoadedForRestore;
-        Debug.Log($"[SaveSlotManager] 씬 '{scene.name}' 로드 완료 → 세이브 데이터 복원 시작");
+        if (string.IsNullOrEmpty(_pendingLoadKey))
+            return;
 
-        ResolveRefs();
-        InternalLoadNow();
+        string key = _pendingLoadKey;
+        _pendingLoadKey = null;
+        InternalLoadNow(key);
     }
 
-    private void InternalLoadNow()
+    private void InternalLoadNow(string dataKey)
     {
-        var saveManager = FungusManager.Instance.SaveManager;
-        if (saveManager != null)
+        SaveManager saveManager = GetResolvedSaveManager();
+        if (saveManager == null)
+            return;
+
+        saveManager.ClearHistory();
+        SaveManagerSignals.DoSaveReset();
+        saveManager.Load(dataKey);
+        Debug.Log($"[SaveSlotManager] 로드 완료: {dataKey}");
+    }
+
+    private string ResolveSnapshotSavePointKey()
+    {
+        Flowchart fc = FlowchartLocator.Find();
+        if (fc != null && !string.IsNullOrEmpty(savePointKeyVariableName))
         {
-            saveManager.ClearHistory();
-            Fungus.SaveManagerSignals.DoSaveReset();
-            Debug.Log("[SaveSlotManager] SaveManager 히스토리 초기화 완료");
+            string k = fc.GetStringVariable(savePointKeyVariableName);
+            if (!string.IsNullOrEmpty(k))
+                return k;
         }
 
-        saveMenu.Load();
-        Debug.Log("[SaveSlotManager] Load 호출 완료 (씬 복원 성공)");
+        return SceneManager.GetActiveScene().name + "_SettingsSave";
     }
 }

@@ -3138,21 +3138,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6218741227073069292, guid: f87d8262679211144ab2ddc0e9f39267, type: 3}
-      propertyPath: saveMenu
-      value: 
-      objectReference: {fileID: 422026346}
-    - target: {fileID: 6218741227073069292, guid: f87d8262679211144ab2ddc0e9f39267, type: 3}
       propertyPath: flowchart
       value: 
       objectReference: {fileID: 819135176}
-    - target: {fileID: 6218741227073069292, guid: f87d8262679211144ab2ddc0e9f39267, type: 3}
-      propertyPath: saveUiReparentRoot
-      value: 
-      objectReference: {fileID: 1492173901}
-    - target: {fileID: 6218741227073069292, guid: f87d8262679211144ab2ddc0e9f39267, type: 3}
-      propertyPath: savePanelOpenerRoot
-      value: 
-      objectReference: {fileID: 1056859171}
     - target: {fileID: 6708453564589683334, guid: f87d8262679211144ab2ddc0e9f39267, type: 3}
       propertyPath: m_Name
       value: SceneBoot

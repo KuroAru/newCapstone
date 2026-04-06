@@ -54,7 +54,7 @@ namespace Fungus
             }
             else
             {
-                receivers = GameObject.FindObjectsOfType<MessageReceived>();
+                receivers = UnityEngine.Object.FindObjectsByType<MessageReceived>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             }
 
             if (receivers != null)

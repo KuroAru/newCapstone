@@ -39,7 +39,7 @@ namespace Fungus
             }
             if (targetCamera == null)
             {
-                targetCamera = GameObject.FindObjectOfType<Camera>();
+                targetCamera = UnityEngine.Object.FindFirstObjectByType<Camera>(FindObjectsInactive.Exclude);
             }
         }
 

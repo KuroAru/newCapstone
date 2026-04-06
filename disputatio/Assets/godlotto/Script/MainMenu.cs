@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Fungus;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,27 +14,6 @@ public class MainMenu : MonoBehaviour
     void Awake()
     {
         Time.timeScale = 1f;
-        EnsureFungusSaveMenuForLoad();
-    }
-
-    /// <summary>
-    /// MainMenu 씬에는 SaveMenu 프리팹이 없을 수 있음. SaveSlotManager.Load가 Fungus SaveMenu를 필요로 하므로 Resources에서 한 번만 생성합니다.
-    /// </summary>
-    private static void EnsureFungusSaveMenuForLoad()
-    {
-        if (Object.FindObjectOfType<SaveMenu>(true) != null)
-            return;
-
-        var prefab = Resources.Load<GameObject>("Prefabs/SaveMenu");
-        if (prefab == null)
-        {
-            Debug.LogWarning("[MainMenu] Resources/Prefabs/SaveMenu 를 찾을 수 없습니다. Fungus Resources 경로를 확인하세요.");
-            return;
-        }
-
-        var instance = Object.Instantiate(prefab);
-        instance.name = "SaveMenu";
-        instance.SetActive(false);
     }
 
     void Start()
@@ -135,7 +113,7 @@ public class MainMenu : MonoBehaviour
 
         var manager = saveSlotManager != null
             ? saveSlotManager
-            : Object.FindObjectOfType<SaveSlotManager>(true);
+            : Object.FindFirstObjectByType<SaveSlotManager>(FindObjectsInactive.Include);
 
         if (manager == null)
         {
@@ -143,7 +121,7 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        manager.Load();
+        manager.LoadLastOrFirstSlot();
     }
 
     public void OnSettingButton()

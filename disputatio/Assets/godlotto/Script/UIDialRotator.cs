@@ -49,7 +49,7 @@ public class UIDialRotator : MonoBehaviour
 
     private void OnEnable()
     {
-        var controller = FindObjectOfType<UISafeLockController>();
+        var controller = Object.FindFirstObjectByType<UISafeLockController>(FindObjectsInactive.Exclude);
         if (controller != null)
         {
             if (gameObject.name.Contains("L"))

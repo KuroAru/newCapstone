@@ -60,7 +60,7 @@ namespace Fungus
             if (ActiveMenuDialog == null)
             {
                 // Use first Menu Dialog found in the scene (if any)
-                var md = GameObject.FindObjectOfType<MenuDialog>();
+                var md = UnityEngine.Object.FindFirstObjectByType<MenuDialog>(FindObjectsInactive.Include);
                 if (md != null)
                 {
                     ActiveMenuDialog = md;
@@ -104,7 +104,7 @@ namespace Fungus
         // This method will automatically instantiate one if none exists.
         protected virtual void CheckEventSystem()
         {
-            EventSystem eventSystem = GameObject.FindObjectOfType<EventSystem>();
+            EventSystem eventSystem = UnityEngine.Object.FindFirstObjectByType<EventSystem>(FindObjectsInactive.Exclude);
             if (eventSystem == null)
             {
                 // Auto spawn an Event System from the prefab

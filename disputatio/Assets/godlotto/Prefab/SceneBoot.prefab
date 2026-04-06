@@ -60,5 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a32a8cc14979ec40b9b8aa096c47f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveMenu: {fileID: 0}
   flowchart: {fileID: 0}
+  savePointKeyVariableName: SavePointKey
+  slotKeyPrefix: FungusSaveData_Slot
+  lastUsedSlotPrefsKey: LastUsedFungusSaveSlot

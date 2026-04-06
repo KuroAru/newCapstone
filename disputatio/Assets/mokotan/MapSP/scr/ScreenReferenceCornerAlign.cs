@@ -58,7 +58,7 @@ public class ScreenReferenceCornerAlign : MonoBehaviour
         Canvas canvas = alignToCanvas;
         if (canvas == null)
         {
-            var found = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+            var found = FindObjectsByType<Canvas>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             for (var i = 0; i < found.Length; i++)
             {
                 var cv = found[i];

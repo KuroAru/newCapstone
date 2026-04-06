@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Fungus;
 using UnityEngine.UI;
@@ -6,9 +7,37 @@ using UnityEngine.UI;
 /// 🎨 저장 슬롯 이미지 변경 스크립트.
 /// 이제 "SceneName" 문자열 변수를 기준으로 씬 썸네일 이미지를 변경.
 /// (예: Opening_Office, Hall_Left 등)
+/// <para>저장 슬롯 PNG 미리보기는 정적 스택 최상단 스프라이트(또는 SceneName 동일 매핑)를 우선 사용합니다.</para>
 /// </summary>
 public class ChangeSP : MonoBehaviour
 {
+    /// <summary>세이브 썸네일에 쓸 현재 슬롯용 스프라이트(스택). <see cref="OnChangeButtonImage"/>에서 갱신됩니다.</summary>
+    static readonly Stack<Sprite> SaveThumbnailStack = new Stack<Sprite>();
+
+    /// <summary>스택 최상단을 교체합니다(깊이는 1로 유지해 최신 SceneName 썸네일만 보관).</summary>
+    public static void SetSaveThumbnailStackTop(Sprite sprite)
+    {
+        SaveThumbnailStack.Clear();
+        if (sprite != null)
+            SaveThumbnailStack.Push(sprite);
+    }
+
+    public static bool TryPeekSaveThumbnailSprite(out Sprite sprite)
+    {
+        if (SaveThumbnailStack.Count == 0)
+        {
+            sprite = null;
+            return false;
+        }
+        sprite = SaveThumbnailStack.Peek();
+        return sprite != null;
+    }
+
+    public static ChangeSP FindCatalog()
+    {
+        return Object.FindFirstObjectByType<ChangeSP>(FindObjectsInactive.Include);
+    }
+
     [Header("Fungus 연동")]
     public Flowchart flowchart;
 
@@ -38,7 +67,10 @@ public class ChangeSP : MonoBehaviour
         {
             Debug.LogWarning("ChangeSP: Flowchart의 SceneName 변수가 비어 있습니다.");
             if (defaultSprite != null)
+            {
                 slot.image.sprite = defaultSprite;
+                SetSaveThumbnailStackTop(defaultSprite);
+            }
             return;
         }
 
@@ -50,13 +82,23 @@ public class ChangeSP : MonoBehaviour
         if (targetSprite != null)
         {
             slot.image.sprite = targetSprite;
+            SetSaveThumbnailStackTop(targetSprite);
         }
         else
         {
             Debug.LogWarning($"ChangeSP: {sceneName} 에 해당하는 스프라이트가 없습니다.");
             if (defaultSprite != null)
+            {
                 slot.image.sprite = defaultSprite;
+                SetSaveThumbnailStackTop(defaultSprite);
+            }
         }
+    }
+
+    /// <summary>저장 미리보기·인코더에서 사용: 씬 이름에 대응하는 슬롯 썸네일 스프라이트.</summary>
+    public Sprite GetThumbnailSpriteForSceneName(string sceneName)
+    {
+        return GetSpriteForScene(sceneName);
     }
 
     /// <summary>

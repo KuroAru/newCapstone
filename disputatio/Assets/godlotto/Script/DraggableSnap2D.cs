@@ -124,7 +124,7 @@ public class DraggableSnap2D : MonoBehaviour
     /// </summary>
     public static void RefreshSpriteDepthByWorldY()
     {
-        DraggableSnap2D[] all = Object.FindObjectsByType<DraggableSnap2D>(FindObjectsSortMode.None);
+        DraggableSnap2D[] all = Object.FindObjectsByType<DraggableSnap2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         if (all == null || all.Length == 0)
             return;
 
@@ -219,7 +219,7 @@ public class DraggableSnap2D : MonoBehaviour
 
     private SnapTarget FindSnapTargetForKind()
     {
-        var all = FindObjectsOfType<SnapTarget>();
+        var all = Object.FindObjectsByType<SnapTarget>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         foreach (var t in all)
         {
             if (t.acceptKind == kind)
