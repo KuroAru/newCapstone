@@ -28,7 +28,7 @@ public class InventoryManager : MonoBehaviour
         if (instance != null) { Destroy(gameObject); return; }
         instance = this;
 
-        targetflowchart = FlowchartLocator.Resolve(targetflowchart);
+        targetflowchart = ResolveFlowchart();
     }
 
     void Start()
@@ -36,7 +36,7 @@ public class InventoryManager : MonoBehaviour
         animator = inventoryUI_Background.GetComponent<Animator>();
         inventoryUI_Background.SetActive(false);
 
-        if (targetflowchart != null)
+        if (ResolveFlowchart() != null)
             pressTab = targetflowchart.GetBooleanVariable("pressTab");
 
         CreateSlots();
@@ -72,7 +72,7 @@ public class InventoryManager : MonoBehaviour
         if (item == null)
             return;
 
-        if (targetflowchart != null)
+        if (ResolveFlowchart() != null)
             ItemAcquisitionTracker.MarkAcquired(targetflowchart, item);
 
         if (items.Count >= maxSlots)
@@ -138,7 +138,15 @@ public class InventoryManager : MonoBehaviour
 
     private void SyncPressTab()
     {
-        if (targetflowchart != null)
+        if (ResolveFlowchart() != null)
             targetflowchart.SetBooleanVariable("pressTab", pressTab);
+    }
+
+    private Flowchart ResolveFlowchart()
+    {
+        if (targetflowchart == null)
+            targetflowchart = FlowchartLocator.Resolve(null);
+
+        return targetflowchart;
     }
 }
