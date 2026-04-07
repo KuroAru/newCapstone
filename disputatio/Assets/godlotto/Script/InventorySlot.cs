@@ -78,14 +78,14 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         // 2. UI가 아니라면, 2D 월드에 드롭했는지 확인합니다.
-        Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPosition, Vector2.zero);
-
-        if (hit.collider != null)
+        // Raycast(origin, Vector2.zero)는 방향이 0이라 히트가 나오지 않거나 불안정합니다. OverlapPoint/OverlapPointAll 사용.
+        Vector2 mouseWorld = ScreenToWorldPoint2D(Input.mousePosition);
+        Collider2D[] atPoint = Physics2D.OverlapPointAll(mouseWorld);
+        foreach (Collider2D col in atPoint)
         {
-            WorldItemDropZone worldDropZone = hit.collider.GetComponent<WorldItemDropZone>();
-            if (worldDropZone != null)
-                worldDropZone.TryApplyDroppedItem(draggedItem);
+            WorldItemDropZone worldDropZone = WorldItemDropZone.FindFromHitCollider(col);
+            if (worldDropZone != null && worldDropZone.TryApplyDroppedItem(draggedItem))
+                break;
         }
 
         // 드롭에 성공했든 실패했든 static 변수를 초기화합니다.
@@ -98,5 +98,17 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             InventoryManager.instance.SelectItem(item);
         }
+    }
+
+    /// <summary>스프라이트가 z=0 평면에 있다고 가정하고, ScreenToWorldPoint의 깊이(z)를 보정합니다.</summary>
+    static Vector2 ScreenToWorldPoint2D(Vector3 screenPosition)
+    {
+        Camera cam = Camera.main;
+        if (cam == null)
+            return Vector2.zero;
+
+        Vector3 p = screenPosition;
+        p.z = Mathf.Abs(cam.transform.position.z);
+        return cam.ScreenToWorldPoint(p);
     }
 }

@@ -57,13 +57,30 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
 
     private void ApplyDropZoneCompletedVisuals()
     {
+        // 잠금 해제 후에는 드롭 처리만 끈다. Fungus Clickable2D(입장 클릭)는 같은 오브젝트 또는 부모에 있을 수 있다.
+        // WorldItemDropZone이 켜진 채로 두면 IDropHandler 등으로 입력이 꼬여 클릭이 안 되는 경우가 있어 항상 비활성화한다.
+        bool keepColliderAndSpriteForDoorClick =
+            GetComponent<Clickable2D>() != null || GetComponentInParent<Clickable2D>() != null;
+
         enabled = false;
+
         var col = GetComponent<Collider2D>();
-        if (col != null)
+        if (col != null && !keepColliderAndSpriteForDoorClick)
             col.enabled = false;
+
         var sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
+        if (sr != null && !keepColliderAndSpriteForDoorClick)
             sr.enabled = false;
+    }
+
+    /// <summary>인벤에서 월드로 드롭할 때: 콜라이더는 문(부모)에 있고 드롭존은 자식에만 둔 경우를 포함합니다.</summary>
+    public static WorldItemDropZone FindFromHitCollider(Collider2D hitCollider)
+    {
+        if (hitCollider == null)
+            return null;
+
+        return hitCollider.GetComponent<WorldItemDropZone>()
+            ?? hitCollider.GetComponentInChildren<WorldItemDropZone>();
     }
 
     /// <summary><see cref="Item.itemName"/> → Fungus 글로벌 bool 키 (열쇠·인장·주방 등).</summary>
@@ -77,6 +94,7 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
             case "StudyRoomKey":
                 return "UsedStudyKey";
             case "MaidRoom_Key":
+            case "MadeRoom_Key":
                 return "UsedMaidKey";
             case "TutorRoomKey":
                 return "UsedTutorKey";

@@ -22,6 +22,7 @@ public class JumpscareManager : MonoBehaviour
 
     private const float SpawnPositionZeroEpsilonSq = 1e-6f;
     private const string SpriteUnlitShaderName = "Universal Render Pipeline/2D/Sprite-Unlit-Default";
+    private const string MainCanvasTag = "MainCanvas";
     /// <summary>눈깜빡임·게임오버 전면 스프라이트 평면 Z = 카메라 Z + 이 값 (Blink와 동일).</summary>
     private const float OverlayPlaneZOffsetFromCamera = 1f;
 
@@ -111,6 +112,7 @@ public class JumpscareManager : MonoBehaviour
     // triggerObject의 보이는 부분만 끄기 위한 캐시
     private SpriteRenderer triggerSpriteRenderer;
     private Collider2D triggerCollider;
+    private readonly List<GameObject> hiddenMainCanvases = new List<GameObject>();
 
     private void Awake()
     {
@@ -353,6 +355,7 @@ public class JumpscareManager : MonoBehaviour
             dof.gaussianMaxRadius.value = 0f;
 
         SetHideObjectsByTag(false);
+        SetMainCanvasVisible(true);
 
         // 이전 점프스케어에서 꺼놓은 SayDialog 복원
         RestoreSayDialog();
@@ -377,6 +380,7 @@ public class JumpscareManager : MonoBehaviour
         SetTriggerVisible(true);
 
         SetHideObjectsByTag(true);
+        SetMainCanvasVisible(false);
 
 #if UNITY_EDITOR
         if (logTriggerRenderingAfterSpawn && triggerObject != null)
@@ -592,6 +596,45 @@ public class JumpscareManager : MonoBehaviour
             if (obj != null)
                 obj.SetActive(!hide);
         }
+    }
+
+    /// <summary>
+    /// 복도 등 일부 씬에서 MainCanvas가 Screen Space Overlay로 적 위를 덮는 문제를 방지합니다.
+    /// 점프스케어 중에는 MainCanvas 태그 UI를 잠시 끄고, 종료/리셋 시 원복합니다.
+    /// </summary>
+    private void SetMainCanvasVisible(bool visible)
+    {
+        if (!visible)
+        {
+            hiddenMainCanvases.Clear();
+            GameObject[] canvases;
+            try
+            {
+                canvases = GameObject.FindGameObjectsWithTag(MainCanvasTag);
+            }
+            catch (UnityException)
+            {
+                return;
+            }
+
+            foreach (var canvas in canvases)
+            {
+                if (canvas == null || !canvas.activeSelf)
+                    continue;
+
+                canvas.SetActive(false);
+                hiddenMainCanvases.Add(canvas);
+            }
+            return;
+        }
+
+        for (int i = 0; i < hiddenMainCanvases.Count; i++)
+        {
+            GameObject canvas = hiddenMainCanvases[i];
+            if (canvas != null)
+                canvas.SetActive(true);
+        }
+        hiddenMainCanvases.Clear();
     }
 
     /// <summary>
