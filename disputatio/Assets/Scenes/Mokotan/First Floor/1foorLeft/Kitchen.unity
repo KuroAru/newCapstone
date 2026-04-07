@@ -1427,18 +1427,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -500.91544, y: 330.44202}
+  scrollPos: {x: -848.223, y: 161.90364}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 232
-  zoom: 0.6500001
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
+  selectedBlocks:
+  - {fileID: 290853919}
   selectedCommands: []
   variables:
   - {fileID: 290853934}
@@ -24173,6 +24174,7 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 290853876}
   dialogBoolName: isTalking
+  completedGlobalBoolKeyOverride: BottleDragged
 --- !u!114 &1324476036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24911,6 +24913,7 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 290853876}
   dialogBoolName: isTalking
+  completedGlobalBoolKeyOverride: 
 --- !u!114 &1501483040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25393,10 +25396,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00647ada9aa5d9f469a07fbc68bb5425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localServerUrl: http://15.165.237.11:8000/chat
   chatSayDialog: {fileID: 422072702}
-  npcAnimator: {fileID: 0}
-  talkTriggerName: TalkTrigger
-  modelName: gpt-4o
+  userInputField: {fileID: 0}
   kitchenFlowchart: {fileID: 290853876}
 --- !u!1 &1766998784
 GameObject:

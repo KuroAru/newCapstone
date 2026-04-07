@@ -96,8 +96,9 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
                 return "seal6";
             case "7th seal":
                 return "seal7";
+            // GetBottle = 병 획득(인벤). 싱크 드롭존 완료는 Fungus `Bottle_Dragged` 블록이 켜는 전역 bool.
             case "Bottle":
-                return "GetBottle";
+                return "BottleDragged";
             case "Food":
                 return "giveFood";
             default:
