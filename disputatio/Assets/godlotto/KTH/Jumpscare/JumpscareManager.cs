@@ -9,11 +9,11 @@ using UnityEngine.Rendering.Universal;
 public struct JumpscareSceneData
 {
     public string sceneName;        // 씬 이름
-    [Tooltip("트리거 월드 XY. (0,0)이면 스폰 시 현재 위치의 XY를 유지하고 Z만 카메라 기준 평면으로 맞춥니다.")]
-    public Vector2 spawnPosition;   // 등장 위치 (월드 XY; Z는 카메라 오프셋으로 별도 처리)
+    [Tooltip("카메라 중심을 (0,0)으로 하는 상대 좌표입니다. (0,0) 입력 시 화면 정중앙에 스폰됩니다.")]
+    public Vector2 spawnPosition;
     [Range(0f, 100f)]
     [Tooltip("씬 진입 직후 첫 판정에서의 등장 확률(%). 실패 시 같은 씬에 일정 시간 이상 머무르면 100%로 등장합니다.")]
-    public float spawnChance;       // 진입 직후 등장 확률; 장시간 체류 시 보장 스폰은 매니저 설정
+    public float spawnChance;
 }
 
 public class JumpscareManager : MonoBehaviour
@@ -370,10 +370,20 @@ public class JumpscareManager : MonoBehaviour
         if (triggerObject != null)
         {
             float worldZ = GetTriggerWorldPlaneZ();
-            Vector3 cur = triggerObject.transform.position;
-            bool explicitWorldXY = spawnPos.sqrMagnitude > SpawnPositionZeroEpsilonSq;
-            float wx = explicitWorldXY ? spawnPos.x : cur.x;
-            float wy = explicitWorldXY ? spawnPos.y : cur.y;
+
+            // 👇 카메라 기준 상대 좌표를 계산하도록 수정된 부분입니다.
+            if (mainCam == null)
+            {
+                mainCam = Camera.main;
+            }
+            
+            // 카메라 중심 위치 가져오기
+            Vector2 cameraCenter = mainCam != null ? (Vector2)mainCam.transform.position : Vector2.zero;
+
+            // 카메라 중심 X, Y에 인스펙터에서 설정한 spawnPos(오프셋)를 더합니다.
+            float wx = cameraCenter.x + spawnPos.x;
+            float wy = cameraCenter.y + spawnPos.y;
+
             triggerObject.transform.position = new Vector3(wx, wy, worldZ);
         }
 
@@ -382,10 +392,10 @@ public class JumpscareManager : MonoBehaviour
         SetHideObjectsByTag(true);
         SetMainCanvasVisible(false);
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         if (logTriggerRenderingAfterSpawn && triggerObject != null)
             StartCoroutine(DebugLogTriggerRenderingState());
-#endif
+    #endif
 
         StartCoroutine(WaitAndExecuteScare());
     }
@@ -433,21 +443,6 @@ public class JumpscareManager : MonoBehaviour
         }
 
         Vector3 vp = cam.WorldToViewportPoint(triggerObject.transform.position);
-        Debug.Log("=== [JumpscareManager] triggerObject 렌더링 디버그 (에디터) ===");
-        Debug.Log($"SpriteRenderer.enabled: {triggerSpriteRenderer.enabled}");
-        Debug.Log($"Sprite: {(triggerSpriteRenderer.sprite != null ? triggerSpriteRenderer.sprite.name : "null")}");
-        Debug.Log($"Color: {triggerSpriteRenderer.color}");
-        Debug.Log($"Material: {(triggerSpriteRenderer.sharedMaterial != null ? triggerSpriteRenderer.sharedMaterial.name : "null")}");
-        Debug.Log($"Sorting Layer: {triggerSpriteRenderer.sortingLayerName}");
-        Debug.Log($"Order in Layer: {triggerSpriteRenderer.sortingOrder}");
-        Debug.Log($"World Position: {triggerObject.transform.position}");
-        Debug.Log($"Local Scale: {triggerObject.transform.localScale}");
-        Debug.Log($"isVisible (renderer): {triggerSpriteRenderer.isVisible}");
-        Debug.Log($"Viewport: {vp} — xy는 화면 안일 수 있으나, z<=0이면 카메라 전방/깊이 기준으로는 프러스텀 밖일 수 있음 (카메라 near/far·오쏘 설정과 함께 판단)");
-        Debug.Log($"Camera Culling Mask: {cam.cullingMask}");
-        Debug.Log($"triggerObject Layer: {triggerObject.layer} ({LayerMask.LayerToName(triggerObject.layer)})");
-        int mask = cam.cullingMask;
-        Debug.Log($"Camera가 이 Layer를 렌더링하는가: {((mask & (1 << triggerObject.layer)) != 0)}");
     }
 #endif
 

@@ -926,11 +926,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 198.24756, y: 37.700172}
+  scrollPos: {x: -82.306175, y: 56.26474}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 94
-  zoom: 0.97
+  zoom: 0.94000006
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -14327,7 +14327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 1594444117}
+  selectedFlowchart: {fileID: 265605999}
 --- !u!4 &1993636090
 Transform:
   m_ObjectHideFlags: 1
@@ -14354,6 +14354,22 @@ PrefabInstance:
     - target: {fileID: 4773293380519465482, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_Name
       value: JumpscareManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: defaultSpawnChanceForMokotanScenes
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[0].spawnChance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[0].spawnPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[0].spawnPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5043438640802526754, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_LocalPosition.x
