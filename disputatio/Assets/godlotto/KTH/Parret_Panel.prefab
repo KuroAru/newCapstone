@@ -679,6 +679,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetSayDialog: {fileID: 0}
   sayDialogCanvasGroup: {fileID: 0}
+  panelBackgroundImage: {fileID: 888895032692916273}
+  electricOnBackgroundSprite: {fileID: 6139318640503858113, guid: 09dd2f716d59f684a9e733c96739b0df, type: 3}
+  electricOnVariableName: ElectricOn
 --- !u!1 &4108741738346859279
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fungus;
+using UnityEngine.UI;
 
 /// <summary>
 /// Hall 등에서 Parret 패널이 켜진 뒤에도 Fungus SayDialog(Overlay)의 CanvasGroup이
@@ -9,8 +10,13 @@ using Fungus;
 [DisallowMultipleComponent]
 public class ParrotPanelUiFix : MonoBehaviour
 {
+    private const string ElectricOnVariableName = "ElectricOn";
+
     [SerializeField] private SayDialog targetSayDialog;
     [SerializeField] private CanvasGroup sayDialogCanvasGroup;
+    [SerializeField] private Image panelBackgroundImage;
+    [SerializeField] private Sprite electricOnBackgroundSprite;
+    [SerializeField] private string electricOnVariableName = ElectricOnVariableName;
 
     [Header("Parret Visibility Settings")]
     [Tooltip("자동으로 찾을 Parret 오브젝트의 이름입니다.")]
@@ -18,6 +24,8 @@ public class ParrotPanelUiFix : MonoBehaviour
     
     [Tooltip("자동으로 찾은 Parret 오브젝트가 여기에 캐싱됩니다. 미리 인스펙터에서 할당해둘 수도 있습니다.")]
     [SerializeField] private GameObject targetParret;
+
+    private Sprite defaultBackgroundSprite;
 
     private void Awake()
     {
@@ -30,6 +38,12 @@ public class ParrotPanelUiFix : MonoBehaviour
             if (sd != null)
                 sayDialogCanvasGroup = sd.GetComponent<CanvasGroup>();
         }
+
+        if (panelBackgroundImage == null)
+            panelBackgroundImage = GetComponent<Image>();
+
+        if (panelBackgroundImage != null)
+            defaultBackgroundSprite = panelBackgroundImage.sprite;
     }
 
     private void OnEnable()
@@ -57,6 +71,8 @@ public class ParrotPanelUiFix : MonoBehaviour
         {
             targetParret.SetActive(false);
         }
+
+        ApplyBackgroundSprite();
     }
 
     private void OnDisable()
@@ -66,5 +82,37 @@ public class ParrotPanelUiFix : MonoBehaviour
         {
             targetParret.SetActive(true);
         }
+    }
+
+    private void ApplyBackgroundSprite()
+    {
+        if (panelBackgroundImage == null)
+            return;
+
+        bool isElectricOn = IsElectricOn();
+        panelBackgroundImage.sprite = ChoosePanelBackground(
+            defaultBackgroundSprite,
+            electricOnBackgroundSprite,
+            isElectricOn);
+    }
+
+    private bool IsElectricOn()
+    {
+        Flowchart flowchart = FlowchartLocator.Find();
+        if (flowchart == null)
+            return false;
+
+        string key = string.IsNullOrWhiteSpace(electricOnVariableName)
+            ? ElectricOnVariableName
+            : electricOnVariableName;
+        return flowchart.GetBooleanVariable(key);
+    }
+
+    public static Sprite ChoosePanelBackground(Sprite defaultSprite, Sprite electricOnSprite, bool isElectricOn)
+    {
+        if (!isElectricOn || electricOnSprite == null)
+            return defaultSprite;
+
+        return electricOnSprite;
     }
 }
