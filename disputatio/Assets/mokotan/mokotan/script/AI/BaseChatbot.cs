@@ -53,11 +53,13 @@ public abstract class BaseChatbot : MonoBehaviour
 
     [Header("Base UI Settings")]
     [SerializeField] protected SayDialog chatSayDialog;
+    [SerializeField] private KeyCode dialogAdvanceKey = KeyCode.Space;
 
     [Header("Chat Input")]
     [SerializeField] private TMP_InputField userInputField;
 
     protected List<OpenAIMessage> chatHistory = new List<OpenAIMessage>();
+    private DialogInput chatDialogInput;
 
     [Serializable]
     public class LocalLlamaPayload {
@@ -70,8 +72,18 @@ public abstract class BaseChatbot : MonoBehaviour
     {
         InitializeChatHistory();
         _ = SceneRevisitTracker.Instance;
+        CacheDialogInput();
         if (userInputField != null)
             userInputField.onSubmit.AddListener(OnInputFieldSubmit);
+    }
+
+    protected virtual void Update()
+    {
+        if (chatSayDialog == null || !chatSayDialog.gameObject.activeInHierarchy)
+            return;
+
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(dialogAdvanceKey))
+            TryAdvanceChatDialog();
     }
 
     /// <summary>
@@ -113,6 +125,28 @@ public abstract class BaseChatbot : MonoBehaviour
     {
         if (userInputField != null)
             userInputField.onSubmit.RemoveListener(OnInputFieldSubmit);
+    }
+
+    private void CacheDialogInput()
+    {
+        if (chatSayDialog == null)
+            return;
+
+        chatDialogInput = chatSayDialog.GetComponentInChildren<DialogInput>(true);
+    }
+
+    private void TryAdvanceChatDialog()
+    {
+        if (chatDialogInput == null)
+            CacheDialogInput();
+
+        if (chatDialogInput != null)
+        {
+            chatDialogInput.SetNextLineFlag();
+            return;
+        }
+
+        Debug.LogWarning($"{GetType().Name}: SayDialog의 DialogInput을 찾지 못했습니다.");
     }
 
     protected virtual void InitializeChatHistory() {
@@ -166,6 +200,8 @@ public abstract class BaseChatbot : MonoBehaviour
 
         void Done()
         {
+            if (chatSayDialog != null && chatSayDialog.gameObject.activeInHierarchy)
+                chatSayDialog.SetActive(false);
             if (userInputField != null && restoreInput)
                 userInputField.gameObject.SetActive(true);
             onComplete?.Invoke();
