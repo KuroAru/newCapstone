@@ -21945,6 +21945,7 @@ GameObject:
   - component: {fileID: 614617305}
   - component: {fileID: 614617308}
   - component: {fileID: 614617309}
+  - component: {fileID: 614617310}
   m_Layer: 5
   m_Name: Faucet
   m_TagString: Untagged
@@ -22105,6 +22106,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &614617310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614617303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1d3f4590f2949b9ad7f41d5e01b4e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetFlowchart: {fileID: 290853876}
+  faucetBoolName: FaucetClicked
+  keySpawnBlockName: addKey
+  delaySeconds: 1
 --- !u!1 &648344934
 GameObject:
   m_ObjectHideFlags: 0
@@ -22647,16 +22664,20 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4241264428636138952, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4241264428636138952, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_LocalScale.y
       value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4241264428636138952, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 4241264428636138952, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 280
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 4241264428636138952, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -22695,8 +22716,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5987828954404511191, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
+      propertyPath: m_Positions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5987828954404511191, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_Parameters.widthMultiplier
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5987828954404511191, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.48749924
       objectReference: {fileID: 0}
     - target: {fileID: 6628022298724388889, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: m_Name
@@ -22712,11 +22741,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7986752393153589699, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: fallSpeed
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 7986752393153589699, guid: b049ab383604a304e99d17a60ee7ab3d, type: 3}
       propertyPath: maxLength
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

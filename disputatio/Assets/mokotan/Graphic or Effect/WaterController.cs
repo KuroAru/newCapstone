@@ -17,6 +17,7 @@ public class WaterController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lastLength = maxLength;
         lineRenderer.positionCount = 2;
         for (int i = 0; i < 2; i++) {
             lineRenderer.SetPosition(i, transform.position);
