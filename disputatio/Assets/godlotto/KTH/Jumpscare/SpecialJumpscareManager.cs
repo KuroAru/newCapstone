@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
@@ -7,6 +8,7 @@ using UnityEngine.Rendering.Universal;
 public class SpecialJumpscareManager : MonoBehaviour
 {
     public static SpecialJumpscareManager Instance;
+    public static event Action OnPlayerDied;
 
     [Header("눈깜빡임 오버레이 (SpriteRenderer)")]
     [Tooltip("카메라 앞에 배치할 전체화면 눈깜빡임 Sprite")]
@@ -91,7 +93,7 @@ public class SpecialJumpscareManager : MonoBehaviour
 
         if (!hasVisitedSpecialScene)
         {
-            float randomValue = Random.Range(0f, 100f);
+            float randomValue = UnityEngine.Random.Range(0f, 100f);
             if (randomValue <= spawnChance)
             {
                 hasVisitedSpecialScene = true;
@@ -275,6 +277,7 @@ public class SpecialJumpscareManager : MonoBehaviour
     {
         jumpscareAnimator.gameObject.SetActive(false);
         if (gameOverObject != null) gameOverObject.SetActive(true);
+        OnPlayerDied?.Invoke();
 
         // GameOver 표시 후 클릭 차단 해제 (리트라이 등 클릭 가능)
         isJumpscareInProgress = false;

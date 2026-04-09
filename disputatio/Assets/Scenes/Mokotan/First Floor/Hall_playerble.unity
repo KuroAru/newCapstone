@@ -14327,7 +14327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 265605999}
+  selectedFlowchart: {fileID: 1594444117}
 --- !u!4 &1993636090
 Transform:
   m_ObjectHideFlags: 1
@@ -14356,11 +14356,23 @@ PrefabInstance:
       value: JumpscareManager
       objectReference: {fileID: 0}
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: defaultSpawnChanceForMokotanScenes
-      value: 50
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].sceneName
+      value: Hall_Right
       objectReference: {fileID: 0}
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: targetScenes.Array.data[0].spawnChance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: targetScenes.Array.data[1].spawnChance
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
@@ -14370,6 +14382,10 @@ PrefabInstance:
     - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: targetScenes.Array.data[0].spawnPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910625284953360225, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
+      propertyPath: autoRegisteredSpawnPositionOverrides.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5043438640802526754, guid: 709c917cc35caef438ca6e54d75db876, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14424,6 +14440,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 969183805}
     m_Modifications:
+    - target: {fileID: 888895032692916273, guid: c02bb81fb98599f4bad4bbdd01f2744b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1346533771486597733, guid: 4838f93b439c8b94899b5101462d50cd, type: 3}
     - target: {fileID: 1141905689238716972, guid: c02bb81fb98599f4bad4bbdd01f2744b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

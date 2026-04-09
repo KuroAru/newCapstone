@@ -39,6 +39,21 @@ public class GlobalChatbot : BaseChatbot
         return string.Empty;
     }
 
+    protected override HeuristicSignalInput BuildHeuristicSignalInput(string userMessage)
+    {
+        var signal = base.BuildHeuristicSignalInput(userMessage);
+        signal.roomName = nameof(GlobalChatbot);
+
+        if (globalFlowchart != null)
+        {
+            bool hasBottle = ItemAcquisitionTracker.IsAcquired(globalFlowchart, BottleItemId);
+            signal.progressScore = hasBottle ? 0.7f : 0.3f;
+            signal.accuracyScore = hasBottle ? 0.65f : 0.45f;
+        }
+
+        return signal;
+    }
+
     protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
         bool isComplete = false;

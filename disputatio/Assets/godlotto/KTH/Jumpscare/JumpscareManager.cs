@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
@@ -16,15 +17,27 @@ public struct JumpscareSceneData
     public float spawnChance;
 }
 
+[System.Serializable]
+public struct AutoRegisteredSpawnPositionOverride
+{
+    [Tooltip("자동 등록 대상 sceneName과 정확히 일치해야 적용됩니다.")]
+    public string sceneName;
+    [Tooltip("해당 자동 등록 씬에서 사용할 적 스폰 위치입니다.")]
+    public Vector2 spawnPosition;
+}
+
 public class JumpscareManager : MonoBehaviour
 {
     public static JumpscareManager Instance;
+    public static event Action OnPlayerDied;
 
     private const float SpawnPositionZeroEpsilonSq = 1e-6f;
     private const string SpriteUnlitShaderName = "Universal Render Pipeline/2D/Sprite-Unlit-Default";
     private const string MainCanvasTag = "MainCanvas";
     /// <summary>눈깜빡임·게임오버 전면 스프라이트 평면 Z = 카메라 Z + 이 값 (Blink와 동일).</summary>
     private const float OverlayPlaneZOffsetFromCamera = 1f;
+    private const float NonRightHallSpawnChancePercent = 20f;
+    private const string RightHallSceneName = "Hall_Right";
 
     [Header("씬별 설정 목록")]
     public List<JumpscareSceneData> targetScenes;
@@ -33,6 +46,10 @@ public class JumpscareManager : MonoBehaviour
     [Tooltip("코드에 정의된 Mokotan 복도·층 씬이 targetScenes에 없을 때 추가하며, 이때 사용할 진입 직후 spawnChance입니다. 이미 있는 sceneName은 건드리지 않습니다.")]
     [Range(0f, 100f)]
     [SerializeField] private float defaultSpawnChanceForMokotanScenes = 20f;
+    [Tooltip("자동 등록되는 씬에 공통 적용할 기본 적 스폰 위치입니다.")]
+    [SerializeField] private Vector2 defaultAutoRegisteredSpawnPosition = Vector2.zero;
+    [Tooltip("자동 등록되는 씬별 적 스폰 위치 오버라이드 목록입니다. sceneName 일치 시 이 값이 우선 적용됩니다.")]
+    [SerializeField] private List<AutoRegisteredSpawnPositionOverride> autoRegisteredSpawnPositionOverrides = new List<AutoRegisteredSpawnPositionOverride>();
 
     [Tooltip("진입 직후 스폰에 실패한 경우, 같은 활성 씬에 이 시간(초) 이상 머무르면 등장 확률 100%로 트리거를 띄웁니다.")]
     [SerializeField] private float guaranteedJumpscareAfterSeconds = 60f;
@@ -154,13 +171,25 @@ public class JumpscareManager : MonoBehaviour
             if (exists)
                 continue;
 
+            Vector2 autoRegisteredSpawnPosition = GetAutoRegisteredSpawnPosition(sceneName);
             targetScenes.Add(new JumpscareSceneData
             {
                 sceneName = sceneName,
-                spawnPosition = Vector2.zero,
+                spawnPosition = autoRegisteredSpawnPosition,
                 spawnChance = defaultSpawnChanceForMokotanScenes
             });
         }
+    }
+
+    private Vector2 GetAutoRegisteredSpawnPosition(string sceneName)
+    {
+        foreach (var entry in autoRegisteredSpawnPositionOverrides)
+        {
+            if (string.Equals(entry.sceneName, sceneName, StringComparison.Ordinal))
+                return entry.spawnPosition;
+        }
+
+        return defaultAutoRegisteredSpawnPosition;
     }
 
     private void Start()
@@ -204,8 +233,9 @@ public class JumpscareManager : MonoBehaviour
             if (data.sceneName == scene.name)
             {
                 isTargetScene = true;
-                float randomValue = Random.Range(0f, 100f);
-                if (randomValue <= data.spawnChance)
+                float effectiveSpawnChance = IsRightHallScene(scene.name) ? data.spawnChance : NonRightHallSpawnChancePercent;
+                float randomValue = UnityEngine.Random.Range(0f, 100f);
+                if (randomValue <= effectiveSpawnChance)
                 {
                     SpawnTrigger(data.spawnPosition);
                 }
@@ -222,6 +252,11 @@ public class JumpscareManager : MonoBehaviour
         {
             HideAllJumpscareObjects();
         }
+    }
+
+    private static bool IsRightHallScene(string sceneName)
+    {
+        return string.Equals(sceneName, RightHallSceneName, StringComparison.Ordinal);
     }
 
     private IEnumerator GuaranteedSpawnAfterStay(string expectedSceneName, Vector2 spawnPosition)
@@ -565,6 +600,7 @@ public class JumpscareManager : MonoBehaviour
         jumpscareAnimator.gameObject.SetActive(false);
         FitGameOverOverlayToScreen();
         if (gameOverObject != null) gameOverObject.SetActive(true);
+        OnPlayerDied?.Invoke();
 
         // GameOver 표시 후 클릭 차단 해제
         isJumpscareInProgress = false;

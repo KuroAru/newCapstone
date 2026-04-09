@@ -51,6 +51,21 @@ public class TutorChatbot : BaseChatbot
         return finalSystemPrompt;
     }
 
+    protected override HeuristicSignalInput BuildHeuristicSignalInput(string userMessage)
+    {
+        var signal = base.BuildHeuristicSignalInput(userMessage);
+        signal.roomName = nameof(TutorChatbot);
+
+        if (flowchart != null)
+        {
+            int currentCorrectCount = Mathf.Clamp(flowchart.GetIntegerVariable("CorrectAnswerCount"), 0, 5);
+            signal.progressScore = currentCorrectCount / 5f;
+            signal.accuracyScore = currentCorrectCount / 5f;
+        }
+
+        return signal;
+    }
+
     protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
         bool isComplete = false;

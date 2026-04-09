@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using Fungus;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class BypassCertificate : CertificateHandler {
     protected override bool ValidateCertificate(byte[] certificateData) => true;
@@ -68,6 +69,7 @@ public abstract class BaseChatbot : MonoBehaviour
     protected virtual void Start()
     {
         InitializeChatHistory();
+        _ = SceneRevisitTracker.Instance;
         if (userInputField != null)
             userInputField.onSubmit.AddListener(OnInputFieldSubmit);
     }
@@ -139,6 +141,23 @@ public abstract class BaseChatbot : MonoBehaviour
         return roomSpecificPrompt + "\n\n" + common.text;
     }
 
+    protected virtual HeuristicSignalInput BuildHeuristicSignalInput(string userMessage)
+    {
+        return new HeuristicSignalInput
+        {
+            roomName = GetType().Name,
+            progressScore = 0.5f,
+            accuracyScore = 0.5f
+        };
+    }
+
+    protected string ComposeSystemPromptWithHeuristics(string basePrompt, string userMessage)
+    {
+        HeuristicSignalInput signal = BuildHeuristicSignalInput(userMessage);
+        signal = SceneRevisitTracker.Instance.FillRevisitSignals(signal, SceneManager.GetActiveScene().name);
+        return PromptInfoBudgetComposer.Compose(basePrompt, signal);
+    }
+
     protected void Say(string message, Action onComplete = null)
     {
         bool restoreInput = userInputField != null && userInputField.gameObject.activeSelf;
@@ -174,6 +193,7 @@ public abstract class BaseChatbot : MonoBehaviour
 
         chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
         string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
+        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, userMessage);
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = userMessage,
@@ -233,6 +253,7 @@ public abstract class BaseChatbot : MonoBehaviour
 
         chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
         string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
+        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, userMessage);
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = userMessage,

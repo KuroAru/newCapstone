@@ -270,11 +270,9 @@ public class FitchenPostExposureController : MonoBehaviour
 
         Debug.Log($"Effect fade complete, set to {endValue}.");
 
-        // 해당 코루틴 변수를 null로 설정 (각 호출 지점에서 필요시)
-
-        if (setter.Target == colorAdjustments && setter.Method.Name.Contains("postExposure")) postExposureFadeCoroutine = null;
-
-        if (setter.Target == colorAdjustments && setter.Method.Name.Contains("contrast")) contrastFadeCoroutine = null;
+        // 이 코루틴은 postExposure/contrast 둘 중 하나에서만 사용되므로 완료 시 안전하게 해제합니다.
+        postExposureFadeCoroutine = null;
+        contrastFadeCoroutine = null;
 
     }
 
