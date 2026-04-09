@@ -926,19 +926,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -82.306175, y: 56.26474}
+  scrollPos: {x: 196.91707, y: 83.23163}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
-  blockViewHeight: 94
-  zoom: 0.94000006
+  blockViewHeight: 200
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks: []
-  selectedCommands: []
+  selectedBlocks:
+  - {fileID: 265606003}
+  selectedCommands:
+  - {fileID: 265606093}
   variables:
   - {fileID: 265606045}
   - {fileID: 265606092}
@@ -971,7 +973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 100.698395
+    x: 102.698395
     y: 187.46898
     width: 128.16
     height: 40
@@ -1173,8 +1175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 277.6038
-    y: 67.67721
+    x: 276.6038
+    y: 66.67721
     width: 153.9
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -1206,7 +1208,7 @@ MonoBehaviour:
   storyText: ".....? \uC5EC\uAE30 \uC660 \uC0C8\uAC00 \uC788\uB0D0?"
   description: 
   character: {fileID: 0}
-  portrait: {fileID: -2563726732660702037, guid: 4d534136abddc514ea1dc856bb08a707, type: 3}
+  portrait: {fileID: 0}
   voiceOverClip: {fileID: 0}
   showAlways: 1
   showCount: 1
@@ -1956,7 +1958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 83.23477
+    x: 80.23477
     y: 315.46405
     width: 150.11
     height: 40
@@ -2558,8 +2560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 761.21075
-    y: 180.03232
+    x: 762.21075
+    y: 179.03232
     width: 121.48
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}

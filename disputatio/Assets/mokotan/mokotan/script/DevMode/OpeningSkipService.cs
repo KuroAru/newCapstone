@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class OpeningSkipService : MonoBehaviour
 {
-    [SerializeField] private string mainGameplaySceneName = "MainScene";
+    [SerializeField] private string mainGameplaySceneName = "Hall_playerble";
 
     public void SkipOpening()
     {
