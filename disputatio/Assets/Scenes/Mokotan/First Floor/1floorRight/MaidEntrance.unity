@@ -969,6 +969,7 @@ GameObject:
   - component: {fileID: 1447098922}
   - component: {fileID: 1447098920}
   - component: {fileID: 1447098925}
+  - component: {fileID: 1447098926}
   m_Layer: 5
   m_Name: MaidRoom_Door
   m_TagString: Untagged
@@ -1037,12 +1038,12 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7838454410797407194, guid: 2f79033f9f12f044489d42949c7be77e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 246298485111199472, guid: 17315f5ff16e18e469db423aced59119, type: 3}
+  m_Color: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.56, y: 2.52}
+  m_Size: {x: 20.54, y: 13.79}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1057,8 +1058,8 @@ Transform:
   m_GameObject: {fileID: 1447098919}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1007, y: 540, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_LocalPosition: {x: 1010.0264, y: 526.2067, z: 0}
+  m_LocalScale: {x: 0.6240177, y: 0.8030872, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1447098932}
@@ -1133,14 +1134,36 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.22, y: 10.8}
-    newSize: {x: 1.56, y: 2.52}
+    oldSize: {x: 1391.3397, y: 1379}
+    newSize: {x: 20.54, y: 13.79}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 7.22, y: 10.8}
   m_EdgeRadius: 0
+--- !u!114 &1447098926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447098919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c4d5e6f7a8901234567890abcdef12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 1447098922}
+  flowchartOverride: {fileID: 0}
+  fungusBooleanKey: UsedMaidKey
+  spriteWhenTrue: {fileID: -319842324398196924, guid: 5b3ee224772f9924b98cd01ea1eff10f, type: 3}
+  checkGlobalVariables: 1
+  preserveWorldSizeOnSwap: 0
+  referenceWorldSizeOverride: {x: 7.22, y: 10.8}
+  tintWhenSwappedSpriteApplied: 1
+  colorWhenSwapped: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  keepInitialAlphaWhenTinting: 1
 --- !u!1 &1447098931
 GameObject:
   m_ObjectHideFlags: 0
@@ -1901,7 +1924,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedMaidKey
-  value: 0
+  value: 1
 --- !u!114 &2129203502
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -4098,7 +4121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 0
+  value: 1
 --- !u!114 &2129203586
 MonoBehaviour:
   m_ObjectHideFlags: 2
