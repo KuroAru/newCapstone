@@ -203,7 +203,7 @@ namespace SCPE
 
                     if (fogColorGradient.value.objectReferenceValue)
                     {
-                        SCPE.CheckGradientImportSettings(fogColorGradient.value.objectReferenceValue);
+                        SCPE_GUI.CheckGradientImportSettings(fogColorGradient.value.objectReferenceValue);
 
                         GUILayout.Space(5f);
                         //Gradient preview

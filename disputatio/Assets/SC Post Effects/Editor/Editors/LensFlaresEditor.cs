@@ -92,7 +92,7 @@ namespace SCPE
 
             if (colorTex.value.objectReferenceValue)
             {
-                SCPE.CheckGradientImportSettings(colorTex.value.objectReferenceValue);
+                SCPE_GUI.CheckGradientImportSettings(colorTex.value.objectReferenceValue);
             }
 
             //Blur
