@@ -59,7 +59,7 @@ namespace SCPE
 
                 if (gradientTex.value.objectReferenceValue)
                 {
-                    SCPE.CheckGradientImportSettings(gradientTex.value.objectReferenceValue);
+                    SCPE_GUI.CheckGradientImportSettings(gradientTex.value.objectReferenceValue);
                 }
 
             }

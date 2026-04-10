@@ -45,7 +45,7 @@ namespace SCPE
 
             if (colorRamp.value.objectReferenceValue)
             {
-                SCPE.CheckGradientImportSettings(colorRamp.value.objectReferenceValue);
+                SCPE_GUI.CheckGradientImportSettings(colorRamp.value.objectReferenceValue);
             }
         }
     }
