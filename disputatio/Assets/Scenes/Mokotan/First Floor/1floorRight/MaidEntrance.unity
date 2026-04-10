@@ -1058,7 +1058,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1007, y: 540, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1447098932}
@@ -1133,7 +1133,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.22, y: 10.8}
+    oldSize: {x: 722, y: 1080}
     newSize: {x: 1.56, y: 2.52}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1901,7 +1901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedMaidKey
-  value: 0
+  value: 1
 --- !u!114 &2129203502
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -4098,7 +4098,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 0
+  value: 1
 --- !u!114 &2129203586
 MonoBehaviour:
   m_ObjectHideFlags: 2
