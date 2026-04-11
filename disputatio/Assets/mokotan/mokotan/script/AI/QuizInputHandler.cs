@@ -38,6 +38,9 @@ public class QuizInputHandler : MonoBehaviour
 
     public bool IsQuizInputLocked => _quizInputLocked;
 
+    /// <summary>튜터 입력 패널(Parret_Panel 등)이 이미 켜져 있는지 — 창 클릭 직후 AI만으로는 패널을 자동 오픈하지 않을 때 사용.</summary>
+    public bool IsQuizInputPanelActive => inputPanel != null && inputPanel.activeInHierarchy;
+
     /// <summary>onSubmit이 같은 프레임에 두 번 호출될 때 중복 전송 방지.</summary>
     private int _lastHandledSubmitFrame = -1;
 
@@ -326,5 +329,12 @@ public class QuizInputHandler : MonoBehaviour
         {
             Debug.LogError("QuizInputHandler: Input Panel이 연결되지 않았습니다!");
         }
+    }
+
+    /// <summary>미션 완료 등 — <see cref="TutorPanelSayDialogSync"/>로 SayDialog와 함께 정리됩니다.</summary>
+    public void DeactivateQuizInputPanel()
+    {
+        if (inputPanel != null)
+            inputPanel.SetActive(false);
     }
 }

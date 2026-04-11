@@ -89,6 +89,20 @@ public abstract class BaseChatbot : MonoBehaviour
     }
 
     /// <summary>
+    /// 백엔드 <c>ChatRequest.prompt</c> (max 2000). 공백만이면 API 호출하지 않음 → 422 방지.
+    /// </summary>
+    protected static bool TryNormalizePromptForChatApi(string userMessage, out string normalized)
+    {
+        normalized = (userMessage ?? "").Trim();
+        if (normalized.Length == 0)
+            return false;
+        const int MaxChatPromptChars = 2000;
+        if (normalized.Length > MaxChatPromptChars)
+            normalized = normalized.Substring(0, MaxChatPromptChars);
+        return true;
+    }
+
+    /// <summary>
     /// <c>SendWebRequest</c> 직전(스트리밍은 전송 시작 직후 루프 진입 전)·직후(응답 본문 수신 완료 시점).
     /// <see cref="isRequestInProgress"/>는 Say까지 true이므로 “서버 대기” 전용 UI는 여기서 구분합니다.
     /// </summary>
@@ -322,19 +336,26 @@ public abstract class BaseChatbot : MonoBehaviour
         if (isRequestInProgress) yield break;
         isRequestInProgress = true;
 
-        chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
+        if (!TryNormalizePromptForChatApi(userMessage, out string promptForApi))
+        {
+            isRequestInProgress = false;
+            Say("내용을 입력해 주세요.", null);
+            yield break;
+        }
+
+        chatHistory.Add(new OpenAIMessage { role = "user", content = promptForApi });
         string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
-        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, userMessage);
+        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, promptForApi);
 
         bool useTools = useToolsOverrideForNextRequest ?? true;
         useToolsOverrideForNextRequest = null;
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
-            prompt = userMessage,
+            prompt = promptForApi,
             system = finalSystemPrompt,
             use_tools = useTools
         };
-        AugmentChatPayload(payload, userMessage);
+        AugmentChatPayload(payload, promptForApi);
         string payloadJson = JsonConvert.SerializeObject(payload);
 
         using (UnityWebRequest request = new UnityWebRequest(localServerUrl, "POST"))
@@ -394,19 +415,26 @@ public abstract class BaseChatbot : MonoBehaviour
         if (isRequestInProgress) yield break;
         isRequestInProgress = true;
 
-        chatHistory.Add(new OpenAIMessage { role = "user", content = userMessage });
+        if (!TryNormalizePromptForChatApi(userMessage, out string promptForApi))
+        {
+            isRequestInProgress = false;
+            Say("내용을 입력해 주세요.", null);
+            yield break;
+        }
+
+        chatHistory.Add(new OpenAIMessage { role = "user", content = promptForApi });
         string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
-        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, userMessage);
+        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, promptForApi);
 
         bool useTools = useToolsOverrideForNextRequest ?? true;
         useToolsOverrideForNextRequest = null;
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
-            prompt = userMessage,
+            prompt = promptForApi,
             system = finalSystemPrompt,
             use_tools = useTools
         };
-        AugmentChatPayload(payload, userMessage);
+        AugmentChatPayload(payload, promptForApi);
         string payloadJson = JsonConvert.SerializeObject(payload);
 
         string streamUrl = localServerUrl.Replace("/chat", "/chat/stream");

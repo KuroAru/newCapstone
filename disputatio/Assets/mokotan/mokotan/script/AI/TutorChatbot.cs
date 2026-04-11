@@ -62,6 +62,10 @@ public class TutorChatbot : BaseChatbot
     [Tooltip("CorrectAnswerCount·채점 경로 등 퀴즈 진행 로그.")]
     [SerializeField] private bool debugQuizProgress = true;
 
+    [Header("Chester 창 → 앵무 플로우")]
+    [Tooltip("앵무 오브젝트의 Clickable2D. 비워도 씬에서 이름이 \"Parret\"인 Clickable2D를 찾습니다. WindowClicked인 동안 빈 /chat은 앵무 클릭(또는 이미 연 패널·책상 경로) 전까지 막습니다.")]
+    [SerializeField] private Clickable2D chesterParrotClickable;
+
     private Coroutine _thinkingHoldCoroutine;
     /// <summary><see cref="BaseChatbot.OnChatHttpWaitStarted"/>~<see cref="BaseChatbot.OnChatHttpWaitFinished"/> 구간만 true — Say 대기와 구분.</summary>
     private bool _tutorWaitingOnHttp;
@@ -77,12 +81,36 @@ public class TutorChatbot : BaseChatbot
     /// <summary>직전 AI 턴 이후 플레이어 자유 답변을 HTTP <c>/tutor/grade</c>로 채점할지.</summary>
     private bool _expectingQuizAnswer;
 
+    /// <summary>앵무 클릭으로 첫 퀴즈 턴을 시작했는지(WindowClicked 모드).</summary>
+    private bool _chesterParrotQuizStarted;
+
+    /// <summary>다음 <see cref="CoTutorPlayerTurn"/> 한 번만 앵무 즉시 출제 프롬프트·생각 홀드 생략.</summary>
+    private bool _chesterParrotImmediateQuestionTurnPending;
+
+    private bool _chesterParrotEventSubscribed;
+    private bool _prevFlowchartWindowClicked;
+
+    private const string ChesterParrotObjectName = "Parret";
+
     private const string UserPromptAfterCorrectAnswer =
         "[시스템: 방금 플레이어 답은 서버에서 정답으로 확정되었다. 아주 짧게 격려한 뒤, " +
         "문제 은행에 적힌 **다음** 질문 문장을 글자 그대로 한 줄로만 말해. 진행 숫자·n/5·몇 문제는 말하지 마. 새 JSON이나 툴은 쓰지 마.]";
 
     private const string UserPromptMissionComplete =
         "[시스템: 플레이어가 오늘 퀴즈 미션을 모두 완료했다. 짧게 칭찬하고 마무리 인사만 해. 새 문제는 내지 마.]";
+
+    /// <summary>Fungus가 창(체셔) 클릭 시 빈 문자열로 <see cref="AddPlayerMessageAndGetResponse"/>를 호출할 때 실제 /chat 프롬프트로 씁니다.</summary>
+    private const string UserPromptChesterWindowOpen =
+        "[시스템: 플레이어가 체셔(창)와 대화를 막 시작했다. 아주 짧게 인사만 한 뒤, " +
+        "문제 은행에 적힌 **지금** 퀴즈 질문 문장을 글자 그대로 한 줄로만 말해. 진행 숫자·n/5·몇 문제는 말하지 마. 새 JSON이나 툴은 쓰지 마.]";
+
+    /// <summary>앵무 클릭 직후 첫 /chat — 인사·도입 없이 질문 한 줄만.</summary>
+    private const string UserPromptChesterParrotAskQuestionNow =
+        "[시스템: 플레이어가 앵무를 방금 눌러 퀴즈를 시작했다. 인사·도입·잡담·추가 문장 금지. " +
+        "문제 은행의 **지금** 질문 문장만 글자 그대로 한 줄로 말해. 진행 숫자·n/5·따옴표·머리말 금지. 새 JSON이나 툴은 쓰지 마.]";
+
+    /// <summary>백엔드 <c>TutorGradeRequest.user_answer</c> 상한과 맞춤.</summary>
+    private const int MaxTutorGradeAnswerChars = 4000;
 
     /// <summary>패널과 SayDialog 동기화(<see cref="TutorPanelSayDialogSync"/>)용.</summary>
     public SayDialog TutorSayDialogForPanelSync => chatSayDialog;
@@ -116,6 +144,124 @@ public class TutorChatbot : BaseChatbot
             LockQuizInputAfterSessionComplete();
         else
             _expectingQuizAnswer = false;
+
+        TryResolveChesterParrotClickable();
+        SubscribeChesterParrotClick();
+        if (flowchart != null)
+            _prevFlowchartWindowClicked = flowchart.GetBooleanVariable("WindowClicked");
+        StartCoroutine(CoDeferredChesterParrotSubscribe());
+    }
+
+    private IEnumerator CoDeferredChesterParrotSubscribe()
+    {
+        yield return null;
+        TryResolveChesterParrotClickable();
+        SubscribeChesterParrotClick();
+    }
+
+    private void OnEnable()
+    {
+        TryResolveChesterParrotClickable();
+        SubscribeChesterParrotClick();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeChesterParrotClick();
+    }
+
+    private void LateUpdate()
+    {
+        if (flowchart == null)
+            return;
+
+        bool wc = flowchart.GetBooleanVariable("WindowClicked");
+        if (!wc && _prevFlowchartWindowClicked)
+            _chesterParrotQuizStarted = false;
+
+        _prevFlowchartWindowClicked = wc;
+    }
+
+    private void TryResolveChesterParrotClickable()
+    {
+        if (chesterParrotClickable != null
+            && chesterParrotClickable.gameObject != null
+            && !chesterParrotClickable.gameObject.scene.IsValid())
+        {
+            chesterParrotClickable = null;
+        }
+
+        if (chesterParrotClickable != null)
+            return;
+
+        foreach (var c in FindObjectsByType<Clickable2D>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (c == null || c.gameObject == null || !c.gameObject.scene.IsValid())
+                continue;
+            if (c.gameObject.name != ChesterParrotObjectName)
+                continue;
+            chesterParrotClickable = c;
+            if (debugQuizProgress)
+                Debug.Log("[TutorQuiz] Chester Parret Clickable2D 자동 연결.");
+            break;
+        }
+    }
+
+    private bool IsEventFromChesterParrot(Clickable2D clicked)
+    {
+        if (clicked == null)
+            return false;
+        if (chesterParrotClickable != null)
+        {
+            if (clicked == chesterParrotClickable)
+                return true;
+            if (chesterParrotClickable.gameObject != null
+                && clicked.gameObject == chesterParrotClickable.gameObject)
+                return true;
+        }
+
+        return clicked.gameObject != null
+            && clicked.gameObject.scene.IsValid()
+            && clicked.gameObject.name == ChesterParrotObjectName;
+    }
+
+    private void SubscribeChesterParrotClick()
+    {
+        if (chesterParrotClickable == null || FungusManager.Instance == null || _chesterParrotEventSubscribed)
+            return;
+        FungusManager.Instance.EventDispatcher.AddListener<ObjectClicked.ObjectClickedEvent>(OnChesterParrotObjectClicked);
+        _chesterParrotEventSubscribed = true;
+    }
+
+    private void UnsubscribeChesterParrotClick()
+    {
+        if (!_chesterParrotEventSubscribed || FungusManager.Instance == null)
+            return;
+        FungusManager.Instance.EventDispatcher.RemoveListener<ObjectClicked.ObjectClickedEvent>(OnChesterParrotObjectClicked);
+        _chesterParrotEventSubscribed = false;
+    }
+
+    private void OnChesterParrotObjectClicked(ObjectClicked.ObjectClickedEvent evt)
+    {
+        if (evt == null || !IsEventFromChesterParrot(evt.ClickableObject))
+            return;
+        if (flowchart == null || !flowchart.GetBooleanVariable("WindowClicked"))
+            return;
+        if (IsTutorQuizFinished || _chesterParrotQuizStarted)
+            return;
+        if (isRequestInProgress)
+            return;
+
+        if (quizInputHandler != null)
+            quizInputHandler.ActivateQuizInputField();
+
+        _chesterParrotQuizStarted = true;
+        _chesterParrotImmediateQuestionTurnPending = true;
+        if (!TryAddPlayerMessageAndGetResponse(""))
+        {
+            _chesterParrotQuizStarted = false;
+            _chesterParrotImmediateQuestionTurnPending = false;
+        }
     }
 
     /// <summary>
@@ -186,17 +332,23 @@ public class TutorChatbot : BaseChatbot
 
     public void AddPlayerMessageAndGetResponse(string playerMessage)
     {
+        TryAddPlayerMessageAndGetResponse(playerMessage);
+    }
+
+    private bool TryAddPlayerMessageAndGetResponse(string playerMessage)
+    {
         if (IsTutorQuizFinished)
-            return;
+            return false;
 
         if (isRequestInProgress)
         {
             Debug.LogWarning("이미 AI 응답 요청이 진행 중입니다. 새로운 요청을 무시합니다.");
-            return;
+            return false;
         }
 
         StartCoroutine(CoTutorPlayerTurn(playerMessage));
         Debug.Log($"플레이어 답변 전송 및 GPT 응답 요청: {playerMessage}");
+        return true;
     }
 
     /// <summary>GameTimer 등 — 퀴즈와 무관한 짧은 안내용.</summary>
@@ -253,8 +405,37 @@ public class TutorChatbot : BaseChatbot
             yield break;
         }
 
-        _thinkingHoldCoroutine = StartCoroutine(CoThinkingHoldIfSlow());
-        yield return StartCoroutine(GetGPTResponse(playerMessage));
+        string llmUserTurn = playerMessage;
+        // Chester: WindowClicked인 동안 빈 메시지는 앵무로 시작했거나(또는 책상 등으로 패널이 이미 켜진 뒤)만 허용.
+        if (string.IsNullOrWhiteSpace(llmUserTurn)
+            && flowchart != null
+            && flowchart.GetBooleanVariable("WindowClicked")
+            && !IsTutorQuizFinished
+            && !_chesterParrotQuizStarted
+            && !(quizInputHandler != null && quizInputHandler.IsQuizInputPanelActive))
+        {
+            yield break;
+        }
+
+        if (string.IsNullOrWhiteSpace(llmUserTurn)
+            && flowchart != null
+            && flowchart.GetBooleanVariable("WindowClicked")
+            && !IsTutorQuizFinished)
+        {
+            llmUserTurn = _chesterParrotImmediateQuestionTurnPending
+                ? UserPromptChesterParrotAskQuestionNow
+                : UserPromptChesterWindowOpen;
+        }
+
+        bool immediateParrotQuestion = _chesterParrotImmediateQuestionTurnPending;
+        if (immediateParrotQuestion)
+            _chesterParrotImmediateQuestionTurnPending = false;
+
+        if (immediateParrotQuestion)
+            _thinkingHoldCoroutine = null;
+        else
+            _thinkingHoldCoroutine = StartCoroutine(CoThinkingHoldIfSlow());
+        yield return StartCoroutine(GetGPTResponse(llmUserTurn));
         if (_thinkingHoldCoroutine != null)
         {
             StopCoroutine(_thinkingHoldCoroutine);
@@ -288,14 +469,19 @@ public class TutorChatbot : BaseChatbot
             return "";
 
         string u = chatUrl.Trim().TrimEnd('/');
+        const string gradeSuffix = "/tutor/grade";
+        // 인스펙터에 실수로 …/tutor/grade 를 넣은 경우 — 여기서 또 붙이면 …/tutor/grade/tutor/grade 가 됨.
+        if (u.EndsWith(gradeSuffix, StringComparison.OrdinalIgnoreCase))
+            return u;
+
         const string chatSuffix = "/chat";
         if (u.EndsWith(chatSuffix, StringComparison.OrdinalIgnoreCase))
-            return u.Substring(0, u.Length - chatSuffix.Length) + "/tutor/grade";
+            return u.Substring(0, u.Length - chatSuffix.Length) + gradeSuffix;
 
         if (u.Contains("/chat", StringComparison.OrdinalIgnoreCase))
-            return u.Replace("/chat", "/tutor/grade", StringComparison.OrdinalIgnoreCase);
+            return u.Replace("/chat", gradeSuffix, StringComparison.OrdinalIgnoreCase);
 
-        return u + "/tutor/grade";
+        return u + gradeSuffix;
     }
 
     private IEnumerator CoGradeThenReact(string playerAnswer)
@@ -318,11 +504,16 @@ public class TutorChatbot : BaseChatbot
             yield break;
         }
 
+        string answerForGrade = playerAnswer ?? "";
+        if (answerForGrade.Length > MaxTutorGradeAnswerChars)
+            answerForGrade = answerForGrade.Substring(0, MaxTutorGradeAnswerChars);
+        int ccBefore = Mathf.Clamp(ReadCorrectAnswerCount(), 0, 10_000);
+
         var payload = new Dictionary<string, object>
         {
             ["question_id"] = qid,
-            ["user_answer"] = playerAnswer,
-            ["correct_count_before"] = ReadCorrectAnswerCount(),
+            ["user_answer"] = answerForGrade,
+            ["correct_count_before"] = ccBefore,
             ["quiz_target"] = TutorQuizTargetCorrectCount,
         };
         string jsonBody = JsonConvert.SerializeObject(payload);
@@ -407,7 +598,10 @@ public class TutorChatbot : BaseChatbot
         _thinkingHoldCoroutine = StartCoroutine(CoThinkingHoldIfSlow());
 
         if (IsTutorQuizFinished)
+        {
             yield return StartCoroutine(GetGPTResponse(UserPromptMissionComplete));
+            HideTutorQuizUiAfterSessionComplete();
+        }
         else
             yield return StartCoroutine(GetGPTResponse(UserPromptAfterCorrectAnswer));
 
@@ -601,6 +795,17 @@ public class TutorChatbot : BaseChatbot
             _lastEmbeddedQuizComplete = IsTutorQuizFinished;
         }
 
+        // WindowClicked 튜터: 창 클릭만으로 Parret_Panel을 켜지 않음. 책상 등에서 패널이 이미 열린 뒤에만 포커스.
+        if (_expectingQuizAnswer
+            && !IsTutorQuizFinished
+            && quizInputHandler != null
+            && flowchart != null
+            && flowchart.GetBooleanVariable("WindowClicked")
+            && quizInputHandler.IsQuizInputPanelActive)
+        {
+            quizInputHandler.ActivateQuizInputField();
+        }
+
         OnAIReponseComplete?.Invoke();
     }
 
@@ -777,6 +982,20 @@ public class TutorChatbot : BaseChatbot
             quizInputHandler = FindObjectOfType<QuizInputHandler>();
         if (quizInputHandler != null)
             quizInputHandler.SetQuizInputLocked(true);
+    }
+
+    /// <summary>5문제 완료 후 Parret 패널과 Fungus SayDialog를 끕니다.</summary>
+    private void HideTutorQuizUiAfterSessionComplete()
+    {
+        if (quizInputHandler == null)
+            quizInputHandler = FindObjectOfType<QuizInputHandler>();
+        if (quizInputHandler != null)
+            quizInputHandler.DeactivateQuizInputPanel();
+
+        if (chatSayDialog == null)
+            return;
+        chatSayDialog.Stop();
+        chatSayDialog.gameObject.SetActive(false);
     }
 
     private void HandleEmote(Dictionary<string, object> args)

@@ -4733,8 +4733,8 @@ MonoBehaviour:
   - {fileID: 687597855}
   - {fileID: 687597824}
   - {fileID: 687597826}
-  - {fileID: 687597857}
   - {fileID: 687597860}
+  - {fileID: 687597857}
   suppressAllAutoSelections: 0
 --- !u!114 &687597812
 MonoBehaviour:
@@ -9629,7 +9629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c42bb60ebb89564ebe30dbb85754eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/tutor/grade
+  localServerUrl: http://15.165.237.11:8000/chat
   chatSayDialog: {fileID: 2143604509}
   dialogAdvanceKey: 32
   userInputField: {fileID: 2019333630}
@@ -9647,6 +9647,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   debugQuizProgress: 1
+  chesterParrotClickable: {fileID: 701409203}
 --- !u!4 &1085980052
 Transform:
   m_ObjectHideFlags: 0

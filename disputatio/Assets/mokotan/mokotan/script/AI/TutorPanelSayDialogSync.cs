@@ -22,7 +22,9 @@ public sealed class TutorPanelSayDialogSync : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_sayDialog != null)
-            _sayDialog.gameObject.SetActive(false);
+        if (_sayDialog == null)
+            return;
+        _sayDialog.Stop();
+        _sayDialog.gameObject.SetActive(false);
     }
 }

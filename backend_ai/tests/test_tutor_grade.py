@@ -61,3 +61,21 @@ def test_unknown_question(bank: QuizBank) -> None:
     )
     assert r.unknown_question is True
     assert r.is_correct is False
+
+
+def test_empty_user_answer_is_wrong(bank: QuizBank) -> None:
+    r = grade_tutor_answer(
+        TutorGradeRequest(question_id="Q002", user_answer="", correct_count_before=0),
+        bank,
+        Settings(),
+    )
+    assert r.is_correct is False
+    assert r.unknown_question is False
+
+
+def test_high_correct_count_before_validates(bank: QuizBank) -> None:
+    """Fungus Integer가 비정상적으로 크면 예전 스키마(le=100)에서 422가 났음."""
+    req = TutorGradeRequest(question_id="Q002", user_answer="골리앗", correct_count_before=500)
+    assert req.correct_count_before == 500
+    r = grade_tutor_answer(req, bank, Settings())
+    assert r.is_correct is True
