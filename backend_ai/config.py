@@ -26,6 +26,18 @@ class Settings(BaseSettings):
 
     default_temperature: float = 0.7
     max_tokens: int = 512
+    #: Tutor ``rag_profile`` 요청에만 적용(짧은 대사·툴 호출 위주). 전역 max_tokens와 min.
+    tutor_chat_max_tokens: int = 384
+
+    # Tutor RAG / quiz bank (paths relative to backend_ai/)
+    tutor_rag_corpus_dir: str = "data/tutor_rag"
+    tutor_quiz_csv_path: str = "data/tutor_quiz/quiz_bank.csv"
+    tutor_rag_index_path: str = "data/tutor_rag_index.json"
+    tutor_embedding_model: str = "models/text-embedding-004"
+    tutor_rag_top_k: int = 5
+    tutor_rag_max_context_chars: int = 6000
+    tutor_grade_fuzzy_ratio: float = 0.82
+    tutor_grade_fuzzy_max_len: int = 24
 
 
 @lru_cache

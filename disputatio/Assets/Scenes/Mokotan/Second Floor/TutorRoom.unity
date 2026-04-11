@@ -8108,7 +8108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 0
+  value: 1
 --- !u!114 &687597875
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -9209,7 +9209,6 @@ RectTransform:
   - {fileID: 2019333633}
   - {fileID: 969910444}
   - {fileID: 556763118}
-  - {fileID: 1101585865}
   m_Father: {fileID: 1248636636}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -9338,8 +9337,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1101585866}
-        m_TargetAssemblyTypeName: GlobalChatbot, Assembly-CSharp
+      - m_Target: {fileID: 1085980051}
+        m_TargetAssemblyTypeName: TutorChatbot, Assembly-CSharp
         m_MethodName: OnSendButtonClick
         m_Mode: 1
         m_Arguments:
@@ -9422,6 +9421,8 @@ MonoBehaviour:
   targetFlowchart: {fileID: 687597760}
   fungusVariableName: PlayerAnswer
   tutorChatbot: {fileID: 1085980051}
+  debugLogInputField: 1
+  sendButtonObject: {fileID: 0}
 --- !u!4 &992922674
 Transform:
   m_ObjectHideFlags: 0
@@ -9628,15 +9629,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c42bb60ebb89564ebe30dbb85754eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.165.237.11:8000/tutor/grade
   chatSayDialog: {fileID: 2143604509}
+  dialogAdvanceKey: 32
+  userInputField: {fileID: 2019333630}
   flowchart: {fileID: 687597760}
+  quizInputHandler: {fileID: 992922673}
+  tutorQuestionOrderAsset: {fileID: 4900000, guid: c7f3a91d2b4e5648a9e1029384756abc, type: 3}
+  tutorGradeUrlOverride: 
+  thinkingHoldDelaySeconds: 3
+  thinkingHoldSayMessage: "\uC74C\u2026 \uC9C0\uAE08 \uC0DD\uAC01\uD558\uB294 \uC911\uC774\uC57C.
+    \uC870\uAE08\uB9CC \uAE30\uB2E4\uB824 \uC918."
   OnAIReponseComplete:
     m_PersistentCalls:
       m_Calls: []
   OnQuizCompletedEvent:
     m_PersistentCalls:
       m_Calls: []
+  debugQuizProgress: 1
 --- !u!4 &1085980052
 Transform:
   m_ObjectHideFlags: 0
@@ -9772,54 +9782,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1093353575}
   m_CullTransparentMesh: 1
---- !u!1 &1101585864
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1101585865}
-  - component: {fileID: 1101585866}
-  m_Layer: 6
-  m_Name: chatbotManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1101585865
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1101585864}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -319.37238, y: -311.83496, z: -1.432226}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 964305131}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1101585866
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1101585864}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909188ddab9be584699994f0c1097ec4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
-  chatSayDialog: {fileID: 0}
-  userInputField: {fileID: 2019333630}
-  globalFlowchart: {fileID: 0}
 --- !u!1 &1227302856
 GameObject:
   m_ObjectHideFlags: 1
@@ -12484,8 +12446,8 @@ MonoBehaviour:
   m_ReadOnly: 0
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: 34d8dd68c71273049a43918fae18662a, type: 2}
-  m_OnFocusSelectAll: 1
-  m_ResetOnDeActivation: 1
+  m_OnFocusSelectAll: 0
+  m_ResetOnDeActivation: 0
   m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
