@@ -1157,12 +1157,12 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1447098922}
   flowchartOverride: {fileID: 0}
   fungusBooleanKey: UsedMaidKey
-  spriteWhenTrue: {fileID: -319842324398196924, guid: 5b3ee224772f9924b98cd01ea1eff10f, type: 3}
+  spriteWhenTrue: {fileID: 3950908370989810069, guid: 6f7c30610bf224045b1aef98566cca05, type: 3}
   checkGlobalVariables: 1
   preserveWorldSizeOnSwap: 0
   referenceWorldSizeOverride: {x: 7.22, y: 10.8}
   tintWhenSwappedSpriteApplied: 1
-  colorWhenSwapped: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  colorWhenSwapped: {r: 0.8679245, g: 0.8679245, b: 0.8679245, a: 1}
   keepInitialAlphaWhenTinting: 1
 --- !u!1 &1447098931
 GameObject:
