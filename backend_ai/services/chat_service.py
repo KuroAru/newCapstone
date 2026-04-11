@@ -3,9 +3,13 @@ from __future__ import annotations
 import logging
 from typing import AsyncIterator
 
+from config import Settings
 from models.requests import ChatRequest
 from models.responses import ChatResponse, FunctionCallResult, SSEEvent
 from providers.base import AIProvider
+from services.answer_grader import grade_user_answer
+from services.quiz_bank import QuizBank
+from services.tutor_rag_service import TutorRAGService
 from tools.registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
@@ -21,12 +25,19 @@ class ChatService:
         registry: ToolRegistry,
         temperature: float = 0.7,
         max_tokens: int = 512,
+        *,
+        app_settings: Settings | None = None,
+        tutor_rag: TutorRAGService | None = None,
+        quiz_bank: QuizBank | None = None,
     ) -> None:
         self._primary = primary
         self._fallback = fallback
         self._registry = registry
         self._temperature = temperature
         self._max_tokens = max_tokens
+        self._app_settings = app_settings
+        self._tutor_rag = tutor_rag
+        self._quiz_bank = quiz_bank
 
     _TOOL_INSTRUCTION = (
         "\n\n[중요: 응답 방식] "
@@ -36,8 +47,34 @@ class ChatService:
         "텍스트 응답과 tool 호출은 완전히 분리되어야 합니다."
     )
 
+    def _compose_system(self, request: ChatRequest) -> str:
+        if request.rag_profile != "tutor":
+            return request.system
+        if self._app_settings is None:
+            return request.system
+
+        blocks: list[str] = []
+        if self._tutor_rag:
+            q = (request.rag_query or request.prompt).strip()
+            top_k = request.rag_top_k or self._app_settings.tutor_rag_top_k
+            rag = self._tutor_rag.build_context_block(
+                q,
+                top_k=top_k,
+                max_context_chars=self._app_settings.tutor_rag_max_context_chars,
+            )
+            if rag:
+                blocks.append(rag)
+
+        if self._quiz_bank and request.current_question_id:
+            row = self._quiz_bank.get(request.current_question_id)
+            if row:
+                blocks.append(self._quiz_bank.format_bank_context_block(row))
+
+        blocks.append(request.system)
+        return "\n\n".join(blocks)
+
     def _build_messages(self, request: ChatRequest) -> list[dict]:
-        system_content = request.system
+        system_content = self._compose_system(request)
         if request.use_tools and len(self._registry) > 0:
             system_content += self._TOOL_INSTRUCTION
         return [
@@ -50,17 +87,55 @@ class ChatService:
             return None
         return self._registry.get_all_openai_format()
 
+    def _max_tokens_for_request(self, request: ChatRequest) -> int:
+        base = self._max_tokens
+        if self._app_settings is None or request.rag_profile != "tutor":
+            return base
+        cap = self._app_settings.tutor_chat_max_tokens
+        if cap <= 0:
+            return base
+        return min(base, cap)
+
+    def _apply_tutor_quiz_override(self, request: ChatRequest, result: ChatResponse) -> ChatResponse:
+        """If CSV grader says correct, force update_quiz.is_correct True."""
+        if request.rag_profile != "tutor" or not request.current_question_id:
+            return result
+        if self._quiz_bank is None or self._app_settings is None:
+            return result
+        row = self._quiz_bank.get(request.current_question_id)
+        if row is None:
+            return result
+
+        if not grade_user_answer(
+            request.prompt,
+            row.acceptable_answers,
+            fuzzy_ratio=self._app_settings.tutor_grade_fuzzy_ratio,
+            fuzzy_max_len=self._app_settings.tutor_grade_fuzzy_max_len,
+        ):
+            return result
+
+        new_calls: list[FunctionCallResult] = []
+        for fc in result.function_calls:
+            if fc.name == "update_quiz" and isinstance(fc.arguments, dict):
+                args = dict(fc.arguments)
+                args["is_correct"] = True
+                new_calls.append(FunctionCallResult(name=fc.name, arguments=args))
+            else:
+                new_calls.append(fc)
+        return ChatResponse(response=result.response, function_calls=new_calls)
+
     async def stream_chat(self, request: ChatRequest) -> AsyncIterator[SSEEvent]:
         messages = self._build_messages(request)
         tools = self._get_tools(request)
 
         try:
+            max_tok = self._max_tokens_for_request(request)
             logger.info("Attempting primary provider: %s", self._primary.name)
             async for event in self._primary.stream_chat(
                 messages=messages,
                 tools=tools,
                 temperature=self._temperature,
-                max_tokens=self._max_tokens,
+                max_tokens=max_tok,
             ):
                 yield event
             return
@@ -73,12 +148,13 @@ class ChatService:
             return
 
         try:
+            max_tok = self._max_tokens_for_request(request)
             logger.info("Falling back to: %s", self._fallback.name)
             async for event in self._fallback.stream_chat(
                 messages=messages,
                 tools=tools,
                 temperature=self._temperature,
-                max_tokens=self._max_tokens,
+                max_tokens=max_tok,
             ):
                 yield event
         except Exception as exc:
@@ -105,4 +181,5 @@ class ChatService:
                 full_text_parts = [event.full_text]
 
         response_text = "".join(full_text_parts) if full_text_parts else (error_text or "")
-        return ChatResponse(response=response_text, function_calls=function_calls)
+        result = ChatResponse(response=response_text, function_calls=function_calls)
+        return self._apply_tutor_quiz_override(request, result)

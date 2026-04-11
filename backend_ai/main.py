@@ -2,16 +2,20 @@ from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 
 from config import get_settings
-from models.requests import ChatRequest
-from models.responses import ChatResponse
+from models.requests import ChatRequest, TutorGradeRequest
+from models.responses import ChatResponse, TutorGradeResponse
 from providers.groq_provider import GroqProvider
 from providers.gemini_provider import GeminiProvider
 from services.chat_service import ChatService
+from services.quiz_bank import QuizBank
+from services.tutor_grade import grade_tutor_answer
+from services.tutor_rag_service import TutorRAGService
 from tools.game_tools import GAME_TOOLS
 from tools.registry import ToolRegistry
 
@@ -37,6 +41,14 @@ if primary is None and fallback is None:
 _first_available = primary or fallback
 _second_available = fallback if primary else None
 
+_backend_dir = Path(__file__).resolve().parent
+_quiz_bank = QuizBank.load(_backend_dir / settings.tutor_quiz_csv_path)
+_tutor_rag = TutorRAGService(
+    index_path=_backend_dir / settings.tutor_rag_index_path,
+    api_key=settings.google_api_key,
+    embedding_model=settings.tutor_embedding_model,
+)
+
 chat_service: ChatService | None = (
     ChatService(
         primary=_first_available,
@@ -44,6 +56,9 @@ chat_service: ChatService | None = (
         registry=registry,
         temperature=settings.default_temperature,
         max_tokens=settings.max_tokens,
+        app_settings=settings,
+        tutor_rag=_tutor_rag,
+        quiz_bank=_quiz_bank,
     )
     if _first_available
     else None
@@ -69,6 +84,13 @@ async def chat(request: ChatRequest):
     if not result.response and not result.function_calls:
         raise HTTPException(status_code=500, detail="모든 AI 엔진 실패")
 
+    return result
+
+
+@app.post("/tutor/grade", response_model=TutorGradeResponse)
+async def tutor_grade(request: TutorGradeRequest):
+    """LLM 없이 quiz_bank CSV로 정오만 판정합니다."""
+    result = grade_tutor_answer(request, _quiz_bank, settings)
     return result
 
 
