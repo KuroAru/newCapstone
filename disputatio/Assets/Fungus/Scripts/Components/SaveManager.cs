@@ -189,11 +189,14 @@ namespace Fungus
 
         protected virtual void Update()
         {
-            // Execute any previously scheduled load action
+            // Execute any previously scheduled load action.
+            // Clear loadAction *before* invoking so nested work (e.g. SavePointData in-scene restore calling
+            // DoSavePointLoaded → OnSavePointLoaded) can assign the next action for the following frame.
             if (loadAction != null)
             {
-                loadAction();
+                System.Action run = loadAction;
                 loadAction = null;
+                run();
             }
         }
 

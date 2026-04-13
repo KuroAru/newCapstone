@@ -2333,7 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86b3579dcce255428a4a5f2c155de90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 1700883150}
   sonFlowchart: {fileID: 687597760}
   userInputField: {fileID: 336609495}
@@ -14304,7 +14304,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

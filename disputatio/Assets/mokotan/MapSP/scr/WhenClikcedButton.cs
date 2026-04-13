@@ -48,6 +48,19 @@ public class WhenClikcedButton : MonoBehaviour
         RefreshReferences();
     }
 
+    private void Update()
+    {
+        // 일부 경로(단축키/다른 스크립트)로 지도가 켜질 때 OnOpenMapClick을 거치지 않을 수 있어
+        // 패널이 열린 동안에는 방 상태를 지속 동기화합니다.
+        if (panelToActivate == null || !panelToActivate.activeInHierarchy)
+            return;
+
+        if (globalFlowchart == null)
+            FindGlobalManager();
+
+        UpdateAllRoomStates();
+    }
+
     private void FindGlobalManager()
     {
         // 캐시가 씬 전환 후에도 유효하지만, Variablemanager 재탐색이 안전합니다.
@@ -71,11 +84,11 @@ public class WhenClikcedButton : MonoBehaviour
         // 매 씬 로드마다 Variablemanager Flowchart를 다시 묶어 잘못된 차트·stale 참조를 방지합니다.
         FindGlobalManager();
 
+        // Variablemanager를 못 찾는 씬에서도 전역(Fungus Global) fallback으로 상태를 갱신한다.
         if (globalFlowchart != null)
-        {
             globalFlowchart.SetBooleanVariable("isCalled", false); //
-            UpdateAllRoomStates(); // 씬 로드 시 상태 갱신
-        }
+
+        UpdateAllRoomStates(); // 씬 로드 시 상태 갱신
     }
 
     public void OnOpenMapClick()
@@ -149,11 +162,42 @@ public class WhenClikcedButton : MonoBehaviour
         // 방이 열렸다면 자물쇠를 끄고 방을 켬, 반대면 자물쇠를 켜고 방을 끔
         if (lockObj != null) lockObj.SetActive(!isOpen);
         if (openObj != null) openObj.SetActive(isOpen);
+
+        // 일부 맵 노드는 open 오브젝트 내부에 잠금 배지(자식 UI)가 같이 들어있다.
+        // 전역 bool이 true인 경우 배지를 숨겨 "열림" 상태가 시각적으로 보이도록 강제한다.
+        if (openObj != null && key == "UsedMaidKey")
+            ToggleLockBadgeChildren(openObj, !isOpen);
+    }
+
+    private static void ToggleLockBadgeChildren(GameObject root, bool showLockBadge)
+    {
+        if (root == null) return;
+
+        Transform[] all = root.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < all.Length; i++)
+        {
+            Transform t = all[i];
+            if (t == null || t == root.transform) continue;
+
+            string n = t.name;
+            if (string.IsNullOrEmpty(n)) continue;
+
+            string lower = n.ToLowerInvariant();
+            if (lower.Contains("lock") || lower.Contains("자물쇠"))
+                t.gameObject.SetActive(showLockBadge);
+        }
     }
 
     private bool CheckVar(string key)
     {
-        if (globalFlowchart == null) return false;
-        return globalFlowchart.GetBooleanVariable(key); //
+        if (string.IsNullOrEmpty(key))
+            return false;
+
+        // 1) 씬의 Variablemanager(Flowchart) 값을 우선
+        if (globalFlowchart != null && globalFlowchart.GetBooleanVariable(key))
+            return true;
+
+        // 2) 변수 항목 누락/씬 교체 시에도 Fungus 전역 저장소를 fallback으로 조회
+        return FlowchartLocator.GetFungusGlobalBoolean(key);
     }
 }

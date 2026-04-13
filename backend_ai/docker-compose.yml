@@ -1,0 +1,30 @@
+# backend_ai 디렉터리에서:
+#   copy .env.example .env   (키 입력)
+#   docker compose up --build -d
+#
+# 로그: docker compose logs -f
+# 중지: docker compose down
+
+services:
+  backend_ai:
+    build: .
+    container_name: disputatio-backend-ai
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PORT: "8000"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

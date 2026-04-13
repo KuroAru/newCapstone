@@ -25210,11 +25210,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00647ada9aa5d9f469a07fbc68bb5425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 422072702}
   dialogAdvanceKey: 32
   userInputField: {fileID: 0}
   kitchenFlowchart: {fileID: 290853876}
+  curryRecipePageStart: 18
+  curryRecipePageEnd: 19
 --- !u!1 &1766998784
 GameObject:
   m_ObjectHideFlags: 0

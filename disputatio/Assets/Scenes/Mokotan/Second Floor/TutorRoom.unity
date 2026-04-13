@@ -2381,6 +2381,7 @@ GameObject:
   - component: {fileID: 687597803}
   - component: {fileID: 687597802}
   - component: {fileID: 687597801}
+  - component: {fileID: 687597900}
   - component: {fileID: 687597804}
   - component: {fileID: 687597805}
   - component: {fileID: 687597806}
@@ -4211,6 +4212,7 @@ MonoBehaviour:
   - {fileID: 687597856}
   - {fileID: 687597809}
   - {fileID: 687597801}
+  - {fileID: 687597900}
   suppressAllAutoSelections: 0
 --- !u!114 &687597801
 MonoBehaviour:
@@ -4733,8 +4735,8 @@ MonoBehaviour:
   - {fileID: 687597855}
   - {fileID: 687597824}
   - {fileID: 687597826}
-  - {fileID: 687597860}
   - {fileID: 687597857}
+  - {fileID: 687597860}
   suppressAllAutoSelections: 0
 --- !u!114 &687597812
 MonoBehaviour:
@@ -8654,6 +8656,52 @@ MonoBehaviour:
   returnValueType: System.Void
   showInherited: 0
   callMode: 0
+--- !u!114 &687597900
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687597759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 999001
+  indentLevel: 1
+  description: "Window_Clicked \u2014 TutorChatbot.AddPlayerMessageAndGetResponse(\"\")
+    -> ChesterWindowOpen"
+  targetObject: {fileID: 1085980050}
+  targetComponentAssemblyName: TutorChatbot, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: TutorChatbot
+  targetMethod: AddPlayerMessageAndGetResponse
+  targetMethodText: 'AddPlayerMessageAndGetResponse (String): Void'
+  methodParameters:
+  - objValue:
+      typeAssemblyname: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      typeFullname: System.String
+      intValue: 0
+      boolValue: 0
+      floatValue: 0
+      stringValue: 
+      colorValue: {r: 0, g: 0, b: 0, a: 0}
+      gameObjectValue: {fileID: 0}
+      materialValue: {fileID: 0}
+      objectValue: {fileID: 0}
+      spriteValue: {fileID: 0}
+      textureValue: {fileID: 0}
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+    variableKey: 
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
 --- !u!1 &701409201
 GameObject:
   m_ObjectHideFlags: 0
@@ -9629,7 +9677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c42bb60ebb89564ebe30dbb85754eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 2143604509}
   dialogAdvanceKey: 32
   userInputField: {fileID: 2019333630}
@@ -11031,7 +11079,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

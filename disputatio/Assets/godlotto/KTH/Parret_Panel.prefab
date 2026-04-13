@@ -726,7 +726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbea7620df1cabb44b75933bd613cb99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 0}
   userInputField: {fileID: 4419980225969595842}
   globalFlowchart: {fileID: 0}

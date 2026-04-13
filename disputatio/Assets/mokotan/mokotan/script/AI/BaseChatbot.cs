@@ -43,7 +43,7 @@ public abstract class BaseChatbot : MonoBehaviour
     private const string ChesterVoiceCommonResource = "ChesterVoiceCommon";
 
     [Header("Server Settings")]
-    [SerializeField] protected string localServerUrl = "http://15.165.237.11:8000/chat";
+    [SerializeField] protected string localServerUrl = "http://15.134.24.132:8000/chat";
     protected bool isRequestInProgress = false;
 
     /// <summary>다음 /chat 요청에만 적용 후 자동 해제. null이면 기본 true.</summary>
@@ -72,6 +72,10 @@ public abstract class BaseChatbot : MonoBehaviour
         public string prompt;
         public string system;
         public bool use_tools = true;
+        /// <summary>Gains 등 일부 서버 필수 필드 호환. <see cref="prompt"/>와 동일한 사용자 턴 텍스트.</summary>
+        public string message;
+        /// <summary>클라이언트 식별(선택 로그용). Gains 등에서 필수인 경우가 있음.</summary>
+        public string user_id;
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string rag_profile;
@@ -100,6 +104,17 @@ public abstract class BaseChatbot : MonoBehaviour
         if (normalized.Length > MaxChatPromptChars)
             normalized = normalized.Substring(0, MaxChatPromptChars);
         return true;
+    }
+
+    /// <summary>일부 백엔드(Gains 등)가 요구하는 <c>user_id</c>. 에디터와 기기에서 일관되게 씀.</summary>
+    protected static string ResolveChatClientUserId()
+    {
+#if UNITY_EDITOR
+        return "unity-editor";
+#else
+        string id = SystemInfo.deviceUniqueIdentifier;
+        return string.IsNullOrEmpty(id) ? "unknown-device" : id;
+#endif
     }
 
     /// <summary>
@@ -352,8 +367,10 @@ public abstract class BaseChatbot : MonoBehaviour
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = promptForApi,
+            message = promptForApi,
             system = finalSystemPrompt,
-            use_tools = useTools
+            use_tools = useTools,
+            user_id = ResolveChatClientUserId()
         };
         AugmentChatPayload(payload, promptForApi);
         string payloadJson = JsonConvert.SerializeObject(payload);
@@ -431,8 +448,10 @@ public abstract class BaseChatbot : MonoBehaviour
 
         LocalLlamaPayload payload = new LocalLlamaPayload {
             prompt = promptForApi,
+            message = promptForApi,
             system = finalSystemPrompt,
-            use_tools = useTools
+            use_tools = useTools,
+            user_id = ResolveChatClientUserId()
         };
         AugmentChatPayload(payload, promptForApi);
         string payloadJson = JsonConvert.SerializeObject(payload);

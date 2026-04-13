@@ -14,6 +14,20 @@ from tools.registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
 
+_MSG_ALL_ENGINES_FAILED = "모든 AI 엔진 실패"
+_MSG_RATE_LIMIT = "AI 사용 한도에 도달했습니다. 잠시 후 다시 시도해 주세요."
+
+
+def _user_visible_ai_error(last_error: BaseException | None) -> str:
+    """Map provider exceptions to a short player-facing string (Korean)."""
+    if last_error is None:
+        return _MSG_ALL_ENGINES_FAILED
+    raw = str(last_error)
+    lower = raw.lower()
+    if "429" in raw or "rate_limit" in lower or "too many requests" in lower:
+        return _MSG_RATE_LIMIT
+    return _MSG_ALL_ENGINES_FAILED
+
 
 class ChatService:
     """Orchestrates AI provider calls with tool injection and automatic fallback."""
@@ -128,6 +142,7 @@ class ChatService:
         messages = self._build_messages(request)
         tools = self._get_tools(request)
 
+        primary_err: BaseException | None = None
         try:
             max_tok = self._max_tokens_for_request(request)
             logger.info("Attempting primary provider: %s", self._primary.name)
@@ -140,10 +155,11 @@ class ChatService:
                 yield event
             return
         except Exception as exc:
-            logger.error("Primary provider (%s) failed: %s", self._primary.name, exc)
+            primary_err = exc
+            logger.exception("Primary provider (%s) failed: %s", self._primary.name, exc)
 
         if self._fallback is None:
-            yield SSEEvent(type="error", content="모든 AI 엔진 실패")
+            yield SSEEvent(type="error", content=_user_visible_ai_error(primary_err))
             yield SSEEvent(type="done", full_text="")
             return
 
@@ -158,8 +174,14 @@ class ChatService:
             ):
                 yield event
         except Exception as exc:
-            logger.error("Fallback provider (%s) also failed: %s", self._fallback.name, exc)
-            yield SSEEvent(type="error", content="모든 AI 엔진 실패")
+            logger.exception("Fallback provider (%s) also failed: %s", self._fallback.name, exc)
+            fb_msg = _user_visible_ai_error(exc)
+            final_msg = (
+                fb_msg
+                if fb_msg != _MSG_ALL_ENGINES_FAILED
+                else _user_visible_ai_error(primary_err)
+            )
+            yield SSEEvent(type="error", content=final_msg)
             yield SSEEvent(type="done", full_text="")
 
     async def chat(self, request: ChatRequest) -> ChatResponse:

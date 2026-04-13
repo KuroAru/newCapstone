@@ -7,7 +7,7 @@ import pytest
 from models.requests import ChatRequest
 from models.responses import SSEEvent
 from providers.base import AIProvider
-from services.chat_service import ChatService
+from services.chat_service import ChatService, _user_visible_ai_error
 from tools.game_tools import GAME_TOOLS
 from tools.registry import ToolRegistry
 
@@ -29,6 +29,15 @@ class _MockProvider(AIProvider):
             raise RuntimeError(f"{self._name} failure")
         for event in self._events:
             yield event
+
+
+def test_user_visible_ai_error_rate_limit() -> None:
+    msg = _user_visible_ai_error(RuntimeError("Error code: 429 - rate_limit_exceeded"))
+    assert "한도" in msg
+
+
+def test_user_visible_ai_error_generic() -> None:
+    assert _user_visible_ai_error(RuntimeError("broken")) == "모든 AI 엔진 실패"
 
 
 def _build_registry() -> ToolRegistry:

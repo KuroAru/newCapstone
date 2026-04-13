@@ -3,6 +3,7 @@
 
 #if UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -78,10 +79,28 @@ namespace Fungus
 
         /// <summary>
         /// Decodes a Save Point from JSON text format and loads it.
+        /// If the active scene already matches the save point scene, applies data without reloading (avoids
+        /// double LoadScene and fixes loadAction/ExecuteBlocks ordering with SaveManager.Update).
         /// </summary>
         public static void Decode(string saveDataJSON)
         {
             var savePointData = JsonUtility.FromJson<SavePointData>(saveDataJSON);
+            if (savePointData == null)
+            {
+                Debug.LogError("[Fungus SaveRestore] Decode failed: JSON did not deserialize to SavePointData.");
+                return;
+            }
+
+            string activeScene = SceneManager.GetActiveScene().name;
+            if (!string.IsNullOrEmpty(savePointData.SceneName) &&
+                string.Equals(activeScene, savePointData.SceneName, StringComparison.Ordinal))
+            {
+                Debug.Log($"[Fungus SaveRestore] In-scene restore (no reload). scene={activeScene}, savePointKey={savePointData.savePointKey}");
+                ApplyLoadedSavePointToScene(savePointData);
+                return;
+            }
+
+            Debug.Log($"[Fungus SaveRestore] Loading scene for restore: saved={savePointData.SceneName}, activeNow={activeScene}, savePointKey={savePointData.savePointKey}");
 
             UnityAction<Scene, LoadSceneMode> onSceneLoadedAction = null;
 
@@ -91,24 +110,44 @@ namespace Fungus
                 if (mode == LoadSceneMode.Additive ||
                     scene.name != savePointData.SceneName)
                 {
+                    Debug.LogWarning(
+                        $"[Fungus SaveRestore] sceneLoaded skipped restore: mode={mode}, scene.name={scene.name}, expected={savePointData.SceneName}");
                     return;
                 }
 
                 SceneManager.sceneLoaded -= onSceneLoadedAction;
 
-                // Look for a SaveData component in the scene to process the save data items.
-                var saveData = UnityEngine.Object.FindFirstObjectByType<SaveData>(FindObjectsInactive.Include);
-                if (saveData != null)
-                {
-                    saveData.Decode(savePointData.SaveDataItems);
-                }
-
-                SaveManagerSignals.DoSavePointLoaded(savePointData.savePointKey);
+                ApplyLoadedSavePointToScene(savePointData);
             };
                 
             SceneManager.sceneLoaded += onSceneLoadedAction;
             SceneManager.LoadScene(savePointData.SceneName);
-        }     
+        }
+
+        /// <summary>
+        /// Applies decoded save items and notifies listeners (same as post-LoadScene path).
+        /// </summary>
+        static void ApplyLoadedSavePointToScene(SavePointData savePointData)
+        {
+            var saveData = UnityEngine.Object.FindFirstObjectByType<SaveData>(FindObjectsInactive.Include);
+            int itemCount = savePointData.SaveDataItems != null ? savePointData.SaveDataItems.Count : 0;
+
+            if (saveData == null)
+            {
+                Debug.LogWarning("[Fungus SaveRestore] No SaveData in scene; variables/narrative log will not restore.");
+            }
+            else if (itemCount == 0)
+            {
+                Debug.LogWarning("[Fungus SaveRestore] Save point has no SaveDataItems; check SaveData.flowcharts when saving.");
+            }
+
+            if (saveData != null && itemCount > 0)
+            {
+                saveData.Decode(savePointData.SaveDataItems);
+            }
+
+            SaveManagerSignals.DoSavePointLoaded(savePointData.savePointKey);
+        }
 
         #endregion
     }
