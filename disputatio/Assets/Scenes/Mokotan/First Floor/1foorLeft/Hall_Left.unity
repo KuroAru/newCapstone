@@ -1117,6 +1117,7 @@ GameObject:
   - component: {fileID: 517280492}
   - component: {fileID: 517280494}
   - component: {fileID: 517280493}
+  - component: {fileID: 517280495}
   m_Layer: 6
   m_Name: pot_Panel
   m_TagString: Untagged
@@ -1184,6 +1185,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 517280491}
   m_CullTransparentMesh: 1
+--- !u!114 &517280495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517280491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7f2a1e4b9d0486f8a3c5e7b1d0f4a92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  potPanelImage: {fileID: 517280493}
+  flowchartOverride: {fileID: 0}
+  fungusBooleanKey: GetBottle
+  checkGlobalVariables: 1
+  spriteWhenBottleVisible: {fileID: 7631618609764672548, guid: e43d77ea2d3279a479340fa9b1a01b0c, type: 3}
+  spriteWhenBottleHidden: {fileID: 4430703410184231334, guid: 940d3c5cd899a814ebd93a580addd75d, type: 3}
 --- !u!1 &585242473
 GameObject:
   m_ObjectHideFlags: 1
