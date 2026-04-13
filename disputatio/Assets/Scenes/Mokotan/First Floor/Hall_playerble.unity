@@ -10066,6 +10066,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00991fb273694e1498f2faf546686432, type: 3}
+--- !u!1 &445037295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6937091033627162874, guid: 9392e02687817a249a7882bbda04d37e, type: 3}
+  m_PrefabInstance: {fileID: 1117673543}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &481863290
 GameObject:
   m_ObjectHideFlags: 0
@@ -11778,6 +11783,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1117428884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 524883048979479494, guid: 9392e02687817a249a7882bbda04d37e, type: 3}
+  m_PrefabInstance: {fileID: 1117673543}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1117673543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11866,6 +11876,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: WhenClikcedButton, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 3652181982862886132, guid: 9392e02687817a249a7882bbda04d37e, type: 3}
+      propertyPath: lock2
+      value: 
+      objectReference: {fileID: 1117428884}
+    - target: {fileID: 3652181982862886132, guid: 9392e02687817a249a7882bbda04d37e, type: 3}
+      propertyPath: locked
+      value: 
+      objectReference: {fileID: 445037295}
     - target: {fileID: 3652181982862886132, guid: 9392e02687817a249a7882bbda04d37e, type: 3}
       propertyPath: flowchart
       value: 
@@ -13448,7 +13466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &1594444107
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -13508,7 +13526,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: UsedMaidKey
-  value: 1
+  value: 0
 --- !u!114 &1594444111
 MonoBehaviour:
   m_ObjectHideFlags: 0
