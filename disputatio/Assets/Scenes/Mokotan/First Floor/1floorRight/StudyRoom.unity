@@ -355,6 +355,16 @@ MonoBehaviour:
   - {fileID: 203260312}
   - {fileID: 155121871}
   - {fileID: 1676685410}
+  scrapbookContentJson: {fileID: 0}
+  scrapbookPageTextOverlay: {fileID: 0}
+  scrapbookRecipeTextOverlay: {fileID: 0}
+  pageBackgroundSprites: []
+  pageRecipeIllustrationSprites: []
+  cookBookRecipeIllustrationAnchor: {x: 0.25, y: 0.59}
+  cookBookRecipeIllustrationSizeDelta: {x: 290, y: 188}
+  cookBookRecipeTextAnchorMin: {x: 0.11, y: 0.13}
+  cookBookRecipeTextAnchorMax: {x: 0.39, y: 0.488}
+  cookBookRecipeTextMargin: {x: 10, y: 4, z: 10, w: 8}
 --- !u!1 &121240007
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,7 +809,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1160,7 +1170,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1710,7 +1720,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2502,7 +2512,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 544219089}
   m_OnClick:
     m_PersistentCalls:
@@ -10684,7 +10694,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1159971581}
   m_OnClick:
     m_PersistentCalls:
@@ -10756,7 +10766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1163233192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10871,7 +10881,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pages:
   - {fileID: 1710976684}
-  - {fileID: 1163233191}
+  scrapbookContentJson: {fileID: 0}
+  scrapbookPageTextOverlay: {fileID: 0}
+  scrapbookRecipeTextOverlay: {fileID: 0}
+  pageBackgroundSprites: []
+  pageRecipeIllustrationSprites: []
+  cookBookRecipeIllustrationAnchor: {x: 0.25, y: 0.59}
+  cookBookRecipeIllustrationSizeDelta: {x: 290, y: 188}
+  cookBookRecipeTextAnchorMin: {x: 0.11, y: 0.13}
+  cookBookRecipeTextAnchorMax: {x: 0.39, y: 0.488}
+  cookBookRecipeTextMargin: {x: 10, y: 4, z: 10, w: 8}
 --- !u!114 &1165700026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12749,6 +12768,7 @@ GameObject:
   - component: {fileID: 1710976687}
   - component: {fileID: 1710976686}
   - component: {fileID: 1710976685}
+  - component: {fileID: 1710976688}
   m_Layer: 6
   m_Name: BiblePage1
   m_TagString: Untagged
@@ -12776,7 +12796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3494866260757197722, guid: 4762872447316344cbc3180f4425dd6f, type: 3}
+  m_Sprite: {fileID: -6348023876378236720, guid: 686fd68f86b0c4b45a0e63fea4b1ac83, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12813,6 +12833,142 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1710976688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710976684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4e2c1d9f6b4b3a8e5d2c1f0a9b8e7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spreadBackgroundOverride: {fileID: -6348023876378236720, guid: 686fd68f86b0c4b45a0e63fea4b1ac83, type: 3}
+  spreadBackgroundRect:
+    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 1, y: 1}
+    offsetMin: {x: 0, y: 0}
+    offsetMax: {x: 0, y: 0}
+  fontOverride: {fileID: 11400000, guid: 34d8dd68c71273049a43918fae18662a, type: 2}
+  backButtonColor: {r: 0.15, g: 0.45, b: 0.95, a: 1}
+  headerBarPanel:
+    anchorMin: {x: 0, y: 0.82}
+    anchorMax: {x: 1, y: 1}
+    offsetMin: {x: 32, y: 8}
+    offsetMax: {x: -32, y: -8}
+  contentAreaPanel:
+    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 1, y: 0.82}
+    offsetMin: {x: 32, y: 24}
+    offsetMax: {x: -32, y: -16}
+  leftPagePanel:
+    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 0.5, y: 1}
+    offsetMin: {x: 0, y: 0}
+    offsetMax: {x: 0, y: 0}
+  rightPagePanel:
+    anchorMin: {x: 0.5, y: 0}
+    anchorMax: {x: 1, y: 1}
+    offsetMin: {x: 0, y: 0}
+    offsetMax: {x: 0, y: 0}
+  headerLeft:
+    text: "\xB7\xB7\xB7"
+    fontSize: 20
+    color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    alignment: 513
+    rect:
+      anchorMin: {x: 0.02, y: 0}
+      anchorMax: {x: 0.31, y: 1}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  headerCenter:
+    text: "\xB7\xB7\xB7"
+    fontSize: 20
+    color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    alignment: 514
+    rect:
+      anchorMin: {x: 0.34, y: 0}
+      anchorMax: {x: 0.66, y: 1}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  headerRight:
+    text: "\xB7\xB7\xB7"
+    fontSize: 20
+    color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    alignment: 516
+    rect:
+      anchorMin: {x: 0.69, y: 0}
+      anchorMax: {x: 0.98, y: 1}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  headerIcon:
+    rect:
+      anchorMin: {x: 0.48, y: 0.15}
+      anchorMax: {x: 0.52, y: 0.85}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    color: {r: 0.3, g: 0.3, b: 0.3, a: 0.35}
+  bodyLeft:
+    text: "\uC608\uC218\uAED8\uC11C \uC774\uB974\uC2DC\uB418\n\n\uB098\uB294 \uBD80\uD65C\uC774\uC694
+      \uC0DD\uBA85\uC774\uB2C8\n\n\uB098\uB97C \uBBFF\uB294 \uC790\uB294 \uC8FD\uC5B4\uB3C4
+      \uC0B4\uACA0\uACE0\n\n\uBB34\uB987 \uC0B4\uC544\uC11C \uB098\uB97C \uBBFF\uB294
+      \uC790\uB294\n\n\uC601\uC6D0\uD788 \uC8FD\uC9C0 \uC544\uB2C8\uD558\uB9AC\uB2C8\n\n\uC774\uAC83\uC744
+      \uB124\uAC00 \uBBFF\uB290\uB0D0"
+    fontSize: 40
+    color: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    alignment: 514
+    rect:
+      anchorMin: {x: 0.06, y: 0.18}
+      anchorMax: {x: 0.94, y: 0.88}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  citation:
+    text: (John 11:25-26)
+    fontSize: 30
+    color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+    alignment: 514
+    rect:
+      anchorMin: {x: 0.1, y: 0.06}
+      anchorMax: {x: 0.9, y: 0.16}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  titleRight:
+    text: "\uD574\uC11D\uBCF8"
+    fontSize: 50
+    color: {r: 0.45, g: 0.22, b: 0.16, a: 1}
+    alignment: 514
+    rect:
+      anchorMin: {x: 0.1, y: 0.78}
+      anchorMax: {x: 0.82, y: 0.95}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  hintsRight:
+    text: "\uB098\uC0AC\uB85C: 4\uC77C\n\n\uB9C8\uB9AC\uC544: 300 \uB370\uB098\uB9AC\uC628\n\n\uB9C8\uB974\uD0C0:
+      1\uAC00\uC9C0 \uC77C"
+    fontSize: 46
+    color: {r: 0, g: 0, b: 0, a: 1}
+    alignment: 258
+    rect:
+      anchorMin: {x: 0.1, y: 0.12}
+      anchorMax: {x: 0.82, y: 0.72}
+      offsetMin: {x: 0, y: 0}
+      offsetMax: {x: 0, y: 0}
+    lineSpacing: 0
+  operatorColumnPanel:
+    anchorMin: {x: 0.68, y: 0.12}
+    anchorMax: {x: 0.96, y: 0.72}
+    offsetMin: {x: 0, y: 0}
+    offsetMax: {x: 0, y: 0}
+  operatorButtons: []
+  forceRebuildNextPlay: 0
 --- !u!1 &1716724391
 GameObject:
   m_ObjectHideFlags: 0
@@ -13603,7 +13759,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14322,7 +14478,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b7b83023b02c8459c286c24a934691, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
