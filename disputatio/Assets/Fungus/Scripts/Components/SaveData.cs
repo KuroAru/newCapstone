@@ -29,6 +29,13 @@ namespace Fungus
         /// </summary
         public virtual void Encode(List<SaveDataItem> saveDataItems)
         {
+            if (flowcharts == null || flowcharts.Count == 0)
+            {
+                Debug.LogWarning(
+                    "[SaveData] No Flowcharts assigned in the Inspector; save files will not store Flowchart variables. Assign Flowcharts on this SaveData component.",
+                    this);
+            }
+
             for (int i = 0; i < flowcharts.Count; i++)
             {
                 var flowchart = flowcharts[i];

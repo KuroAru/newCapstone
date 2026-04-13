@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 class GroqProvider(AIProvider):
 
     def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile") -> None:
-        self._client = AsyncGroq(api_key=api_key)
+        # 429 시 SDK 기본 재시도(최대 ~수십 초)가 폴백(Gemini) 호출을 막으므로 비활성화.
+        self._client = AsyncGroq(api_key=api_key, max_retries=0)
         self._model = model
 
     @property

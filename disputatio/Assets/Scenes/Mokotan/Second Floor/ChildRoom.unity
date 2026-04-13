@@ -2333,7 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86b3579dcce255428a4a5f2c155de90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localServerUrl: http://15.165.237.11:8000/chat
+  localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 1700883150}
   sonFlowchart: {fileID: 687597760}
   userInputField: {fileID: 336609495}

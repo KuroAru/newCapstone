@@ -16,7 +16,8 @@
 ## 2. Docker
 
 - **파일로 주입:** 위와 같이 `backend_ai/.env` 를 만든 뒤  
-  `docker compose -f docker-compose.example.yml up --build`
+  `docker compose up --build -d`  
+  (같은 폴더의 `docker-compose.yml` 사용)
 - **환경 변수만:** 이미지에 키를 넣지 말고 실행 시 전달  
   `docker run -e GROQ_API_KEY=... -e GOOGLE_API_KEY=... -p 8000:8000 <이미지>`
 
