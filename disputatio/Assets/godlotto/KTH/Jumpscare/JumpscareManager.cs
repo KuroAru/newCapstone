@@ -30,6 +30,8 @@ public class JumpscareManager : MonoBehaviour
 {
     public static JumpscareManager Instance;
     public static event Action OnPlayerDied;
+    public static event Action OnEnemyAppeared; // 추가: 적이 스폰되었을 때
+public static event Action OnJumpscareReset; // 추가: 상태가 초기화될 때 (씬 이동 등)
 
     private const float SpawnPositionZeroEpsilonSq = 1e-6f;
     private const string SpriteUnlitShaderName = "Universal Render Pipeline/2D/Sprite-Unlit-Default";
@@ -394,6 +396,8 @@ public class JumpscareManager : MonoBehaviour
 
         // 이전 점프스케어에서 꺼놓은 SayDialog 복원
         RestoreSayDialog();
+
+        OnJumpscareReset?.Invoke(); // 이 줄을 추가합니다.
     }
 
     private void SpawnTrigger(Vector2 spawnPos)
@@ -423,6 +427,7 @@ public class JumpscareManager : MonoBehaviour
         }
 
         SetTriggerVisible(true);
+        OnEnemyAppeared?.Invoke(); // 이 줄을 추가합니다.
 
         SetHideObjectsByTag(true);
         SetMainCanvasVisible(false);
