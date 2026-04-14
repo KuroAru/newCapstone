@@ -13,6 +13,9 @@ namespace Godlotto.FungusIntegration
     /// </summary>
     public class GuardedClickable2D : Clickable2D
     {
+        const float GameplayPlaneZ = 0f;
+        const float OverlapSlopWorld = 0.12f;
+
         [SerializeField] float cooldownSeconds = 0.35f;
 
         [Tooltip("true면 포인터가 UI 위라고 나와도, 월드 2D 콜라이더가 마우스 아래에 있으면 클릭을 받습니다.")]
@@ -21,53 +24,185 @@ namespace Godlotto.FungusIntegration
         float lastClickUnscaledTime = float.NegativeInfinity;
 
         /// <summary>
-        /// 베이스 <see cref="Clickable2D.OnMouseDown"/>를 대체합니다(가상 메서드이므로 Unity는 이 구현만 호출).
+        /// Unity <see cref="OnMouseDown"/>는 투명 스프라이트·UI 오버레이·멀티 카메라 조합에서 누락되는 경우가 있어
+        /// <see cref="Update"/>에서 처리합니다. (Input System + 레거시 입력 모두 지원)
         /// </summary>
         protected override void OnMouseDown()
         {
-            if (useEventSystem)
-                return;
-
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            {
-                if (!allowClickWhenWorldColliderUnderPointer || !IsOurCollider2DUnderMouse())
-                    return;
-            }
-
-            DoPointerClick();
+            // 의도적으로 비움 — 클릭 로직은 Update에서만 처리합니다.
         }
 
-        bool IsOurCollider2DUnderMouse()
+        void Update()
         {
-            if (GetComponent<Collider2D>() == null && GetComponentInChildren<Collider2D>(true) == null)
-                return false;
-
-            Vector2 world = ScreenToWorldPoint2D(Input.mousePosition);
-            foreach (Collider2D c in Physics2D.OverlapPointAll(world))
+            if (useEventSystem)
             {
-                if (c.GetComponentInParent<Clickable2D>() == this)
+                return;
+            }
+
+            if (!clickEnabled)
+            {
+                return;
+            }
+
+            if (!TryGetPrimaryPressAndScreenPoint(out int pointerId, out Vector2 screenPosition))
+            {
+                return;
+            }
+
+            TryProcessClickFromScreen(pointerId, screenPosition);
+        }
+
+        static bool TryGetPrimaryPressAndScreenPoint(out int pointerId, out Vector2 screenPosition)
+        {
+            pointerId = -1;
+            screenPosition = default;
+
+#if ENABLE_INPUT_SYSTEM
+            var inputSysMouse = UnityEngine.InputSystem.Mouse.current;
+            if (inputSysMouse != null && inputSysMouse.leftButton.wasPressedThisFrame)
+            {
+                pointerId = -1;
+                screenPosition = inputSysMouse.position.ReadValue();
+                return true;
+            }
+
+            var inputSysTouch = UnityEngine.InputSystem.Touchscreen.current;
+            if (inputSysTouch != null && inputSysTouch.primaryTouch.press.wasPressedThisFrame)
+            {
+                pointerId = inputSysTouch.primaryTouch.touchId.ReadValue();
+                screenPosition = inputSysTouch.primaryTouch.position.ReadValue();
+                return true;
+            }
+#endif
+            // Legacy 마우스를 touchCount 블록보다 먼저: touch가 잡히는데 phase가 Began이 아닐 때
+            // (터치 노트북·잔여 포인터 등) 기존 코드가 return false로 마우스 검사를 건너뛰던 문제 방지.
+            if (Input.GetMouseButtonDown(0))
+            {
+                pointerId = -1;
+                screenPosition = Input.mousePosition;
+                return true;
+            }
+
+            if (Input.touchCount > 0)
+            {
+                Touch t = Input.GetTouch(0);
+                if (t.phase == UnityEngine.TouchPhase.Began)
+                {
+                    pointerId = t.fingerId;
+                    screenPosition = t.position;
                     return true;
+                }
             }
 
             return false;
         }
 
-        static Vector2 ScreenToWorldPoint2D(Vector3 screenPosition)
+        void TryProcessClickFromScreen(int pointerId, Vector2 screenPosition)
+        {
+            if (!IsOurCollider2DUnderPointer(screenPosition))
+            {
+                return;
+            }
+
+            if (EventSystem.current != null && IsPointerOverUGUI(pointerId))
+            {
+                if (!allowClickWhenWorldColliderUnderPointer)
+                {
+                    return;
+                }
+            }
+
+            DoPointerClick();
+        }
+
+        static bool IsPointerOverUGUI(int pointerId)
+        {
+            EventSystem es = EventSystem.current;
+            if (es == null)
+            {
+                return false;
+            }
+
+            if (pointerId >= 0)
+            {
+                return es.IsPointerOverGameObject(pointerId);
+            }
+
+            return es.IsPointerOverGameObject();
+        }
+
+        bool IsOurCollider2DUnderPointer(Vector2 screenPosition)
+        {
+            Vector2 world = ScreenToWorldOnGameplayPlane(screenPosition);
+            foreach (Collider2D c in GetComponentsInChildren<Collider2D>(true))
+            {
+                if (c == null || !c.enabled || !c.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                if (!ColliderContainsWorldPoint(c, world))
+                {
+                    continue;
+                }
+
+                if (c.GetComponentInParent<Clickable2D>() == this)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        static bool ColliderContainsWorldPoint(Collider2D c, Vector2 world)
+        {
+            if (c.OverlapPoint(world))
+            {
+                return true;
+            }
+
+            foreach (Collider2D hit in Physics2D.OverlapCircleAll(world, OverlapSlopWorld, ~0))
+            {
+                if (hit == c)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        static Vector2 ScreenToWorldOnGameplayPlane(Vector2 screenPosition)
         {
             Camera cam = Camera.main;
             if (cam == null)
+            {
                 return Vector2.zero;
+            }
 
-            Vector3 p = screenPosition;
-            p.z = Mathf.Abs(cam.transform.position.z);
-            return cam.ScreenToWorldPoint(p);
+            Ray ray = cam.ScreenPointToRay(screenPosition);
+            if (Mathf.Abs(ray.direction.z) > 1e-5f)
+            {
+                float t = (GameplayPlaneZ - ray.origin.z) / ray.direction.z;
+                Vector3 p = ray.GetPoint(t);
+                return new Vector2(p.x, p.y);
+            }
+
+            Vector3 fallback = cam.ScreenToWorldPoint(new Vector3(
+                screenPosition.x,
+                screenPosition.y,
+                Mathf.Abs(cam.transform.position.z)));
+            return fallback;
         }
 
         protected override void DoPointerClick()
         {
             float t = Time.unscaledTime;
             if (t - lastClickUnscaledTime < cooldownSeconds)
+            {
                 return;
+            }
 
             lastClickUnscaledTime = t;
             base.DoPointerClick();
