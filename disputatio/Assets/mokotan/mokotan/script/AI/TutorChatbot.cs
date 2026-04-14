@@ -32,6 +32,9 @@ internal class TutorGradeResponseDto
 
 public class TutorChatbot : BaseChatbot
 {
+    private const string VarWindowClicked = "WindowClicked";
+    private const string VarIsClicked = "isClicked";
+
     private const string VarCorrectAnswerCount = "CorrectAnswerCount";
     /// <summary>일부 씬에서 오타로만 정의된 경우(Fungus Integer).</summary>
     private const string VarCorrectAnswerCcTypo = "CorrectAnswerCc";
@@ -972,8 +975,21 @@ public class TutorChatbot : BaseChatbot
             return;
 
         _quizCompletionEventFired = true;
+        ResetTutorClickStateFlagsOnQuizComplete();
         OnQuizCompletedEvent?.Invoke();
         LockQuizInputAfterSessionComplete();
+    }
+
+    private void ResetTutorClickStateFlagsOnQuizComplete()
+    {
+        if (flowchart == null)
+            return;
+
+        if (flowchart.GetVariable(VarWindowClicked) is BooleanVariable)
+            flowchart.SetBooleanVariable(VarWindowClicked, false);
+
+        if (flowchart.GetVariable(VarIsClicked) is BooleanVariable)
+            flowchart.SetBooleanVariable(VarIsClicked, false);
     }
 
     private void LockQuizInputAfterSessionComplete()
