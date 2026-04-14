@@ -15,4 +15,5 @@ MonoBehaviour:
   itemId: 2
   itemName: Food
   icon: {fileID: -5382088272588069456, guid: 29acc07f3dff493458010121074275a8, type: 3}
-  itemDescription: 
+  itemDescription: "\uCCB4\uC154\uAC00 \uC774\uAC78 \uAD6C\uC6CC\uC8FC\uB294 \uAC78
+    \uC88B\uC544\uD588\uC9C0\n"

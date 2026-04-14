@@ -30,6 +30,7 @@ public class InventoryManager : MonoBehaviour
         instance = this;
 
         targetflowchart = ResolveFlowchart();
+        tooltipController = SelectTooltipController(tooltipController, FindObjectOfType<InventoryTooltipController>());
     }
 
     void Start()
@@ -165,5 +166,12 @@ public class InventoryManager : MonoBehaviour
             targetflowchart = FlowchartLocator.Resolve(null);
 
         return targetflowchart;
+    }
+
+    public static InventoryTooltipController SelectTooltipController(
+        InventoryTooltipController assignedController,
+        InventoryTooltipController discoveredController)
+    {
+        return assignedController != null ? assignedController : discoveredController;
     }
 }
