@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems; // 드래그 앤 드롭을 위해 반드시 필요합니다!
 using Fungus;
 
-public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI Components")]
     public Image icon;
@@ -98,6 +98,22 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             InventoryManager.instance.SelectItem(item);
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (item == null || InventoryManager.instance == null)
+            return;
+
+        InventoryManager.instance.ShowTooltip(item, eventData.position);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (InventoryManager.instance == null)
+            return;
+
+        InventoryManager.instance.HideTooltip();
     }
 
     /// <summary>스프라이트가 z=0 평면에 있다고 가정하고, ScreenToWorldPoint의 깊이(z)를 보정합니다.</summary>

@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject slotPrefab;
     public int maxSlots = 12;
     [SerializeField] private Flowchart targetflowchart;
+    [SerializeField] private InventoryTooltipController tooltipController;
 
     public bool pressTab = false;
 
@@ -114,6 +115,22 @@ public class InventoryManager : MonoBehaviour
     {
         selectedItem = null;
         Debug.Log("손에 든 아이템을 내려놓았다.");
+    }
+
+    public void ShowTooltip(Item item, Vector2 screenPosition)
+    {
+        if (tooltipController == null || item == null)
+            return;
+
+        tooltipController.Show(item, screenPosition);
+    }
+
+    public void HideTooltip()
+    {
+        if (tooltipController == null)
+            return;
+
+        tooltipController.Hide();
     }
 
     private void CreateSlots()

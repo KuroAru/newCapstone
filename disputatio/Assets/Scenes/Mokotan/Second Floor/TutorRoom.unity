@@ -2462,11 +2462,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -22.24494, y: 107.77816}
+  scrollPos: {x: 13.65003, y: 117.75383}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.845
+  zoom: 0.81500006
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -2474,8 +2474,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 687597796}
-  selectedCommands: []
+  - {fileID: 687597872}
+  selectedCommands:
+  - {fileID: 687597871}
   variables:
   - {fileID: 687597774}
   - {fileID: 687597806}
@@ -2595,7 +2596,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 397
-    y: 226.22221
+    y: 227.4492
     width: 159.98001
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -3975,7 +3976,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 796.4931
+    x: 797.6765
     y: 68.40889
     width: 148.92
     height: 40
@@ -4196,8 +4197,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 379.4931
-    y: 101.22546
+    x: 378.2661
+    y: 102.45245
     width: 142.15
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -4718,7 +4719,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 570.6042
-    y: 108.40889
+    y: 107.18189
     width: 125.18
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -8023,9 +8024,8 @@ MonoBehaviour:
   itemId: 228
   indentLevel: 0
   description: 
-  targetObject: {fileID: 0}
-  targetComponentAssemblyName: ItemPickup, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-    PublicKeyToken=null
+  targetObject: {fileID: 1332115310}
+  targetComponentAssemblyName: 
   targetComponentFullname: 'UnityEngine.Component[]'
   targetComponentText: ItemPickup
   targetMethod: OnPointerClick
@@ -8067,7 +8067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 614.2787
+    x: 609.3707
     y: 363.39014
     width: 94.979996
     height: 40
