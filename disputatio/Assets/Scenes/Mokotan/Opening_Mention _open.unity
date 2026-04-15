@@ -4119,7 +4119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c28d6d6f73fecd42a7d4ef8ec6593ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalIntensity: 2
+  intensityWithoutEnemy: 2
+  intensityWithEnemy: 2
   flickerMinIntensity: 0
   flickerMaxIntensity: 0.5
   timeBetweenFlickers: {x: 5, y: 10}

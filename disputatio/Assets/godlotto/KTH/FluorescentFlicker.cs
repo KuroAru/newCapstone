@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -6,10 +7,13 @@ using UnityEngine.Rendering.Universal;
 public class FluorescentFlicker : MonoBehaviour
 {
     private Light2D targetLight;
+    private Coroutine flickerCoroutine;
     
     [Header("조명 강도 설정")]
-    [Tooltip("정상 상태일 때의 밝기")]
-    public float normalIntensity = 1.0f;
+    [Tooltip("적이 없을 때(평상시)의 밝기")]
+    public float intensityWithoutEnemy = 2.0f;
+    [Tooltip("적이 있을 때(점멸 사이)의 기본 밝기")]
+    public float intensityWithEnemy = 1.0f;
     [Tooltip("깜빡일 때 덜 밝아지거나 꺼지는 최소 밝기")]
     public float flickerMinIntensity = 0.0f;
     [Tooltip("깜빡일 때 최대 밝기")]
@@ -25,41 +29,79 @@ public class FluorescentFlicker : MonoBehaviour
 
     private void Awake()
     {
-        // 동일한 게임 오브젝트에 있는 Light2D 컴포넌트를 가져옵니다.
         targetLight = GetComponent<Light2D>();
+    }
+
+    private void OnEnable()
+    {
+        // 일반 점프스케어 매니저 이벤트 구독
+        JumpscareManager.OnEnemyAppeared += StartFlicker;
+        JumpscareManager.OnJumpscareReset += StopFlicker;
+        
+        // 스페셜 점프스케어 매니저 이벤트 구독
+        SpecialJumpscareManager.OnEnemyAppeared += StartFlicker;
+        SpecialJumpscareManager.OnJumpscareReset += StopFlicker;
+    }
+
+    private void OnDisable()
+    {
+        // 구독 해제
+        JumpscareManager.OnEnemyAppeared -= StartFlicker;
+        JumpscareManager.OnJumpscareReset -= StopFlicker;
+        
+        SpecialJumpscareManager.OnEnemyAppeared -= StartFlicker;
+        SpecialJumpscareManager.OnJumpscareReset -= StopFlicker;
     }
 
     private void Start()
     {
-        // 시작 시 정상 밝기로 설정하고 코루틴을 실행합니다.
-        targetLight.intensity = normalIntensity;
-        StartCoroutine(FlickerRoutine());
+        // 시작 시 적이 없는 상태이므로 평상시 밝기(2.0)로 설정
+        targetLight.intensity = intensityWithoutEnemy;
+    }
+
+    private void StartFlicker()
+    {
+        if (flickerCoroutine == null)
+        {
+            // 적이 등장했으므로 기본 밝기를 1.0으로 낮춤
+            targetLight.intensity = intensityWithEnemy;
+            flickerCoroutine = StartCoroutine(FlickerRoutine());
+        }
+    }
+
+    private void StopFlicker()
+    {
+        if (flickerCoroutine != null)
+        {
+            StopCoroutine(flickerCoroutine);
+            flickerCoroutine = null;
+        }
+        // 적이 사라지고 초기화되었으므로 평상시 밝기(2.0)로 강제 복구
+        targetLight.intensity = intensityWithoutEnemy;
     }
 
     private IEnumerator FlickerRoutine()
     {
         while (true)
         {
-            // 1. 다음 깜빡임 이벤트까지 대기 (정상 상태 유지)
-            float waitTime = Random.Range(timeBetweenFlickers.x, timeBetweenFlickers.y);
-            targetLight.intensity = normalIntensity;
-            yield return new WaitForSeconds(waitTime);
-
-            // 2. 형광등 깜빡임 연출 시작
-            int currentFlickerCount = Random.Range(flickerCount.x, flickerCount.y + 1);
+            // 1. 형광등 깜빡임 연출 즉시 시작
+            int currentFlickerCount = UnityEngine.Random.Range(flickerCount.x, flickerCount.y + 1);
             
             for (int i = 0; i < currentFlickerCount; i++)
             {
                 // 어두워짐
-                targetLight.intensity = Random.Range(flickerMinIntensity, flickerMaxIntensity);
-                yield return new WaitForSeconds(Random.Range(flickerDuration.x, flickerDuration.y));
+                targetLight.intensity = UnityEngine.Random.Range(flickerMinIntensity, flickerMaxIntensity);
+                yield return new WaitForSeconds(UnityEngine.Random.Range(flickerDuration.x, flickerDuration.y));
 
-                // 다시 원래 밝기로 돌아오려는 시도
-                targetLight.intensity = normalIntensity;
-                yield return new WaitForSeconds(Random.Range(flickerDuration.x, flickerDuration.y));
+                // 다시 켜질 때, 평상시 밝기(2.0)가 아닌 적 등장 시 기본 밝기(1.0)로 켜짐
+                targetLight.intensity = intensityWithEnemy;
+                yield return new WaitForSeconds(UnityEngine.Random.Range(flickerDuration.x, flickerDuration.y));
             }
             
-            // 깜빡임 종료 후 다시 정상 상태로 루프
+            // 2. 깜빡임 종료 후 다음 깜빡임까지 대기 구간도 적 등장 시 기본 밝기 유지
+            float waitTime = UnityEngine.Random.Range(timeBetweenFlickers.x, timeBetweenFlickers.y);
+            targetLight.intensity = intensityWithEnemy;
+            yield return new WaitForSeconds(waitTime);
         }
     }
 }
