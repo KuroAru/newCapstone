@@ -28,9 +28,9 @@ public class PostExposureController : MonoBehaviour
         }
 
         // 프로필에서 컴포넌트 가져오기
-        if (postProcessVolume.profile.TryGet(out colorAdjustments)) Debug.Log("Color Adjustments 찾음");
-        if (postProcessVolume.profile.TryGet(out vignette)) Debug.Log("Vignette 찾음");
-        if (postProcessVolume.profile.TryGet(out bloom)) Debug.Log("Bloom 찾음");
+        if (postProcessVolume.profile.TryGet(out colorAdjustments)) GameLog.Log("Color Adjustments 찾음");
+        if (postProcessVolume.profile.TryGet(out vignette)) GameLog.Log("Vignette 찾음");
+        if (postProcessVolume.profile.TryGet(out bloom)) GameLog.Log("Bloom 찾음");
     }
 
     // ---------------------------------------------------------
@@ -43,7 +43,7 @@ public class PostExposureController : MonoBehaviour
     public void SetEyesClosed()
     {
         ApplyEyeState(1f, -3f);
-        Debug.Log("눈을 즉시 감았습니다.");
+        GameLog.Log("눈을 즉시 감았습니다.");
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class PostExposureController : MonoBehaviour
     public void SetEyesOpened()
     {
         ApplyEyeState(0.3f, 1.5f); 
-        Debug.Log("눈을 즉시 떴습니다.");
+        GameLog.Log("눈을 즉시 떴습니다.");
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ public class PostExposureController : MonoBehaviour
         // 시작하면서 체크박스들 강제로 다 켬
         ApplyDramaticState(startVig, startSmooth, startColor, startExp);
 
-        Debug.Log($"극적 연출 시작: {duration}초 동안 변환");
+        GameLog.Log($"극적 연출 시작: {duration}초 동안 변환");
 
         while (time < duration)
         {
@@ -262,7 +262,7 @@ public class PostExposureController : MonoBehaviour
         {
             vignette.intensity.overrideState = true;
             vignette.intensity.value = value;
-            Debug.Log($"Vignette Intensity set to {value} (instant).");
+            GameLog.Log($"Vignette Intensity set to {value} (instant).");
         }
         else
         {
@@ -276,7 +276,7 @@ public class PostExposureController : MonoBehaviour
         {
             bloom.intensity.overrideState = true;
             bloom.intensity.value = value;
-            Debug.Log($"Bloom Intensity set to {value} (instant).");
+            GameLog.Log($"Bloom Intensity set to {value} (instant).");
         }
         else
         {
@@ -287,7 +287,7 @@ public class PostExposureController : MonoBehaviour
     private IEnumerator FadeEffect(System.Action<float> setter, float startValue, float endValue, float duration)
     {
         setter(startValue);
-        Debug.Log($"Effect starting from {startValue}, fading to {endValue} over {duration}s.");
+        GameLog.Log($"Effect starting from {startValue}, fading to {endValue} over {duration}s.");
 
         float elapsedTime = 0f;
         while (elapsedTime < duration)
@@ -299,7 +299,7 @@ public class PostExposureController : MonoBehaviour
         }
 
         setter(endValue);
-        Debug.Log($"Effect fade complete, set to {endValue}.");
+        GameLog.Log($"Effect fade complete, set to {endValue}.");
 
         if (setter.Target == colorAdjustments && setter.Method.Name.Contains("postExposure")) postExposureFadeCoroutine = null;
         if (setter.Target == colorAdjustments && setter.Method.Name.Contains("contrast")) contrastFadeCoroutine = null;

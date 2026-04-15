@@ -63,7 +63,7 @@ public static class EnemySortingUtility
 
         if (!TryGetEnemySortingLayerId(out int layerId))
         {
-            Debug.LogWarning(
+            GameLog.LogWarning(
                 "[EnemySortingUtility] Sorting Layer 'Enemy' 없음. Project Settings > Tags and Layers > Sorting Layers에 추가했는지 확인하세요.");
             return;
         }

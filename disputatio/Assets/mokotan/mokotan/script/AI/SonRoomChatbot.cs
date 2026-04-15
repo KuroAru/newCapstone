@@ -56,7 +56,7 @@ public class SonRoomChatbot : BaseChatbot
             foreach (var fc in functionCalls)
             {
                 if (fc.name == "give_hint" || fc.name == "emote")
-                    Debug.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
+                    GameLog.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
             }
         }
     }

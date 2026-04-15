@@ -32,7 +32,7 @@ public class SealManager : MonoBehaviour
         flowchart = FlowchartLocator.Resolve(flowchart);
         if (flowchart == null)
         {
-            Debug.LogWarning("SealManager: Flowchart를 찾을 수 없습니다.");
+            GameLog.LogWarning("SealManager: Flowchart를 찾을 수 없습니다.");
             return;
         }
 
@@ -40,7 +40,7 @@ public class SealManager : MonoBehaviour
         if (flowchart.GetBooleanVariable(allSealsVar))
         {
             triggered = true;
-            Debug.Log("SealManager: allSealsComplete가 이미 true — 재트리거 방지.");
+            GameLog.Log("SealManager: allSealsComplete가 이미 true — 재트리거 방지.");
         }
     }
 
@@ -58,7 +58,7 @@ public class SealManager : MonoBehaviour
             // ✅ 처음 한 번만 실행
             onAllSealsComplete?.Invoke();
 
-            Debug.Log("✅ All seals are TRUE → onAllSealsComplete fired.");
+            GameLog.Log("✅ All seals are TRUE → onAllSealsComplete fired.");
         }
     }
 

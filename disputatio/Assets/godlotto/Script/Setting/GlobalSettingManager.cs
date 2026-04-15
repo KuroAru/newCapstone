@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
 
-public class GlobalSettingManager : MonoBehaviour
+public class GlobalSettingManager : SingletonMonoBehaviour<GlobalSettingManager>
 {
-    public static GlobalSettingManager Instance;
+    protected override bool PersistAcrossScenes => true;
 
     [Header("Core Components")]
     [Tooltip("Exposed BGM/SFX 파라미터가 있는 AudioMixer")]
@@ -20,19 +20,9 @@ public class GlobalSettingManager : MonoBehaviour
     public List<Resolution> availableResolutions { get; private set; }
     private List<string> resolutionOptions; // UI 표시용 문자열
 
-    void Awake()
+    protected override void OnSingletonAwake()
     {
-        // 싱글톤 패턴: 나 자신을 보존하고 중복된 놈은 파괴
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeSettings(); // 최초 1회 초기화
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        InitializeSettings(); // 최초 1회 초기화
     }
 
     private void InitializeSettings()

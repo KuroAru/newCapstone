@@ -5,6 +5,9 @@ using TMPro;
 
 public class BookPanelController : MonoBehaviour
 {
+    [Tooltip("요리책(가정부 스크랩북) 전용 레이아웃·자동 리소스 로드에 사용합니다. CookBook_Panel 프리팹에서는 켜 주세요.")]
+    [SerializeField] private bool isCookbookPanel;
+
     [Header("페이지 오브젝트 목록")]
     public GameObject[] pages;
     [Header("가정부 방 스크랩북 (선택)")]
@@ -60,7 +63,7 @@ public class BookPanelController : MonoBehaviour
     void Awake()
     {
         PREF_KEY = "LastBookPage_" + gameObject.name;
-        if (scrapbookContentJson == null && gameObject.name == "CookBook_Panel")
+        if (scrapbookContentJson == null && isCookbookPanel)
             scrapbookContentJson = Resources.Load<TextAsset>("MaidRoomCookbookScrapbook");
         if (scrapbookPageTextOverlay == null)
         {
@@ -73,7 +76,7 @@ public class BookPanelController : MonoBehaviour
         ApplyPageBackgroundSprites();
         ApplyRecipeIllustrationSprites();
         ApplyCookBookRecipeIllustrationLayout();
-        if (gameObject.name == "CookBook_Panel")
+        if (isCookbookPanel)
         {
             if (_cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
             {
@@ -104,7 +107,7 @@ public class BookPanelController : MonoBehaviour
     }
     private void EnsureCookBookRecipeTextUi()
     {
-        if (gameObject.name != "CookBook_Panel" || scrapbookPageTextOverlay == null)
+        if (!isCookbookPanel || scrapbookPageTextOverlay == null)
             return;
         if (scrapbookRecipeTextOverlay != null)
             return;
@@ -132,7 +135,7 @@ public class BookPanelController : MonoBehaviour
     }
     private void ApplyCookBookMemoLayoutCentered()
     {
-        if (gameObject.name != "CookBook_Panel" || scrapbookPageTextOverlay == null)
+        if (!isCookbookPanel || scrapbookPageTextOverlay == null)
             return;
         var rt = scrapbookPageTextOverlay.rectTransform;
         rt.anchorMin = CookBookMemoAnchorMin;
@@ -153,7 +156,7 @@ public class BookPanelController : MonoBehaviour
     }
     private void ApplyCookBookRecipeLayout()
     {
-        if (gameObject.name != "CookBook_Panel" || scrapbookRecipeTextOverlay == null)
+        if (!isCookbookPanel || scrapbookRecipeTextOverlay == null)
             return;
         var rt = scrapbookRecipeTextOverlay.rectTransform;
         rt.anchorMin = cookBookRecipeTextAnchorMin;
@@ -176,7 +179,7 @@ public class BookPanelController : MonoBehaviour
     }
     private void ApplyCookBookMemoLayoutLegacy()
     {
-        if (gameObject.name != "CookBook_Panel" || scrapbookPageTextOverlay == null)
+        if (!isCookbookPanel || scrapbookPageTextOverlay == null)
             return;
         var rt = scrapbookPageTextOverlay.rectTransform;
         rt.anchorMin = CookBookLegacyMemoAnchorMin;
@@ -202,7 +205,7 @@ public class BookPanelController : MonoBehaviour
     }
     private void TryAssignRecipeSpritesFromResources()
     {
-        if (gameObject.name != "CookBook_Panel" || pages == null || pages.Length == 0)
+        if (!isCookbookPanel || pages == null || pages.Length == 0)
             return;
         if (!IsNullOrAllNull(pageRecipeIllustrationSprites))
             return;
@@ -259,7 +262,7 @@ public class BookPanelController : MonoBehaviour
     /// </summary>
     private void ApplyCookBookRecipeIllustrationLayout()
     {
-        if (gameObject.name != "CookBook_Panel" || pages == null)
+        if (!isCookbookPanel || pages == null)
             return;
         foreach (var page in pages)
         {
@@ -312,7 +315,7 @@ public class BookPanelController : MonoBehaviour
     {
         if (scrapbookPageTextOverlay == null)
             return;
-        if (gameObject.name == "CookBook_Panel" && _cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
+        if (isCookbookPanel && _cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
         {
             EnsureCookBookRecipeTextUi();
             string memo = string.Empty;
@@ -343,7 +346,7 @@ public class BookPanelController : MonoBehaviour
             scrapbookPageTextOverlay.text = _scrapbookLegacyBodies[index];
         else
             scrapbookPageTextOverlay.text = string.Empty;
-        if (gameObject.name == "CookBook_Panel")
+        if (isCookbookPanel)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(scrapbookPageTextOverlay.rectTransform);
             scrapbookPageTextOverlay.ForceMeshUpdate(true);

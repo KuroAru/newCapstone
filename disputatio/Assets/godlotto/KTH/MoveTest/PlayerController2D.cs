@@ -64,7 +64,7 @@ public class PlayerController2D : MonoBehaviour
     void Interact()
     {
         isInteracted = true;
-        Debug.Log($"<color=yellow>[상호작용]</color> {targetObject.name}에 도달했습니다!");
+        GameLog.Log($"<color=yellow>[상호작용]</color> {targetObject.name}에 도달했습니다!");
         
         // 여기서 실제로 띄울 UI 창이나 이벤트를 호출하면 됩니다.
         // 예: UIManager.Instance.ShowDialogue(targetObject.name);

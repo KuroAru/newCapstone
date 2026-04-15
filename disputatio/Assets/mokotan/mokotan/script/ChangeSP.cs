@@ -57,7 +57,7 @@ public class ChangeSP : MonoBehaviour
     {
         if (flowchart == null || slot == null || sprite == null || sprite.Length == 0)
         {
-            Debug.LogWarning("ChangeSP: 필수 요소가 연결되지 않았습니다.");
+            GameLog.LogWarning("ChangeSP: 필수 요소가 연결되지 않았습니다.");
             return;
         }
 
@@ -65,7 +65,7 @@ public class ChangeSP : MonoBehaviour
         string sceneName = flowchart.GetStringVariable("SceneName");
         if (string.IsNullOrEmpty(sceneName))
         {
-            Debug.LogWarning("ChangeSP: Flowchart의 SceneName 변수가 비어 있습니다.");
+            GameLog.LogWarning("ChangeSP: Flowchart의 SceneName 변수가 비어 있습니다.");
             if (defaultSprite != null)
             {
                 slot.image.sprite = defaultSprite;
@@ -74,7 +74,7 @@ public class ChangeSP : MonoBehaviour
             return;
         }
 
-        Debug.Log($"🖼️ ChangeSP: 현재 씬 이름 = {sceneName}");
+        GameLog.Log($"🖼️ ChangeSP: 현재 씬 이름 = {sceneName}");
 
         // 🔹 씬 이름에 따라 슬롯 이미지 변경
         Sprite targetSprite = GetSpriteForScene(sceneName);
@@ -86,7 +86,7 @@ public class ChangeSP : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"ChangeSP: {sceneName} 에 해당하는 스프라이트가 없습니다.");
+            GameLog.LogWarning($"ChangeSP: {sceneName} 에 해당하는 스프라이트가 없습니다.");
             if (defaultSprite != null)
             {
                 slot.image.sprite = defaultSprite;
@@ -114,17 +114,17 @@ public class ChangeSP : MonoBehaviour
             case "Hall_playerble": return sprite.Length > 3 ? sprite[3] : null;
             case "Hall_Left": return sprite.Length > 4 ? sprite[4] : null;
             case "Hall_Left2": return sprite.Length > 5 ? sprite[5] : null;
-            case "Kitchen": return sprite.Length > 6 ? sprite[6] : null;
+            case SceneNames.Kitchen: return sprite.Length > 6 ? sprite[6] : null;
             case "UtilityRoom": return sprite.Length > 7 ? sprite[7] : null;
             case "Hallway_Left": return sprite.Length > 8 ? sprite[8] : null;
             case "Hallway_Left2": return sprite.Length > 9 ? sprite[9] : null;
-            case "Hall_Right": return sprite.Length > 10 ? sprite[10] : null;
+            case SceneNames.HallRight: return sprite.Length > 10 ? sprite[10] : null;
             case "Hall_Right2": return sprite.Length > 11 ? sprite[11] : null;
             case "Hall_RightCross": return sprite.Length > 12 ? sprite[12] : null;
             case "MaidEntrance": return sprite.Length > 13 ? sprite[13] : null;
-            case "MaidRoom": return sprite.Length > 14 ? sprite[14] : null;
+            case SceneNames.MaidRoom: return sprite.Length > 14 ? sprite[14] : null;
             case "StudyEntrance": return sprite.Length > 15 ? sprite[15] : null;
-            case "StudyRoom": return sprite.Length > 16 ? sprite[16] : null;
+            case SceneNames.StudyRoom: return sprite.Length > 16 ? sprite[16] : null;
             case "BookCase1": return sprite.Length > 17 ? sprite[17] : null;
             case "BookCase2": return sprite.Length > 18 ? sprite[18] : null;
             case "BookCase2Back": return sprite.Length > 19 ? sprite[19] : null;
@@ -138,16 +138,16 @@ public class ChangeSP : MonoBehaviour
             case "2floorLeft": return sprite.Length > 27 ? sprite[27] : null;
             case "2floorLeftCross": return sprite.Length > 28 ? sprite[28] : null;
             case "TutorEntrance": return sprite.Length > 29 ? sprite[29] : null;
-            case "TutorRoom": return sprite.Length > 30 ? sprite[30] : null;
+            case SceneNames.TutorRoom: return sprite.Length > 30 ? sprite[30] : null;
             case "ChildEntrance": return sprite.Length > 31 ? sprite[31] : null;
-            case "ChildRoom": return sprite.Length > 32 ? sprite[32] : null;
+            case SceneNames.ChildRoom: return sprite.Length > 32 ? sprite[32] : null;
             case "2floorHallway_Left": return sprite.Length > 33 ? sprite[33] : null;
             case "2floorRight": return sprite.Length > 34 ? sprite[34] : null;
             case "2floorRightCross": return sprite.Length > 35 ? sprite[35] : null;
             case "BedEntrance": return sprite.Length > 36 ? sprite[36] : null;
-            case "BedRoom": return sprite.Length > 37 ? sprite[37] : null;
+            case SceneNames.BedRoom: return sprite.Length > 37 ? sprite[37] : null;
             case "WifeEntrance": return sprite.Length > 38 ? sprite[38] : null;
-            case "WifeRoom": return sprite.Length > 39 ? sprite[39] : null;
+            case SceneNames.WifeRoom: return sprite.Length > 39 ? sprite[39] : null;
             case "DressingRoom": return sprite.Length > 40 ? sprite[40] : null;
             case "2floorHallway_Right": return sprite.Length > 41 ? sprite[41] : null;
         }

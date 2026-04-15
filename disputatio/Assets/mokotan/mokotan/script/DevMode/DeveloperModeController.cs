@@ -1,10 +1,8 @@
 using UnityEngine;
 using Fungus;
 
-public class DeveloperModeController : MonoBehaviour
+public class DeveloperModeController : SingletonMonoBehaviour<DeveloperModeController>
 {
-    private const string DevModeVariableKey = "DevModeEnabled";
-
     [Header("Toggle Keys")]
     [SerializeField] private KeyCode toggleDevModeKey = KeyCode.F2;
     [SerializeField] private KeyCode toggleOverlayKey = KeyCode.F3;
@@ -16,21 +14,12 @@ public class DeveloperModeController : MonoBehaviour
     [SerializeField] private OpeningSkipService openingSkipService;
     [SerializeField] private InGameDeveloperOverlay developerOverlay;
 
-    private static DeveloperModeController instance;
-
     public static bool IsDeveloperModeEnabled { get; private set; }
 
-    private void Awake()
+    protected override bool PersistAcrossScenes => true;
+
+    protected override void OnSingletonAwake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        instance = this;
-        DontDestroyOnLoad(gameObject);
-
         IsDeveloperModeEnabled = Debug.isDebugBuild && ReadDevModeFromVariableManager();
     }
 
@@ -122,7 +111,7 @@ public class DeveloperModeController : MonoBehaviour
             return false;
 
         EnsureDevModeVariableExists(flowchart);
-        return flowchart.GetBooleanVariable(DevModeVariableKey);
+        return flowchart.GetBooleanVariable(FungusVariableKeys.DevModeEnabled);
     }
 
     private static void WriteDevModeToVariableManager(bool enabled)
@@ -132,19 +121,19 @@ public class DeveloperModeController : MonoBehaviour
             return;
 
         EnsureDevModeVariableExists(flowchart);
-        flowchart.SetBooleanVariable(DevModeVariableKey, enabled);
+        flowchart.SetBooleanVariable(FungusVariableKeys.DevModeEnabled, enabled);
     }
 
     private static void EnsureDevModeVariableExists(Flowchart flowchart)
     {
-        if (flowchart == null || flowchart.HasVariable(DevModeVariableKey))
+        if (flowchart == null || flowchart.HasVariable(FungusVariableKeys.DevModeEnabled))
             return;
 
         var variable = flowchart.gameObject.AddComponent<BooleanVariable>();
-        variable.Key = DevModeVariableKey;
+        variable.Key = FungusVariableKeys.DevModeEnabled;
         variable.Scope = VariableScope.Public;
         variable.Value = false;
         flowchart.Variables.Add(variable);
-        Debug.Log($"[DeveloperModeController] Variablemanager에 bool 변수 '{DevModeVariableKey}'를 추가했습니다.");
+        GameLog.Log($"[DeveloperModeController] Variablemanager에 bool 변수 '{FungusVariableKeys.DevModeEnabled}'를 추가했습니다.");
     }
 }

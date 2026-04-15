@@ -7,10 +7,10 @@ public static class PuzzleSolvedStateProvider
     private static readonly Dictionary<string, string[]> SolvedVariableCandidatesByScene = new Dictionary<string, string[]>
     {
         { "MainBedroom", new[] { "SafeSolved" } },
-        { "ChildRoom", new[] { "allSealsComplete" } },
-        { "TutorRoom", new[] { "quiz_complete", "QuizComplete" } },
-        { "WifeRoom", new[] { "CheckedMirror" } },
-        { "Kitchen", new[] { "giveFood" } },
+        { SceneNames.ChildRoom, new[] { "allSealsComplete" } },
+        { SceneNames.TutorRoom, new[] { "quiz_complete", "QuizComplete" } },
+        { SceneNames.WifeRoom, new[] { "CheckedMirror" } },
+        { SceneNames.Kitchen, new[] { "giveFood" } },
     };
 
     public static bool IsSolved(string sceneName)

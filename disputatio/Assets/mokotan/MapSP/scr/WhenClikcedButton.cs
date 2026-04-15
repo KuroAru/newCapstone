@@ -2,44 +2,49 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Fungus;
 
-public class WhenClikcedButton : MonoBehaviour
+public class WhenClikcedButton : SingletonMonoBehaviour<WhenClikcedButton>
 {
-    public static WhenClikcedButton Instance;
+    protected override bool PersistAcrossScenes => true;
 
     [Header("UI 연결")]
     [SerializeField] private GameObject panelToActivate;
+    [Tooltip("비우면 씬에서 이름으로 GlobalInventoryCanvas_Prefab을 찾습니다.")]
+    [SerializeField] private GameObject globalInventoryCanvas;
 
     [Header("Room Objects (Panel의 자식으로 설정 필수)")]
-    public GameObject unLocked, kitchen, locked, lib, lock2, made, bed, wife, Child, Tutor, Lock_2_1, Lock_2_2, Lock_2_3, Lock_2_4;
+    [SerializeField] private GameObject unLocked;
+    [SerializeField] private GameObject kitchen;
+    [SerializeField] private GameObject locked;
+    [SerializeField] private GameObject lib;
+    [SerializeField] private GameObject lock2;
+    [SerializeField] private GameObject made;
+    [SerializeField] private GameObject bed;
+    [SerializeField] private GameObject wife;
+    [SerializeField] private GameObject Child;
+    [SerializeField] private GameObject Tutor;
+    [SerializeField] private GameObject Lock_2_1;
+    [SerializeField] private GameObject Lock_2_2;
+    [SerializeField] private GameObject Lock_2_3;
+    [SerializeField] private GameObject Lock_2_4;
 
     private Transform targetCanvas;
     private Flowchart globalFlowchart; // Variablemanager의 변수를 가져올 용도
 
-    void Awake()
+    protected override void OnSingletonAwake()
     {
-        if (Instance == null)
+        if (panelToActivate != null)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); //
-
-            // 지도가 이 오브젝트(싱글톤)를 따라다니게 부모를 설정합니다.
-            if (panelToActivate != null)
-            {
-                panelToActivate.transform.SetParent(this.transform);
-                panelToActivate.SetActive(false);
-            }
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            FindGlobalManager();
+            panelToActivate.transform.SetParent(this.transform);
+            panelToActivate.SetActive(false);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        FindGlobalManager();
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -70,7 +75,9 @@ public class WhenClikcedButton : MonoBehaviour
     private void RefreshReferences()
     {
         // 전역 인벤토리 캔버스를 우선적으로 찾습니다.
-        GameObject invCanvas = GameObject.Find("GlobalInventoryCanvas_Prefab");
+        GameObject invCanvas = globalInventoryCanvas;
+        if (invCanvas == null)
+            invCanvas = GameObject.Find("GlobalInventoryCanvas_Prefab");
         if (invCanvas != null)
         {
             targetCanvas = invCanvas.transform;
@@ -86,7 +93,7 @@ public class WhenClikcedButton : MonoBehaviour
 
         // Variablemanager를 못 찾는 씬에서도 전역(Fungus Global) fallback으로 상태를 갱신한다.
         if (globalFlowchart != null)
-            globalFlowchart.SetBooleanVariable("isCalled", false); //
+            globalFlowchart.SetBooleanVariable(FungusVariableKeys.IsCalled, false); //
 
         UpdateAllRoomStates(); // 씬 로드 시 상태 갱신
     }
@@ -111,7 +118,7 @@ public class WhenClikcedButton : MonoBehaviour
                 rect.SetAsLastSibling();
             }
 
-            if (globalFlowchart != null) globalFlowchart.SetBooleanVariable("isCalled", true);
+            if (globalFlowchart != null) globalFlowchart.SetBooleanVariable(FungusVariableKeys.IsCalled, true);
         }
     }
 
@@ -124,7 +131,7 @@ public class WhenClikcedButton : MonoBehaviour
             panelToActivate.transform.SetParent(this.transform);
         }
 
-        if (globalFlowchart != null) globalFlowchart.SetBooleanVariable("isCalled", false);
+        if (globalFlowchart != null) globalFlowchart.SetBooleanVariable(FungusVariableKeys.IsCalled, false);
     }
 
     public void MoveScene(string sceneName)
@@ -134,24 +141,24 @@ public class WhenClikcedButton : MonoBehaviour
     }
 
     // 씬 이동용 함수들
-    public void GoKitchen() => MoveScene("Kitchen");
-    public void GoMaid() => MoveScene("MaidRoom");
-    public void GoStudy() => MoveScene("StudyRoom");
-    public void GoTutor() => MoveScene("TutorRoom");
-    public void GoChild() => MoveScene("ChildRoom");
-    public void GoWife() => MoveScene("WifeRoom");
-    public void GoBed() => MoveScene("BedRoom");
+    public void GoKitchen() => MoveScene(SceneNames.Kitchen);
+    public void GoMaid() => MoveScene(SceneNames.MaidRoom);
+    public void GoStudy() => MoveScene(SceneNames.StudyRoom);
+    public void GoTutor() => MoveScene(SceneNames.TutorRoom);
+    public void GoChild() => MoveScene(SceneNames.ChildRoom);
+    public void GoWife() => MoveScene(SceneNames.WifeRoom);
+    public void GoBed() => MoveScene(SceneNames.BedRoom);
 
     public void UpdateAllRoomStates()
     {
         // 각 방의 상태를 변수에 맞춰 강제로 고정합니다.
-        UpdateRoomVisibility(unLocked, kitchen, "ElectricOn");
-        UpdateRoomVisibility(locked, lib, "UsedStudyKey");
-        UpdateRoomVisibility(lock2, made, "UsedMaidKey");
-        UpdateRoomVisibility(Lock_2_4, bed, "UsedBedKey");
-        UpdateRoomVisibility(Lock_2_3, wife, "UsedWifeKey");
-        UpdateRoomVisibility(Lock_2_2, Tutor, "UsedTutorKey");
-        UpdateRoomVisibility(Lock_2_1, Child, "UsedChildKey");
+        UpdateRoomVisibility(unLocked, kitchen, FungusVariableKeys.ElectricOn);
+        UpdateRoomVisibility(locked, lib, FungusVariableKeys.UsedStudyKey);
+        UpdateRoomVisibility(lock2, made, FungusVariableKeys.UsedMaidKey);
+        UpdateRoomVisibility(Lock_2_4, bed, FungusVariableKeys.UsedBedKey);
+        UpdateRoomVisibility(Lock_2_3, wife, FungusVariableKeys.UsedWifeKey);
+        UpdateRoomVisibility(Lock_2_2, Tutor, FungusVariableKeys.UsedTutorKey);
+        UpdateRoomVisibility(Lock_2_1, Child, FungusVariableKeys.UsedChildKey);
     }
 
     // ★ 핵심 수정 부분: 변수가 false일 때도 상태를 제어합니다.
@@ -165,7 +172,7 @@ public class WhenClikcedButton : MonoBehaviour
 
         // 일부 맵 노드는 open 오브젝트 내부에 잠금 배지(자식 UI)가 같이 들어있다.
         // 전역 bool이 true인 경우 배지를 숨겨 "열림" 상태가 시각적으로 보이도록 강제한다.
-        if (openObj != null && key == "UsedMaidKey")
+        if (openObj != null && key == FungusVariableKeys.UsedMaidKey)
             ToggleLockBadgeChildren(openObj, !isOpen);
     }
 

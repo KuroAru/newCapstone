@@ -66,7 +66,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         {
 
-            Debug.Log("Color Adjustments 효과를 찾았습니다.");
+            GameLog.Log("Color Adjustments 효과를 찾았습니다.");
 
             colorAdjustments.postExposure.value = -1.5f;
 
@@ -90,7 +90,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         {
             vignette.intensity.value = 0.4f;
-            Debug.Log("Vignette 효과를 찾았습니다.");
+            GameLog.Log("Vignette 효과를 찾았습니다.");
 
             // vignette.intensity.value = 0f; // 시작 시 초기화 제거 (원래 Profile 값 유지)
 
@@ -100,7 +100,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         {
 
-            Debug.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
+            GameLog.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
 
         }
 
@@ -114,7 +114,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         {
 
-            Debug.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
+            GameLog.LogWarning("지정된 Volume Profile에서 Vignette 효과를 찾을 수 없습니다!", this);
 
         }
 
@@ -202,7 +202,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
             vignette.intensity.value = value;
 
-            Debug.Log("Vignette Intensity set to 0 (instant)."); // 디버그 메시지 수정
+            GameLog.Log("Vignette Intensity set to 0 (instant)."); // 디버그 메시지 수정
 
         }
 
@@ -244,7 +244,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         setter(startValue);
 
-        Debug.Log($"Effect starting from {startValue}, fading to {endValue} over {duration}s.");
+        GameLog.Log($"Effect starting from {startValue}, fading to {endValue} over {duration}s.");
 
 
 
@@ -268,7 +268,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
         setter(endValue);
 
-        Debug.Log($"Effect fade complete, set to {endValue}.");
+        GameLog.Log($"Effect fade complete, set to {endValue}.");
 
         // 이 코루틴은 postExposure/contrast 둘 중 하나에서만 사용되므로 완료 시 안전하게 해제합니다.
         postExposureFadeCoroutine = null;

@@ -19,7 +19,7 @@ public class SettingManager : MonoBehaviour
     private int currentIndex = 0;
 
     [Header("Scene Navigation")]
-    public string mainMenuSceneName = "MainMenuScene";
+    public string mainMenuSceneName = SceneNames.MainMenu;
 
     private List<Resolution> resolutions;
     private int currentResolutionIndex = 0;

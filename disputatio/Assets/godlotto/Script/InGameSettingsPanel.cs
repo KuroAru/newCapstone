@@ -9,22 +9,26 @@ using System.IO;
 using UnityEngine.EventSystems;
 using Fungus;
 
-public class InGameSettingsPanel : MonoBehaviour
+public class InGameSettingsPanel : SingletonMonoBehaviour<InGameSettingsPanel>
 {
-    public static InGameSettingsPanel instance;
+    [System.Obsolete("Use Instance instead.")]
+    public static InGameSettingsPanel instance => Instance;
+
+    protected override bool PersistAcrossScenes => true;
 
     [Header("Fungus 연동")]
-    public Flowchart targetFlowchart;
-    public string fungusVariableName = "isCalled";
-    public Fungus.DialogInput dialogInput;
+    [SerializeField] private Flowchart targetFlowchart;
+    [SerializeField] private string fungusVariableName = FungusVariableKeys.IsCalled;
+    [SerializeField] private Fungus.DialogInput dialogInput;
 
     [Header("UI Components")]
-    public GameObject settingPanel;
-    public AudioMixer audioMixer;
-    public Slider bgmSlider;
-    public Slider sfxSlider;
-    public TMP_Dropdown resolutionDropdown;
-    public Toggle fullscreenToggle;
+    [SerializeField] private GameObject settingPanel;
+    public GameObject SettingPanel => settingPanel;
+    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private Slider bgmSlider;
+    [SerializeField] private Slider sfxSlider;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
+    [SerializeField] private Toggle fullscreenToggle;
 
     [Header("Save / Load — 설정 패널 멀티슬롯")]
     [Tooltip("비우면 씬에서 SaveSlotManager를 자동 탐색합니다.")]
@@ -42,32 +46,23 @@ public class InGameSettingsPanel : MonoBehaviour
     [SerializeField] bool disableLegacyFungusSaveMenuInScene = true;
 
     [Header("Keyboard Navigation")]
-    public Selectable[] navigableElements;
+    [SerializeField] private Selectable[] navigableElements;
     private int currentIndex = 0;
 
     [Header("Scene Navigation")]
-    public string mainMenuSceneName = "MainMenuScene";
+    [SerializeField] private string mainMenuSceneName = SceneNames.MainMenu;
 
     const string SettingsCanvasSortingLayerName = "Setting";
     const int SettingsCanvasSortingOrder = 50;
 
-    private List<Resolution> resolutions;
-    private int currentResolutionIndex = 0;
+    private ResolutionAudioSettings _resolutionAudio;
     private bool isPanelOpen = false;
 
     private float playTime = 0f;
     private bool isCounting = true;
 
-    void Awake()
+    protected override void OnSingletonAwake()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-        DontDestroyOnLoad(gameObject);
-
         if (settingPanel != null)
             settingPanel.SetActive(false);
 
@@ -87,9 +82,10 @@ public class InGameSettingsPanel : MonoBehaviour
     void Start()
     {
         FungusSaveSystemBootstrap.EnsureSaveStack();
+        _resolutionAudio = new ResolutionAudioSettings(audioMixer);
         LoadSettings();
         AssignListeners();
-        InitializeResolutionDropdown();
+        _resolutionAudio.InitializeResolutionDropdown(resolutionDropdown);
         ResolveSaveSlotManager();
         if (disableLegacyFungusSaveMenuInScene)
             DisableLegacyFloatingSaveMenu();
@@ -130,14 +126,10 @@ public class InGameSettingsPanel : MonoBehaviour
 
     private void LoadSettings()
     {
-        bgmSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.BgmVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
-        sfxSlider.value = PlayerPrefs.GetFloat(SettingPlayerPrefsKeys.SfxVolume, SettingPlayerPrefsKeys.DefaultLinearVolume);
-
-        bool isFull = Screen.fullScreen;
-        fullscreenToggle.isOn = isFull;
-
-        SetBgmVolume(bgmSlider.value);
-        SetSfxVolume(sfxSlider.value);
+        bgmSlider.value = _resolutionAudio.GetPersistedBgmLinear();
+        sfxSlider.value = _resolutionAudio.GetPersistedSfxLinear();
+        fullscreenToggle.isOn = _resolutionAudio.GetPersistedFullscreen();
+        _resolutionAudio.ApplyAudioFromLinear(bgmSlider.value, sfxSlider.value);
     }
 
     private void AssignListeners()
@@ -195,7 +187,7 @@ public class InGameSettingsPanel : MonoBehaviour
         ResolveSaveSlotManager();
         if (saveSlotManager == null)
         {
-            Debug.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음");
+            GameLog.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음");
             return;
         }
 
@@ -212,7 +204,7 @@ public class InGameSettingsPanel : MonoBehaviour
         ResolveSaveSlotManager();
         if (saveSlotManager == null)
         {
-            Debug.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음");
+            GameLog.LogWarning("[InGameSettingsPanel] SaveSlotManager 없음");
             return;
         }
 
@@ -366,62 +358,22 @@ public class InGameSettingsPanel : MonoBehaviour
 
     public void SetBgmVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.BgmVolume, volume);
-        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.BgmVolume, volume);
+        _resolutionAudio.SetBgmVolume(volume);
     }
 
     public void SetSfxVolume(float volume)
     {
-        AudioMixerVolumeUtility.SetExposedVolume(audioMixer, SettingPlayerPrefsKeys.SfxVolume, volume);
-        PlayerPrefs.SetFloat(SettingPlayerPrefsKeys.SfxVolume, volume);
+        _resolutionAudio.SetSfxVolume(volume);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
-        Screen.fullScreen = isFullscreen;
-        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.Fullscreen, isFullscreen ? 1 : 0);
-    }
-
-    private void InitializeResolutionDropdown()
-    {
-        resolutions = ResolutionListUtility.BuildPreferredResolutionList();
-        resolutionDropdown.ClearOptions();
-        List<string> options = ResolutionListUtility.BuildLabels(resolutions);
-        int currentScreenIndex = 0;
-        for (int i = 0; i < resolutions.Count; i++)
-        {
-            var r = resolutions[i];
-            if (r.width == Screen.width && r.height == Screen.height)
-                currentScreenIndex = i;
-        }
-
-        resolutionDropdown.AddOptions(options);
-        currentResolutionIndex = currentScreenIndex;
-        resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue();
-
-        resolutionDropdown.onValueChanged.RemoveAllListeners();
-        resolutionDropdown.onValueChanged.AddListener(OnResolutionDropdownChanged);
-    }
-
-    private void OnResolutionDropdownChanged(int index)
-    {
-        SetResolution(index);
-    }
-
-    private void SetResolution(int index)
-    {
-        if (index < 0 || index >= resolutions.Count) return;
-        currentResolutionIndex = index;
-        Resolution resolution = resolutions[index];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-
-        PlayerPrefs.SetInt(SettingPlayerPrefsKeys.ResolutionIndex, currentResolutionIndex);
+        _resolutionAudio.SetFullscreen(isFullscreen);
     }
 
     public void BackToMainMenu()
     {
-        Debug.Log("메인메뉴 이동 버튼 클릭됨");
+        GameLog.Log("메인메뉴 이동 버튼 클릭됨");
         StartCoroutine(GoToMainMenu());
     }
 
@@ -435,10 +387,10 @@ public class InGameSettingsPanel : MonoBehaviour
             fc.SetBooleanVariable(fungusVariableName, false);
 
         CleanupDontDestroyObjects();
-        Debug.Log("모든 DontDestroyOnLoad 오브젝트 삭제 완료");
+        GameLog.Log("모든 DontDestroyOnLoad 오브젝트 삭제 완료");
         yield return null;
 
-        Debug.Log($"씬 로드 시도: {mainMenuSceneName}");
+        GameLog.Log($"씬 로드 시도: {mainMenuSceneName}");
         SceneManager.LoadScene(mainMenuSceneName);
 
         Destroy(gameObject);
@@ -466,6 +418,6 @@ public class InGameSettingsPanel : MonoBehaviour
     public void ReturnToGame()
     {
         CloseSettingPanel();
-        Debug.Log("게임 복귀");
+        GameLog.Log("게임 복귀");
     }
 }

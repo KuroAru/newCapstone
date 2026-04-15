@@ -2,9 +2,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class AudioController : MonoBehaviour
+public class AudioController : SingletonMonoBehaviour<AudioController>
 {
-    public static AudioController instance; // 싱글톤
+    [System.Obsolete("Use Instance instead.")]
+    public static AudioController instance => Instance;
+
+    protected override bool PersistAcrossScenes => true;
 
     [Header("Settings")]
     private AudioSource audioSource;
@@ -18,23 +21,13 @@ public class AudioController : MonoBehaviour
     [Header("Footstep Settings")]
     public float delayBetweenSteps = 0.3f;
 
-    void Awake()
+    protected override void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        if (bgmList == null || bgmList.Length == 0)
+            return;
 
-        if (bgmList != null && bgmList.Length > 0)
-        {
-            if (instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
-        }
+        base.Awake();
     }
 
     // ★★★★★ MainMenuScene에서 음악 자동 정지
@@ -50,7 +43,7 @@ public class AudioController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenuScene")
+        if (scene.name == SceneNames.MainMenu)
         {
             StopMusic();
             // 필요하면 메인메뉴 BGM을 재생하고 싶을 경우:

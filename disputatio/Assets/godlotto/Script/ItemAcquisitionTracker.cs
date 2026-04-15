@@ -33,7 +33,7 @@ public static class ItemAcquisitionTracker
 
         if (!IsValidId(item.itemId))
         {
-            Debug.LogWarning($"[ItemAcquisition] itemId 범위 밖({item.itemId}): {item.name}");
+            GameLog.LogWarning($"[ItemAcquisition] itemId 범위 밖({item.itemId}): {item.name}");
             return;
         }
 

@@ -33,7 +33,7 @@ public class ClickEffectPlayer : MonoBehaviour
             // 위 과정 후에도 mainCamera가 null이라면 (태그를 못 찾았거나, 찾았는데 Camera 컴포넌트가 없는 경우)
             if (mainCamera == null)
             {
-                Debug.LogWarning("경고: 씬에서 'EffectCamera' 태그가 붙은 카메라를 찾을 수 없습니다.");
+                GameLog.LogWarning("경고: 씬에서 'EffectCamera' 태그가 붙은 카메라를 찾을 수 없습니다.");
             }
         }
     }

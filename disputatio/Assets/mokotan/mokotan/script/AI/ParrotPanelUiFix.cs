@@ -10,13 +10,11 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class ParrotPanelUiFix : MonoBehaviour
 {
-    private const string ElectricOnVariableName = "ElectricOn";
-
     [SerializeField] private SayDialog targetSayDialog;
     [SerializeField] private CanvasGroup sayDialogCanvasGroup;
     [SerializeField] private Image panelBackgroundImage;
     [SerializeField] private Sprite electricOnBackgroundSprite;
-    [SerializeField] private string electricOnVariableName = ElectricOnVariableName;
+    [SerializeField] private string electricOnVariableName = FungusVariableKeys.ElectricOn;
 
     [Header("Parret Visibility Settings")]
     [Tooltip("자동으로 찾을 Parret 오브젝트의 이름입니다.")]
@@ -103,7 +101,7 @@ public class ParrotPanelUiFix : MonoBehaviour
             return false;
 
         string key = string.IsNullOrWhiteSpace(electricOnVariableName)
-            ? ElectricOnVariableName
+            ? FungusVariableKeys.ElectricOn
             : electricOnVariableName;
         return flowchart.GetBooleanVariable(key);
     }

@@ -57,24 +57,24 @@ public class ItemPickup : MonoBehaviour, IPointerClickHandler
             if (!string.IsNullOrEmpty(fungusVariableName))
             {
                 fc.SetBooleanVariable(fungusVariableName, true);
-                Debug.Log($"[ItemPickup] Fungus 변수 '{fungusVariableName}' → True");
+                GameLog.Log($"[ItemPickup] Fungus 변수 '{fungusVariableName}' → True");
             }
 
             if (!string.IsNullOrEmpty(executeBlockName))
             {
                 fc.ExecuteBlock(executeBlockName);
-                Debug.Log($"[ItemPickup] Fungus 블록 '{executeBlockName}' 실행");
+                GameLog.Log($"[ItemPickup] Fungus 블록 '{executeBlockName}' 실행");
             }
         }
 
         if (InventoryManager.instance != null && item != null)
         {
             InventoryManager.instance.AddItem(item);
-            Debug.Log($"[ItemPickup] {item.name} 아이템을 인벤토리에 추가했습니다.");
+            GameLog.Log($"[ItemPickup] {item.name} 아이템을 인벤토리에 추가했습니다.");
         }
         else
         {
-            Debug.LogWarning("[ItemPickup] InventoryManager.instance 또는 item이 null입니다!");
+            GameLog.LogWarning("[ItemPickup] InventoryManager.instance 또는 item이 null입니다!");
         }
 
         Destroy(gameObject);

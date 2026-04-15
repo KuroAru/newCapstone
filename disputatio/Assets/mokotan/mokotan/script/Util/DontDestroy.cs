@@ -9,6 +9,6 @@ public class DontDestroy : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         // 스크립트가 실행되었는지 확인하기 위한 메시지
-        Debug.Log(this.gameObject.name + " 오브젝트에 DontDestroy 스크립트가 실행되었습니다.");
+        GameLog.Log(this.gameObject.name + " 오브젝트에 DontDestroy 스크립트가 실행되었습니다.");
     }
 }

@@ -43,7 +43,7 @@ public class UISafeLockController : MonoBehaviour
         unlocked = PlayerPrefs.GetInt(unlockKey, 0) == 1;
         if (unlocked)
         {
-            Debug.Log("🔓 금고는 이미 열린 상태 — Fungus 블록은 실행되지 않음");
+            GameLog.Log("🔓 금고는 이미 열린 상태 — Fungus 블록은 실행되지 않음");
         }
     }
 
@@ -91,7 +91,7 @@ public class UISafeLockController : MonoBehaviour
     public void OnUnlock()
     {
         onUnlock?.Invoke(); // Fungus 블록 실행은 여기 이벤트로 연결
-        Debug.Log("🔓 금고가 열렸습니다!");
+        GameLog.Log("🔓 금고가 열렸습니다!");
     }
 
     private void SetFungusBool(string name, bool value)

@@ -36,13 +36,13 @@ public static class FlowchartLocator
         GameObject go = GameObject.Find(name);
         if (go == null)
         {
-            Debug.LogWarning($"[FlowchartLocator] '{name}' GameObject를 찾을 수 없습니다.");
+            GameLog.LogWarning($"[FlowchartLocator] '{name}' GameObject를 찾을 수 없습니다.");
             return null;
         }
 
         Flowchart fc = go.GetComponent<Flowchart>();
         if (fc == null)
-            Debug.LogWarning($"[FlowchartLocator] '{name}'에 Flowchart 컴포넌트가 없습니다.");
+            GameLog.LogWarning($"[FlowchartLocator] '{name}'에 Flowchart 컴포넌트가 없습니다.");
 
         return fc;
     }

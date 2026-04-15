@@ -23,13 +23,13 @@ public class IntegratedSettingUI : MonoBehaviour
     public Toggle fullscreenToggle;
 
     [Header("Navigation")]
-    public string mainMenuSceneName = "MainMenuScene";
+    public string mainMenuSceneName = SceneNames.MainMenu;
     public GameObject panelRoot; 
     
     [Header("Fungus Integration")]
     [Tooltip("비우면 FlowchartLocator(Variablemanager)를 사용합니다.")]
     public Flowchart targetFlowchart;
-    public string fungusVariableName = "isCalled";
+    public string fungusVariableName = FungusVariableKeys.IsCalled;
     public Fungus.DialogInput dialogInput;
 
     [Header("Keyboard Input")]

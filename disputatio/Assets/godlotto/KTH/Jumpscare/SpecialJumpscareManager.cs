@@ -5,9 +5,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class SpecialJumpscareManager : MonoBehaviour
+public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareManager>
 {
-    public static SpecialJumpscareManager Instance;
     public static event Action OnPlayerDied;
     public static event Action OnEnemyAppeared; // 추가: 적이 스폰되었을 때
     public static event Action OnJumpscareReset; // 추가: 상태가 초기화될 때 (씬 이동 등)
@@ -25,7 +24,7 @@ public class SpecialJumpscareManager : MonoBehaviour
     public float spawnChance = 100f;
     public float blinkDuration = 0.2f;
     public float closedDuration = 0.1f;
-    public string retrySceneName = "MainScene";
+    public string retrySceneName = SceneNames.MainScene;
 
     [Header("오브젝트")]
     public GameObject parrotObject;
@@ -59,11 +58,6 @@ public class SpecialJumpscareManager : MonoBehaviour
     // triggerObject의 보이는 부분만 끄기 위한 캐시
     private SpriteRenderer triggerSpriteRenderer;
     private Collider2D triggerCollider;
-
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-    }
 
     void Start()
     {

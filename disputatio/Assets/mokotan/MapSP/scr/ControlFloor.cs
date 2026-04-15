@@ -32,6 +32,6 @@ public class ControlFloor : MonoBehaviour
         if (floor1Object != null) floor1Object.SetActive(floorNumber == 1);
         if (floor2Object != null) floor2Object.SetActive(floorNumber == 2);
         
-        Debug.Log($"{floorNumber}층 오브젝트가 활성화되었습니다.");
+        GameLog.Log($"{floorNumber}층 오브젝트가 활성화되었습니다.");
     }
 }

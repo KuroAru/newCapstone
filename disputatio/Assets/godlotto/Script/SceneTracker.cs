@@ -29,7 +29,7 @@ public class SceneTracker : MonoBehaviour
         if (global != null)
         {
             global.SetStringVariable(prevVarKey, current.name);
-            Debug.Log($"[SceneTracker] PrevScene 저장됨 → {current.name}");
+            GameLog.Log($"[SceneTracker] PrevScene 저장됨 → {current.name}");
         }
     }
 }

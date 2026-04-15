@@ -21,7 +21,7 @@ public class KitchenChatbot : BaseChatbot
 
         string actionText = "(플레이어가 나에게 음식을 주었다.)";
         StartCoroutine(GetGPTResponse(actionText));
-        Debug.Log("call");
+        GameLog.Log("call");
     }
 
     protected override string BuildFinalSystemPrompt()
@@ -77,7 +77,7 @@ public class KitchenChatbot : BaseChatbot
             foreach (var fc in functionCalls)
             {
                 if (fc.name == "give_hint" || fc.name == "emote")
-                    Debug.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
+                    GameLog.Log($"[{fc.name}] {JsonUtility.ToJson(fc)}");
             }
         }
 

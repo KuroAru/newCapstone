@@ -54,7 +54,7 @@ public class CalendarController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"달력 이미지를 찾을 수 없습니다. (월: {currentMonth})");
+            GameLog.LogWarning($"달력 이미지를 찾을 수 없습니다. (월: {currentMonth})");
         }
     }
 

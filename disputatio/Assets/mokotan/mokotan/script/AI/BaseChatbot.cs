@@ -1,59 +1,26 @@
 using UnityEngine;
+using UnityEngine.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Networking;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using Fungus;
 using TMPro;
-using UnityEngine.SceneManagement;
 
-public class BypassCertificate : CertificateHandler {
-    protected override bool ValidateCertificate(byte[] certificateData) => true;
-}
-
-[Serializable]
-public class FunctionCallData
+public abstract class BaseChatbot : MonoBehaviour, IChatHttpCallbacks
 {
-    public string name;
-    public Dictionary<string, object> arguments;
-}
-
-[Serializable]
-public class ChatResponseData
-{
-    public string response;
-    public List<FunctionCallData> function_calls;
-}
-
-[Serializable]
-public class SSEEventData
-{
-    public string type;
-    public string content;
-    public string name;
-    public Dictionary<string, object> arguments;
-    public string full_text;
-}
-
-public abstract class BaseChatbot : MonoBehaviour
-{
-    private const string ChesterVoiceCommonResource = "ChesterVoiceCommon";
-
     [Header("Server Settings")]
-    [SerializeField] protected string localServerUrl = "http://15.134.24.132:8000/chat";
-    protected bool isRequestInProgress = false;
+    [Tooltip("비워 두면 ServerConfig 에셋의 ChatUrl을 사용합니다.")]
+    [SerializeField] protected string localServerUrl;
+    protected bool isRequestInProgress;
 
     /// <summary>다음 /chat 요청에만 적용 후 자동 해제. null이면 기본 true.</summary>
     protected bool? useToolsOverrideForNextRequest;
 
-    /// <summary>TMP onSubmit + IME(한글 등)에서 Enter 직후 한 프레임 동안 text가 비어 보일 때 중복 재시도 방지.</summary>
+    /// <summary>TMP onSubmit + IME(한글 등)에서 Enter 직후 중복 재시도 방지.</summary>
     private bool _sendImeRetryPending;
 
     /// <summary>
-    /// false면 Resources/ChesterVoiceCommon을 시스템 프롬프트에 붙이지 않음(예: ParrotChatbot 초단문 규칙과 충돌 방지).
+    /// false면 Resources/ChesterVoiceCommon을 시스템 프롬프트에 붙이지 않음.
     /// </summary>
     protected virtual bool AppendCommonChesterVoiceBlock => true;
 
@@ -64,102 +31,53 @@ public abstract class BaseChatbot : MonoBehaviour
     [Header("Chat Input")]
     [SerializeField] private TMP_InputField userInputField;
 
-    protected List<OpenAIMessage> chatHistory = new List<OpenAIMessage>();
     private DialogInput chatDialogInput;
+    private ChatHttpClient _httpClient;
+    private ChatHistoryManager _historyManager;
 
-    [Serializable]
-    public class LocalLlamaPayload {
-        public string prompt;
-        public string system;
-        public bool use_tools = true;
-        /// <summary>Gains 등 일부 서버 필수 필드 호환. <see cref="prompt"/>와 동일한 사용자 턴 텍스트.</summary>
-        public string message;
-        /// <summary>클라이언트 식별(선택 로그용). Gains 등에서 필수인 경우가 있음.</summary>
-        public string user_id;
+    // ---------------------------------------------------------------
+    //  Protected helper access for subclasses
+    // ---------------------------------------------------------------
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string rag_profile;
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string rag_query;
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string current_question_id;
-    }
-
-    /// <summary>튜터 RAG 등 — /chat JSON에 선택 필드를 붙일 때 오버라이드합니다.</summary>
-    protected virtual void AugmentChatPayload(LocalLlamaPayload payload, string userMessage)
-    {
-    }
-
-    /// <summary>
-    /// 백엔드 <c>ChatRequest.prompt</c> (max 2000). 공백만이면 API 호출하지 않음 → 422 방지.
-    /// </summary>
-    protected static bool TryNormalizePromptForChatApi(string userMessage, out string normalized)
-    {
-        normalized = (userMessage ?? "").Trim();
-        if (normalized.Length == 0)
-            return false;
-        const int MaxChatPromptChars = 2000;
-        if (normalized.Length > MaxChatPromptChars)
-            normalized = normalized.Substring(0, MaxChatPromptChars);
-        return true;
-    }
-
-    /// <summary>일부 백엔드(Gains 등)가 요구하는 <c>user_id</c>. 에디터와 기기에서 일관되게 씀.</summary>
-    protected static string ResolveChatClientUserId()
-    {
-#if UNITY_EDITOR
-        return "unity-editor";
-#else
-        string id = SystemInfo.deviceUniqueIdentifier;
-        return string.IsNullOrEmpty(id) ? "unknown-device" : id;
-#endif
-    }
-
-    /// <summary>
-    /// <c>SendWebRequest</c> 직전(스트리밍은 전송 시작 직후 루프 진입 전)·직후(응답 본문 수신 완료 시점).
-    /// <see cref="isRequestInProgress"/>는 Say까지 true이므로 “서버 대기” 전용 UI는 여기서 구분합니다.
-    /// </summary>
-    protected virtual void OnChatHttpWaitStarted()
-    {
-    }
-
-    protected virtual void OnChatHttpWaitFinished()
-    {
-    }
+    protected ChatHttpClient HttpClient => _httpClient;
+    protected ChatHistoryManager HistoryManager => _historyManager;
+    protected List<OpenAIMessage> chatHistory => _historyManager.History;
+    protected string ResolvedServerUrl => _httpClient.ResolvedServerUrl;
 
     /// <summary>
     /// false면 TMP onSubmit에 BaseChatbot을 붙이지 않습니다.
-    /// <see cref="QuizInputHandler"/>처럼 같은 필드에 리스너가 두 개면 Enter 한 번에 요청이 중복됩니다.
     /// </summary>
     protected virtual bool RegisterInputFieldSubmitListener => true;
 
     /// <summary>
-    /// false면 <see cref="Say"/> 한 줄이 끝난 뒤 SayDialog GameObject를 비활성화하지 않습니다(튜터 룸 등 연속 대화 UI).
+    /// false면 Say 한 줄이 끝난 뒤 SayDialog GameObject를 비활성화하지 않습니다.
     /// </summary>
     protected virtual bool DeactivateSayDialogWhenLineCompletes => true;
 
     /// <summary>
-    /// false면 Say 중에도 인풋 필드 GameObject를 끄지 않습니다(한글 IME·조합이 풀리는 것 방지).
+    /// false면 Say 중에도 인풋 필드 GameObject를 끄지 않습니다.
     /// </summary>
     protected virtual bool HideInputFieldDuringSay => true;
 
+    // ---------------------------------------------------------------
+    //  Lifecycle
+    // ---------------------------------------------------------------
+
     protected virtual void Start()
     {
+        _historyManager = new ChatHistoryManager(AppendCommonChesterVoiceBlock);
+        _httpClient = new ChatHttpClient(
+            () => !string.IsNullOrEmpty(localServerUrl)
+                ? localServerUrl
+                : ServerConfig.GetOrCreate().ChatUrl,
+            this,
+            _historyManager);
+
         InitializeChatHistory();
         _ = SceneRevisitTracker.Instance;
         CacheDialogInput();
         if (userInputField != null && RegisterInputFieldSubmitListener)
             userInputField.onSubmit.AddListener(OnInputFieldSubmit);
-    }
-
-    /// <summary>
-    /// Space/마우스로 Say 대사를 진행해도 되는지. TMP 입력 중에는 false로 오버라이드(IME 띄어쓰기·클릭 포커스와 Fungus 진행 충돌 방지).
-    /// </summary>
-    protected virtual bool AllowLegacyInputToAdvanceSayDialog(bool mouseButtonDown, bool advanceKeyDown)
-    {
-        return true;
     }
 
     protected virtual void Update()
@@ -178,10 +96,16 @@ public abstract class BaseChatbot : MonoBehaviour
         TryAdvanceChatDialog();
     }
 
-    /// <summary>
-    /// TMP onSubmit may pass an empty string while IME is active or for some line types;
-    /// always read the live field text in OnSendButtonClick.
-    /// </summary>
+    protected virtual void OnDestroy()
+    {
+        if (userInputField != null && RegisterInputFieldSubmitListener)
+            userInputField.onSubmit.RemoveListener(OnInputFieldSubmit);
+    }
+
+    // ---------------------------------------------------------------
+    //  Input handling
+    // ---------------------------------------------------------------
+
     private void OnInputFieldSubmit(string _)
     {
         OnSendButtonClick();
@@ -191,7 +115,7 @@ public abstract class BaseChatbot : MonoBehaviour
     {
         if (userInputField == null)
         {
-            Debug.LogWarning($"{GetType().Name}: userInputField가 연결되지 않았습니다.");
+            GameLog.LogWarning($"{GetType().Name}: userInputField가 연결되지 않았습니다.");
             return;
         }
 
@@ -206,7 +130,7 @@ public abstract class BaseChatbot : MonoBehaviour
 
         if (isRequestInProgress)
         {
-            Debug.LogWarning("현재 이미 요청 중입니다.");
+            GameLog.LogWarning("현재 이미 요청 중입니다.");
             return;
         }
 
@@ -231,13 +155,13 @@ public abstract class BaseChatbot : MonoBehaviour
         string message = userInputField.text.Trim();
         if (string.IsNullOrEmpty(message))
         {
-            Debug.LogWarning("입력값이 비어있습니다.");
+            GameLog.LogWarning("입력값이 비어있습니다.");
             yield break;
         }
 
         if (isRequestInProgress)
         {
-            Debug.LogWarning("현재 이미 요청 중입니다.");
+            GameLog.LogWarning("현재 이미 요청 중입니다.");
             yield break;
         }
 
@@ -245,17 +169,21 @@ public abstract class BaseChatbot : MonoBehaviour
         userInputField.text = "";
     }
 
-    protected virtual void OnDestroy()
+    // ---------------------------------------------------------------
+    //  SayDialog helpers
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// Space/마우스로 Say 대사를 진행해도 되는지.
+    /// </summary>
+    protected virtual bool AllowLegacyInputToAdvanceSayDialog(bool mouseButtonDown, bool advanceKeyDown)
     {
-        if (userInputField != null && RegisterInputFieldSubmitListener)
-            userInputField.onSubmit.RemoveListener(OnInputFieldSubmit);
+        return true;
     }
 
     private void CacheDialogInput()
     {
-        if (chatSayDialog == null)
-            return;
-
+        if (chatSayDialog == null) return;
         chatDialogInput = chatSayDialog.GetComponentInChildren<DialogInput>(true);
     }
 
@@ -269,35 +197,81 @@ public abstract class BaseChatbot : MonoBehaviour
             chatDialogInput.SetNextLineFlag();
             return;
         }
-
-        Debug.LogWarning($"{GetType().Name}: SayDialog의 DialogInput을 찾지 못했습니다.");
+        GameLog.LogWarning($"{GetType().Name}: SayDialog의 DialogInput을 찾지 못했습니다.");
     }
 
-    protected virtual void InitializeChatHistory() {
-        chatHistory.Clear();
-        chatHistory.Add(new OpenAIMessage {
-            role = "system",
-            content = "당신은 저택의 앵무새 체셔입니다. 방별 지침과 공통 말투 규칙(시스템 끝단)을 모두 따릅니다."
-        });
-    }
-
-    /// <summary>
-    /// 모든 /chat·/chat/stream 요청에 공통으로 붙는 말투 블록(Resources/ChesterVoiceCommon.txt).
-    /// </summary>
-    protected string ComposeSystemPromptWithCommonRules(string roomSpecificPrompt)
+    protected virtual void Say(string message, Action onComplete = null)
     {
-        if (!AppendCommonChesterVoiceBlock || string.IsNullOrEmpty(roomSpecificPrompt))
-            return roomSpecificPrompt;
+        bool restoreInput = userInputField != null && userInputField.gameObject.activeSelf;
+        if (userInputField != null && HideInputFieldDuringSay)
+            userInputField.gameObject.SetActive(false);
 
-        TextAsset common = Resources.Load<TextAsset>(ChesterVoiceCommonResource);
-        if (common == null)
+        void Done()
         {
-            Debug.LogWarning($"[BaseChatbot] Resources/{ChesterVoiceCommonResource}.txt 없음 — 공통 말투 생략");
-            return roomSpecificPrompt;
+            if (DeactivateSayDialogWhenLineCompletes
+                && chatSayDialog != null
+                && chatSayDialog.gameObject.activeInHierarchy)
+                chatSayDialog.SetActive(false);
+            if (userInputField != null && restoreInput && HideInputFieldDuringSay)
+                userInputField.gameObject.SetActive(true);
+            onComplete?.Invoke();
         }
 
-        return roomSpecificPrompt + "\n\n" + common.text;
+        if (chatSayDialog != null)
+        {
+            if (!chatSayDialog.gameObject.activeInHierarchy)
+                chatSayDialog.gameObject.SetActive(true);
+            chatSayDialog.Say(message, true, true, false, true, true, null, Done);
+        }
+        else
+        {
+            GameLog.LogWarning("Inspector에서 Chat Say Dialog를 연결해주세요!");
+            Done();
+        }
     }
+
+    // ---------------------------------------------------------------
+    //  Forwarding methods (backward-compatible protected API)
+    // ---------------------------------------------------------------
+
+    protected virtual void InitializeChatHistory() => _historyManager.Initialize();
+
+    protected IEnumerator GetGPTResponse(string userMessage)
+        => _httpClient.GetGPTResponse(userMessage);
+
+    protected IEnumerator GetGPTResponseStreaming(string userMessage)
+        => _httpClient.GetGPTResponseStreaming(userMessage);
+
+    protected string ComposeSystemPromptWithCommonRules(string roomSpecificPrompt)
+        => _historyManager.ComposeSystemPromptWithCommonRules(roomSpecificPrompt);
+
+    protected string ComposeSystemPromptWithHeuristics(string basePrompt, string userMessage)
+    {
+        HeuristicSignalInput signal = BuildHeuristicSignalInput(userMessage);
+        return _historyManager.ComposeSystemPromptWithHeuristics(basePrompt, signal);
+    }
+
+    protected static bool TryNormalizePromptForChatApi(string userMessage, out string normalized)
+        => ChatHttpClient.TryNormalizePromptForChatApi(userMessage, out normalized);
+
+    protected static string ResolveChatClientUserId()
+        => ChatHttpClient.ResolveChatClientUserId();
+
+    protected static void AttachCertificateBypass(UnityWebRequest request)
+        => ChatHttpClient.AttachCertificateBypass(request);
+
+    // ---------------------------------------------------------------
+    //  Virtual hooks
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// <c>SendWebRequest</c> 직전·직후. <see cref="isRequestInProgress"/>는 Say까지 true이므로
+    /// "서버 대기" 전용 UI는 여기서 구분합니다.
+    /// </summary>
+    protected virtual void OnChatHttpWaitStarted() { }
+    protected virtual void OnChatHttpWaitFinished() { }
+
+    protected virtual void OnStreamTextDelta(string delta) { }
 
     protected virtual HeuristicSignalInput BuildHeuristicSignalInput(string userMessage)
     {
@@ -309,251 +283,49 @@ public abstract class BaseChatbot : MonoBehaviour
         };
     }
 
-    protected string ComposeSystemPromptWithHeuristics(string basePrompt, string userMessage)
-    {
-        HeuristicSignalInput signal = BuildHeuristicSignalInput(userMessage);
-        signal = SceneRevisitTracker.Instance.FillRevisitSignals(signal, SceneManager.GetActiveScene().name);
-        return PromptInfoBudgetComposer.Compose(basePrompt, signal);
-    }
-
-    protected virtual void Say(string message, Action onComplete = null)
-    {
-        bool restoreInput = userInputField != null && userInputField.gameObject.activeSelf;
-        if (userInputField != null && HideInputFieldDuringSay)
-            userInputField.gameObject.SetActive(false);
-
-        void Done()
-        {
-            if (DeactivateSayDialogWhenLineCompletes && chatSayDialog != null && chatSayDialog.gameObject.activeInHierarchy)
-                chatSayDialog.SetActive(false);
-            if (userInputField != null && restoreInput && HideInputFieldDuringSay)
-                userInputField.gameObject.SetActive(true);
-            onComplete?.Invoke();
-        }
-
-        if (chatSayDialog != null)
-        {
-            if (!chatSayDialog.gameObject.activeInHierarchy) chatSayDialog.gameObject.SetActive(true);
-            chatSayDialog.Say(message, true, true, false, true, true, null, Done);
-        }
-        else
-        {
-            Debug.LogWarning("Inspector에서 Chat Say Dialog를 연결해주세요!");
-            Done();
-        }
-    }
+    /// <summary>튜터 RAG 등 — /chat JSON에 선택 필드를 붙일 때 오버라이드합니다.</summary>
+    protected virtual void AugmentChatPayload(LocalLlamaPayload payload, string userMessage) { }
 
     // ---------------------------------------------------------------
-    // Non-streaming /chat (backward-compatible, now with function_calls)
+    //  Abstract hooks (subclasses must implement)
     // ---------------------------------------------------------------
-    protected IEnumerator GetGPTResponse(string userMessage)
-    {
-        if (isRequestInProgress) yield break;
-        isRequestInProgress = true;
-
-        if (!TryNormalizePromptForChatApi(userMessage, out string promptForApi))
-        {
-            isRequestInProgress = false;
-            Say("내용을 입력해 주세요.", null);
-            yield break;
-        }
-
-        chatHistory.Add(new OpenAIMessage { role = "user", content = promptForApi });
-        string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
-        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, promptForApi);
-
-        bool useTools = useToolsOverrideForNextRequest ?? true;
-        useToolsOverrideForNextRequest = null;
-
-        LocalLlamaPayload payload = new LocalLlamaPayload {
-            prompt = promptForApi,
-            message = promptForApi,
-            system = finalSystemPrompt,
-            use_tools = useTools,
-            user_id = ResolveChatClientUserId()
-        };
-        AugmentChatPayload(payload, promptForApi);
-        string payloadJson = JsonConvert.SerializeObject(payload);
-
-        using (UnityWebRequest request = new UnityWebRequest(localServerUrl, "POST"))
-        {
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(payloadJson);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.certificateHandler = new BypassCertificate();
-            request.timeout = 60;
-
-            OnChatHttpWaitStarted();
-            try
-            {
-                yield return request.SendWebRequest();
-            }
-            finally
-            {
-                OnChatHttpWaitFinished();
-            }
-
-            string chatbotResponse;
-            List<FunctionCallData> functionCalls = new List<FunctionCallData>();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                chatbotResponse = "연결 오류: " + request.error;
-            }
-            else
-            {
-                string rawJson = request.downloadHandler.text;
-                try
-                {
-                    var parsed = JsonConvert.DeserializeObject<ChatResponseData>(rawJson);
-                    chatbotResponse = parsed.response ?? "";
-                    if (parsed.function_calls != null)
-                        functionCalls = parsed.function_calls;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("Response parse error: " + e.Message);
-                    chatbotResponse = rawJson;
-                }
-                chatHistory.Add(new OpenAIMessage { role = "assistant", content = chatbotResponse });
-            }
-
-            yield return StartCoroutine(HandleChatbotResponse(chatbotResponse, functionCalls));
-            isRequestInProgress = false;
-        }
-    }
-
-    // ---------------------------------------------------------------
-    // SSE streaming /chat/stream
-    // ---------------------------------------------------------------
-    protected IEnumerator GetGPTResponseStreaming(string userMessage)
-    {
-        if (isRequestInProgress) yield break;
-        isRequestInProgress = true;
-
-        if (!TryNormalizePromptForChatApi(userMessage, out string promptForApi))
-        {
-            isRequestInProgress = false;
-            Say("내용을 입력해 주세요.", null);
-            yield break;
-        }
-
-        chatHistory.Add(new OpenAIMessage { role = "user", content = promptForApi });
-        string finalSystemPrompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
-        finalSystemPrompt = ComposeSystemPromptWithHeuristics(finalSystemPrompt, promptForApi);
-
-        bool useTools = useToolsOverrideForNextRequest ?? true;
-        useToolsOverrideForNextRequest = null;
-
-        LocalLlamaPayload payload = new LocalLlamaPayload {
-            prompt = promptForApi,
-            message = promptForApi,
-            system = finalSystemPrompt,
-            use_tools = useTools,
-            user_id = ResolveChatClientUserId()
-        };
-        AugmentChatPayload(payload, promptForApi);
-        string payloadJson = JsonConvert.SerializeObject(payload);
-
-        string streamUrl = localServerUrl.Replace("/chat", "/chat/stream");
-
-        using (UnityWebRequest request = new UnityWebRequest(streamUrl, "POST"))
-        {
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(payloadJson);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.SetRequestHeader("Accept", "text/event-stream");
-            request.certificateHandler = new BypassCertificate();
-            request.timeout = 120;
-
-            var fullText = new StringBuilder();
-            var functionCalls = new List<FunctionCallData>();
-
-            OnChatHttpWaitStarted();
-            try
-            {
-                var op = request.SendWebRequest();
-
-                int lastProcessedIndex = 0;
-                bool done = false;
-
-                while (!done)
-                {
-                    yield return null;
-
-                    if (request.downloadHandler != null)
-                    {
-                        string allData = request.downloadHandler.text;
-                        if (allData.Length > lastProcessedIndex)
-                        {
-                            string newData = allData.Substring(lastProcessedIndex);
-                            lastProcessedIndex = allData.Length;
-
-                            string[] lines = newData.Split('\n');
-                            foreach (string line in lines)
-                            {
-                                if (!line.StartsWith("data: ")) continue;
-                                string json = line.Substring(6).Trim();
-                                if (string.IsNullOrEmpty(json)) continue;
-
-                                SSEEventData evt = null;
-                                try { evt = JsonConvert.DeserializeObject<SSEEventData>(json); }
-                                catch { continue; }
-
-                                if (evt == null) continue;
-
-                                switch (evt.type)
-                                {
-                                    case "text_delta":
-                                        if (evt.content != null) fullText.Append(evt.content);
-                                        OnStreamTextDelta(evt.content);
-                                        break;
-
-                                    case "function_call":
-                                        functionCalls.Add(new FunctionCallData {
-                                            name = evt.name,
-                                            arguments = evt.arguments
-                                        });
-                                        break;
-
-                                    case "done":
-                                        if (!string.IsNullOrEmpty(evt.full_text))
-                                            fullText = new StringBuilder(evt.full_text);
-                                        done = true;
-                                        break;
-
-                                    case "error":
-                                        Debug.LogError("SSE error: " + evt.content);
-                                        done = true;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (op.isDone && !done) done = true;
-                }
-            }
-            finally
-            {
-                OnChatHttpWaitFinished();
-            }
-
-            string responseText = fullText.ToString();
-            chatHistory.Add(new OpenAIMessage { role = "assistant", content = responseText });
-
-            yield return StartCoroutine(HandleChatbotResponse(responseText, functionCalls));
-            isRequestInProgress = false;
-        }
-    }
-
-    protected virtual void OnStreamTextDelta(string delta)
-    {
-        // Subclasses can override to display streaming text incrementally
-    }
 
     protected abstract string BuildFinalSystemPrompt();
-    protected abstract IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls);
+    protected abstract IEnumerator HandleChatbotResponse(
+        string responseMessage, List<FunctionCallData> functionCalls);
+
+    // ---------------------------------------------------------------
+    //  IChatHttpCallbacks (explicit — keeps public API untouched)
+    // ---------------------------------------------------------------
+
+    bool IChatHttpCallbacks.IsRequestInProgress
+    {
+        get => isRequestInProgress;
+        set => isRequestInProgress = value;
+    }
+
+    bool? IChatHttpCallbacks.UseToolsOverrideForNextRequest
+    {
+        get => useToolsOverrideForNextRequest;
+        set => useToolsOverrideForNextRequest = value;
+    }
+
+    string IChatHttpCallbacks.BuildAndComposeSystemPrompt(string userMessage)
+    {
+        string prompt = ComposeSystemPromptWithCommonRules(BuildFinalSystemPrompt());
+        return ComposeSystemPromptWithHeuristics(prompt, userMessage);
+    }
+
+    void IChatHttpCallbacks.AugmentChatPayload(LocalLlamaPayload payload, string userMessage)
+        => AugmentChatPayload(payload, userMessage);
+
+    void IChatHttpCallbacks.OnChatHttpWaitStarted() => OnChatHttpWaitStarted();
+    void IChatHttpCallbacks.OnChatHttpWaitFinished() => OnChatHttpWaitFinished();
+    void IChatHttpCallbacks.OnStreamTextDelta(string delta) => OnStreamTextDelta(delta);
+    void IChatHttpCallbacks.SayLine(string message, Action onComplete) => Say(message, onComplete);
+    Coroutine IChatHttpCallbacks.StartHostCoroutine(IEnumerator routine) => StartCoroutine(routine);
+
+    IEnumerator IChatHttpCallbacks.HandleChatbotResponse(
+        string responseMessage, List<FunctionCallData> functionCalls)
+        => HandleChatbotResponse(responseMessage, functionCalls);
 }

@@ -7,10 +7,13 @@ public class InGameDeveloperOverlay : MonoBehaviour
 
     private HeuristicDebugSnapshot latestSnapshot;
     private Vector2 scrollPosition;
+    private DeveloperModeController cachedDeveloperModeController;
 
     private void OnEnable()
     {
         PromptInfoBudgetComposer.OnSnapshotUpdated += HandleSnapshotUpdated;
+        cachedDeveloperModeController =
+            FindFirstObjectByType<DeveloperModeController>(FindObjectsInactive.Include);
     }
 
     private void OnDisable()
@@ -72,12 +75,12 @@ public class InGameDeveloperOverlay : MonoBehaviour
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Quick Restart"))
         {
-            FindFirstObjectByType<DeveloperModeController>()?.RequestQuickRestart();
+            cachedDeveloperModeController?.RequestQuickRestart();
         }
 
         if (GUILayout.Button("Skip Opening"))
         {
-            FindFirstObjectByType<DeveloperModeController>()?.RequestSkipOpening();
+            cachedDeveloperModeController?.RequestSkipOpening();
         }
         GUILayout.EndHorizontal();
 

@@ -77,6 +77,16 @@ public class QuizInputHandler : MonoBehaviour
             Debug.LogError("QuizInputHandler: InputField가 연결되지 않았습니다!");
         }
 
+    }
+
+    void Start()
+    {
+        if (tutorChatbot == null)
+        {
+            tutorChatbot = FindFirstObjectByType<TutorChatbot>(FindObjectsInactive.Include);
+            if (tutorChatbot != null)
+                GameLog.LogWarning($"[{nameof(QuizInputHandler)}] tutorChatbot resolved via FindFirstObjectByType — assign in Inspector for faster startup.");
+        }
         AttachSayDialogSyncToPanel();
     }
 
@@ -95,7 +105,7 @@ public class QuizInputHandler : MonoBehaviour
     {
         string comp = Input.compositionString ?? string.Empty;
         int len = newText != null ? newText.Length : 0;
-        Debug.Log(
+        GameLog.Log(
             $"[QuizInput] TMP onValueChanged: len={len}, IME composition=\"{EscapeForDebugLog(comp)}\", text=\"{EscapeForDebugLog(newText)}\"");
     }
 
@@ -121,11 +131,10 @@ public class QuizInputHandler : MonoBehaviour
         if (inputPanel == null)
             return;
 
-        var tutor = tutorChatbot != null ? tutorChatbot : FindObjectOfType<TutorChatbot>();
-        if (tutor == null)
+        if (tutorChatbot == null)
             return;
 
-        SayDialog say = tutor.TutorSayDialogForPanelSync;
+        SayDialog say = tutorChatbot.TutorSayDialogForPanelSync;
         if (say == null)
             return;
 
@@ -234,23 +243,22 @@ public class QuizInputHandler : MonoBehaviour
             {
                 string rawField = inputField.text ?? string.Empty;
                 string comp = Input.compositionString ?? string.Empty;
-                Debug.Log(
+                GameLog.Log(
                     $"[QuizInput] submit read: field.text=\"{EscapeForDebugLog(rawField)}\" (len={rawField.Length}), " +
                     $"IME=\"{EscapeForDebugLog(comp)}\", merged=\"{EscapeForDebugLog(mergedBeforeTrim)}\", trimmed=\"{EscapeForDebugLog(inputText)}\"");
             }
 
             if (string.IsNullOrWhiteSpace(inputText))
             {
-                var tutor = tutorChatbot != null ? tutorChatbot : FindObjectOfType<TutorChatbot>();
-                if (tutor != null && tutor.TryHandleEmptyPanelSubmit())
+                if (tutorChatbot != null && tutorChatbot.TryHandleEmptyPanelSubmit())
                 {
                     if (debugLogInputField)
-                        Debug.Log("[QuizInput] 빈 제출 → TutorChatbot.TryHandleEmptyPanelSubmit 처리됨(다음 문제 진행).");
+                        GameLog.Log("[QuizInput] 빈 제출 → TutorChatbot.TryHandleEmptyPanelSubmit 처리됨(다음 문제 진행).");
                     _lastHandledSubmitFrame = Time.frameCount;
                     yield break;
                 }
 
-                Debug.Log("빈 답변은 전송되지 않습니다.");
+                GameLog.Log("빈 답변은 전송되지 않습니다.");
                 inputField.Select();
                 inputField.ActivateInputField();
                 yield break;
@@ -273,29 +281,28 @@ public class QuizInputHandler : MonoBehaviour
         if (inputField == null || string.IsNullOrWhiteSpace(inputText))
             return;
 
-        var tutor = tutorChatbot != null ? tutorChatbot : FindObjectOfType<TutorChatbot>();
-        if (tutor != null && tutor.IsTutorQuizFinished)
+        if (tutorChatbot != null && tutorChatbot.IsTutorQuizFinished)
         {
             if (debugLogInputField)
-                Debug.Log("[QuizInput] ProcessSubmit 건너뜀(튜터 퀴즈 이미 완료).");
+                GameLog.Log("[QuizInput] ProcessSubmit 건너뜀(튜터 퀴즈 이미 완료).");
             return;
         }
 
-        if (tutor != null && tutor.IsAiResponseInFlight)
+        if (tutorChatbot != null && tutorChatbot.IsAiResponseInFlight)
         {
             if (debugLogInputField)
-                Debug.Log($"[QuizInput] ProcessSubmit 건너뜀(AI 응답 진행 중): \"{EscapeForDebugLog(inputText)}\"");
+                GameLog.Log($"[QuizInput] ProcessSubmit 건너뜀(AI 응답 진행 중): \"{EscapeForDebugLog(inputText)}\"");
             return;
         }
 
         if (debugLogInputField)
-            Debug.Log($"[QuizInput] ProcessSubmit 전송: \"{EscapeForDebugLog(inputText)}\" (len={inputText.Length})");
+            GameLog.Log($"[QuizInput] ProcessSubmit 전송: \"{EscapeForDebugLog(inputText)}\" (len={inputText.Length})");
 
         // Fungus String 변수에 플레이어의 답변 저장
         if (targetFlowchart != null)
         {
             targetFlowchart.SetStringVariable(fungusVariableName, inputText);
-            Debug.Log($"[QuizInput] Fungus '{fungusVariableName}' = \"{EscapeForDebugLog(inputText)}\"");
+            GameLog.Log($"[QuizInput] Fungus '{fungusVariableName}' = \"{EscapeForDebugLog(inputText)}\"");
         }
         else
         {
@@ -304,8 +311,8 @@ public class QuizInputHandler : MonoBehaviour
 
         inputField.text = "";
 
-        if (tutor != null)
-            tutor.AddPlayerMessageAndGetResponse(inputText);
+        if (tutorChatbot != null)
+            tutorChatbot.AddPlayerMessageAndGetResponse(inputText);
         else
             Debug.LogError("QuizInputHandler: TutorChatbot이 연결되지 않았습니다.");
     }
@@ -323,7 +330,7 @@ public class QuizInputHandler : MonoBehaviour
                 inputField.Select();
                 inputField.ActivateInputField();
             }
-            Debug.Log("Quiz Input Field 활성화.");
+            GameLog.Log("Quiz Input Field 활성화.");
         }
         else
         {

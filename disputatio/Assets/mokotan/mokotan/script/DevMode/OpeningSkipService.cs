@@ -9,7 +9,7 @@ public class OpeningSkipService : MonoBehaviour
     {
         if (string.IsNullOrEmpty(mainGameplaySceneName))
         {
-            Debug.LogWarning("[OpeningSkipService] mainGameplaySceneName이 비어 있습니다.");
+            GameLog.LogWarning("[OpeningSkipService] mainGameplaySceneName이 비어 있습니다.");
             return;
         }
 

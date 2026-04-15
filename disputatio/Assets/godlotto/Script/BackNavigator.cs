@@ -19,7 +19,7 @@ public class BackNavigator : MonoBehaviour
         Flowchart global = FlowchartLocator.FindByGameObjectName(globalFlowchartName);
         if (global == null)
         {
-            Debug.LogWarning($"전역 Flowchart '{globalFlowchartName}'를 찾지 못했습니다.");
+            GameLog.LogWarning($"전역 Flowchart '{globalFlowchartName}'를 찾지 못했습니다.");
             TryFallback();
             return;
         }
@@ -27,12 +27,12 @@ public class BackNavigator : MonoBehaviour
         string prev = global.GetStringVariable(prevVarKey);
         if (string.IsNullOrEmpty(prev))
         {
-            Debug.LogWarning($"전역 변수 '{prevVarKey}'가 비어 있습니다.");
+            GameLog.LogWarning($"전역 변수 '{prevVarKey}'가 비어 있습니다.");
             TryFallback();
             return;
         }
 
-        Debug.Log($"[BackNavigator] 이전 씬으로 이동 중 → {prev}");
+        GameLog.Log($"[BackNavigator] 이전 씬으로 이동 중 → {prev}");
         SceneManager.LoadScene(prev);
     }
 
@@ -40,12 +40,12 @@ public class BackNavigator : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(fallbackSceneName))
         {
-            Debug.Log($"[BackNavigator] PrevScene이 비어 있어서 '{fallbackSceneName}'로 이동합니다.");
+            GameLog.Log($"[BackNavigator] PrevScene이 비어 있어서 '{fallbackSceneName}'로 이동합니다.");
             SceneManager.LoadScene(fallbackSceneName);
         }
         else
         {
-            Debug.LogWarning("[BackNavigator] 이전 씬 정보를 찾지 못했습니다.");
+            GameLog.LogWarning("[BackNavigator] 이전 씬 정보를 찾지 못했습니다.");
         }
     }
 }

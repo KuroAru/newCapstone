@@ -415,7 +415,7 @@ public class BibleSpreadUI : MonoBehaviour
 
         var btn = go.GetComponent<Button>();
         var captured = def.label;
-        btn.onClick.AddListener(() => Debug.Log($"[BibleSpreadUI] {name} ({captured})"));
+        btn.onClick.AddListener(() => GameLog.Log($"[BibleSpreadUI] {name} ({captured})"));
 
         var textGo = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
         var tr = textGo.GetComponent<RectTransform>();
