@@ -97,7 +97,7 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
         
-        Debug.Log("게임 시작! (커서 잠금 해제 완료)");
+        GameLog.Log("게임 시작! (커서 잠금 해제 완료)");
 
         // (참고) 만약 여기서 코드로 씬을 이동한다면:
         // SceneManager.LoadScene("GameScene");
@@ -117,7 +117,7 @@ public class MainMenu : MonoBehaviour
 
         if (manager == null)
         {
-            Debug.LogWarning("[MainMenu] SaveSlotManager를 찾을 수 없습니다. 씬에 SaveSlotManager가 있는지 확인하세요.");
+            GameLog.LogWarning("[MainMenu] SaveSlotManager를 찾을 수 없습니다. 씬에 SaveSlotManager가 있는지 확인하세요.");
             return;
         }
 

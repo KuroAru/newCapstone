@@ -2,35 +2,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fungus;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
 {
-    public static InventoryManager instance;
+    protected override bool PersistAcrossScenes => true;
+
+    [System.Obsolete("Use Instance instead.")]
+    public static InventoryManager instance => Instance;
 
     [Header("Inventory Data")]
-    public List<Item> items = new List<Item>();
-    public Item selectedItem;
+    [SerializeField] private List<Item> items = new List<Item>();
+    [SerializeField] private Item selectedItem;
+
+    public IReadOnlyList<Item> Items => items;
+    public Item SelectedItem => selectedItem;
 
     [Header("Inventory UI")]
-    public GameObject inventoryUI_Background;
-    public Transform slotsHolder;
-    public GameObject slotPrefab;
-    public int maxSlots = 12;
+    [SerializeField] private GameObject inventoryUI_Background;
+    [SerializeField] private Transform slotsHolder;
+    [SerializeField] private GameObject slotPrefab;
+    [SerializeField] private int maxSlots = 12;
     [SerializeField] private Flowchart targetflowchart;
     [SerializeField] private InventoryTooltipController tooltipController;
 
-    public bool pressTab = false;
+    [SerializeField] private bool pressTab = false;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
     private Animator animator;
     private bool isOpen = false;
 
-    void Awake()
+    protected override void OnSingletonAwake()
     {
-        if (instance != null) { Destroy(gameObject); return; }
-        instance = this;
-
         targetflowchart = ResolveFlowchart();
-        tooltipController = SelectTooltipController(tooltipController, FindObjectOfType<InventoryTooltipController>());
+        var fallback = FindFirstObjectByType<InventoryTooltipController>(FindObjectsInactive.Include);
+        if (tooltipController == null && fallback != null)
+            GameLog.LogWarning($"[{nameof(InventoryManager)}] tooltipController resolved via FindFirstObjectByType — assign in Inspector for faster startup.");
+        tooltipController = SelectTooltipController(tooltipController, fallback);
+    }
+
+    void OnEnable()
+    {
+        SaveManagerSignals.OnSaveReset += OnSaveReset;
+        SaveManagerSignals.OnSavePointLoaded += OnSavePointLoaded;
+    }
+
+    void OnDisable()
+    {
+        SaveManagerSignals.OnSaveReset -= OnSaveReset;
+        SaveManagerSignals.OnSavePointLoaded -= OnSavePointLoaded;
     }
 
     void Start()
@@ -39,7 +57,7 @@ public class InventoryManager : MonoBehaviour
         inventoryUI_Background.SetActive(false);
 
         if (ResolveFlowchart() != null)
-            pressTab = targetflowchart.GetBooleanVariable("pressTab");
+            pressTab = targetflowchart.GetBooleanVariable(FungusVariableKeys.PressTab);
 
         CreateSlots();
         UpdateUI();
@@ -79,7 +97,7 @@ public class InventoryManager : MonoBehaviour
 
         if (items.Count >= maxSlots)
         {
-            Debug.Log($"인벤토리가 가득 찼습니다! {item.itemName}을(를) 더 이상 추가할 수 없습니다.");
+            GameLog.Log($"인벤토리가 가득 찼습니다! {item.itemName}을(를) 더 이상 추가할 수 없습니다.");
             return;
         }
 
@@ -109,13 +127,13 @@ public class InventoryManager : MonoBehaviour
         }
 
         selectedItem = item;
-        Debug.Log($"{item.itemName} 을(를) 손에 들었다.");
+        GameLog.Log($"{item.itemName} 을(를) 손에 들었다.");
     }
 
     public void DeselectItem()
     {
         selectedItem = null;
-        Debug.Log("손에 든 아이템을 내려놓았다.");
+        GameLog.Log("손에 든 아이템을 내려놓았다.");
     }
 
     public void ShowTooltip(Item item, Vector2 screenPosition)
@@ -157,7 +175,49 @@ public class InventoryManager : MonoBehaviour
     private void SyncPressTab()
     {
         if (ResolveFlowchart() != null)
-            targetflowchart.SetBooleanVariable("pressTab", pressTab);
+            targetflowchart.SetBooleanVariable(FungusVariableKeys.PressTab, pressTab);
+    }
+
+    private void OnSaveReset()
+    {
+        items.Clear();
+        if (selectedItem != null)
+            DeselectItem();
+        UpdateUI();
+    }
+
+    private void OnSavePointLoaded(string savePointKey)
+    {
+        RestoreInventoryFromFlowchart();
+    }
+
+    private void RestoreInventoryFromFlowchart()
+    {
+        Flowchart fc = FlowchartLocator.Find();
+        if (fc == null) return;
+
+        string raw = fc.GetStringVariable(FungusVariableKeys.InventoryItemIds);
+        items.Clear();
+        if (selectedItem != null)
+            DeselectItem();
+
+        if (!string.IsNullOrEmpty(raw))
+        {
+            Item[] allItems = Resources.FindObjectsOfTypeAll<Item>();
+            foreach (string idStr in raw.Split(','))
+            {
+                if (int.TryParse(idStr, out int id))
+                {
+                    Item found = System.Array.Find(allItems, x => x.itemId == id);
+                    if (found != null)
+                        items.Add(found);
+                    else
+                        GameLog.LogWarning($"[InventoryManager] 복원 실패: itemId={id} 에 해당하는 Item을 찾을 수 없습니다.");
+                }
+            }
+        }
+
+        UpdateUI();
     }
 
     private Flowchart ResolveFlowchart()

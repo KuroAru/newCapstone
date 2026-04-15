@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using Fungus;
 using UnityEngine.SceneManagement;
@@ -92,7 +93,7 @@ public class SaveSlotManager : MonoBehaviour
     {
         if (slot < 1 || slot > MaxSlots)
         {
-            Debug.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
+            GameLog.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
             return;
         }
 
@@ -106,6 +107,7 @@ public class SaveSlotManager : MonoBehaviour
         string pointKey = ResolveSnapshotSavePointKey();
         string description = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
+        PersistInventoryToFlowchart();
         saveManager.ClearHistory();
         saveManager.AddSavePoint(pointKey, description);
         saveManager.Save(SlotDataKey(slot, slotKeyPrefix));
@@ -113,7 +115,7 @@ public class SaveSlotManager : MonoBehaviour
         PlayerPrefs.SetInt(lastUsedSlotPrefsKey, slot);
         PlayerPrefs.Save();
 
-        Debug.Log($"[SaveSlotManager] 슬롯 {slot} 저장 ({pointKey})");
+        GameLog.Log($"[SaveSlotManager] 슬롯 {slot} 저장 ({pointKey})");
 
         if (captureSlotThumbnail)
         {
@@ -186,7 +188,7 @@ public class SaveSlotManager : MonoBehaviour
 
         if (SaveThumbnailEncoder.TryWriteSpriteAsSlotPng(sp, path))
         {
-            Debug.Log($"[SaveSlotManager] 슬롯 {slot} 썸네일: ChangeSP 스프라이트 저장");
+            GameLog.Log($"[SaveSlotManager] 슬롯 {slot} 썸네일: ChangeSP 스프라이트 저장");
             return true;
         }
 
@@ -226,7 +228,7 @@ public class SaveSlotManager : MonoBehaviour
     {
         if (slot < 1 || slot > MaxSlots)
         {
-            Debug.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
+            GameLog.LogWarning($"[SaveSlotManager] 슬롯 범위 밖: {slot}");
             return false;
         }
 
@@ -240,7 +242,7 @@ public class SaveSlotManager : MonoBehaviour
         string dataKey = SlotDataKey(slot, slotKeyPrefix);
         if (!saveManager.SaveDataExists(dataKey))
         {
-            Debug.LogWarning($"[SaveSlotManager] 슬롯 {slot} 데이터 없음");
+            GameLog.LogWarning($"[SaveSlotManager] 슬롯 {slot} 데이터 없음");
             return false;
         }
 
@@ -295,7 +297,7 @@ public class SaveSlotManager : MonoBehaviour
         if (SlotHasData(s))
             LoadFromSlot(s);
         else
-            Debug.LogWarning("[SaveSlotManager] 로드할 슬롯 데이터가 없습니다.");
+            GameLog.LogWarning("[SaveSlotManager] 로드할 슬롯 데이터가 없습니다.");
     }
 
     private void OnSceneLoadedForRestore(Scene scene, LoadSceneMode mode)
@@ -309,16 +311,29 @@ public class SaveSlotManager : MonoBehaviour
         InternalLoadNow(key);
     }
 
+    private void PersistInventoryToFlowchart()
+    {
+        Flowchart fc = FlowchartLocator.Find();
+        if (fc == null) return;
+        InventoryManager inv = InventoryManager.Instance;
+        if (inv == null) return;
+        string ids = string.Join(",", inv.Items.Select(i => i.itemId.ToString()));
+        fc.SetStringVariable(FungusVariableKeys.InventoryItemIds, ids);
+    }
+
     private void InternalLoadNow(string dataKey)
     {
         SaveManager saveManager = GetResolvedSaveManager();
         if (saveManager == null)
+        {
+            Debug.LogError("[SaveSlotManager] InternalLoadNow: SaveManager를 찾을 수 없습니다.");
             return;
+        }
 
         saveManager.ClearHistory();
         SaveManagerSignals.DoSaveReset();
         saveManager.Load(dataKey);
-        Debug.Log($"[SaveSlotManager] 로드 완료: {dataKey}");
+        GameLog.Log($"[SaveSlotManager] 로드 완료: {dataKey}");
     }
 
     private string ResolveSnapshotSavePointKey()

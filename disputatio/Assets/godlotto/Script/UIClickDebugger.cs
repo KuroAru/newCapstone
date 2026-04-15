@@ -21,13 +21,13 @@ public class UIClickDebugger : MonoBehaviour
 
             if (results.Count > 0)
             {
-                Debug.Log("===== UI 클릭 진단 시작 =====");
+                GameLog.Log("===== UI 클릭 진단 시작 =====");
                 // 감지된 모든 UI 요소의 이름을 순서대로 출력
                 for (int i = 0; i < results.Count; i++)
                 {
-                    Debug.Log((i + 1) + "번째: " + results[i].gameObject.name, results[i].gameObject);
+                    GameLog.Log((i + 1) + "번째: " + results[i].gameObject.name, results[i].gameObject);
                 }
-                Debug.Log("===== UI 클릭 진단 종료 =====");
+                GameLog.Log("===== UI 클릭 진단 종료 =====");
             }
         }
     }

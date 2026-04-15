@@ -10,7 +10,7 @@ public class FungusBoolSpriteRendererSwap : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [Tooltip("비우면 FlowchartLocator(Variablemanager)를 사용합니다.")]
     [SerializeField] private Flowchart flowchartOverride;
-    [SerializeField] private string fungusBooleanKey = "UsedStudyKey";
+    [SerializeField] private string fungusBooleanKey = FungusVariableKeys.UsedStudyKey;
     [SerializeField] private Sprite spriteWhenTrue;
     [Tooltip("Variablemanager에 키가 없을 때 Fungus GlobalVariables도 조회합니다.")]
     [SerializeField] private bool checkGlobalVariables = true;

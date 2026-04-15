@@ -38,7 +38,7 @@ public class SceneNameSetter : MonoBehaviour
         Flowchart fc = FlowchartLocator.Find();
         if (fc == null)
         {
-            Debug.LogWarning("[SceneNameSetter] Variablemanager Flowchart를 찾지 못했습니다.");
+            GameLog.LogWarning("[SceneNameSetter] Variablemanager Flowchart를 찾지 못했습니다.");
             return;
         }
 
@@ -48,7 +48,7 @@ public class SceneNameSetter : MonoBehaviour
         if (!string.IsNullOrEmpty(sceneVarName))
         {
             fc.SetStringVariable(sceneVarName, currentSceneName);
-            Debug.Log($"[SceneNameSetter] SceneName → '{currentSceneName}'");
+            GameLog.Log($"[SceneNameSetter] SceneName → '{currentSceneName}'");
         }
 
         // SavePointKey 갱신 (원래대로 _Start 포함)
@@ -56,7 +56,7 @@ public class SceneNameSetter : MonoBehaviour
         {
             string saveKey = currentSceneName + "_Start";
             fc.SetStringVariable(savePointKeyVarName, saveKey);
-            Debug.Log($"[SceneNameSetter] SavePointKey → '{saveKey}'");
+            GameLog.Log($"[SceneNameSetter] SavePointKey → '{saveKey}'");
         }
     }
 }

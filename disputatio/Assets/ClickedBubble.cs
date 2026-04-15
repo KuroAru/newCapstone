@@ -33,7 +33,7 @@ public class ClickedBubble : MonoBehaviour
         // 3. Variablemanager 글로벌 Flowchart에서 isCalled 해제 (임의 씬 Flowchart가 아님)
         flowchart = FlowchartLocator.Find();
         if (flowchart != null)
-            flowchart.SetBooleanVariable("isCalled", false);
+            flowchart.SetBooleanVariable(FungusVariableKeys.IsCalled, false);
 
         // 4. 씬 로드
         SceneManager.LoadScene(sceneName);

@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events; // UnityEvent를 사용하기 위해 추가
 
-public class GameTimer : MonoBehaviour
+public class GameTimer : SingletonMonoBehaviour<GameTimer>
 {
-    public static GameTimer Instance { get; private set; } // 싱글톤 인스턴스
-
     [Header("Timer Settings")]
     [Tooltip("타이머가 시작할 시간 (초)")]
     [SerializeField] private float initialTime = 60f;
@@ -15,17 +13,6 @@ public class GameTimer : MonoBehaviour
     private bool isRunning = false;
 
     public float CurrentTime => currentTime; // 현재 시간을 외부에서 읽을 수 있도록
-
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        // DontDestroyOnLoad(gameObject); // 필요하다면 씬 전환 시 파괴되지 않도록 설정
-    }
 
     void Start()
     {
@@ -42,10 +29,10 @@ public class GameTimer : MonoBehaviour
             {
                 currentTime = 0f; // 0 이하로 내려가지 않도록
                 isRunning = false; // 타이머 중지
-                Debug.Log("Timer Expired!");
+                GameLog.Log("Timer Expired!");
                 OnTimerExpired?.Invoke(); // 타이머 만료 이벤트 호출
             }
-            // Debug.Log($"Current Time: {Mathf.CeilToInt(currentTime)}"); // 실시간 디버그 확인
+            // GameLog.Log($"Current Time: {Mathf.CeilToInt(currentTime)}"); // 실시간 디버그 확인
         }
     }
 
@@ -55,7 +42,7 @@ public class GameTimer : MonoBehaviour
     public void StartTimer()
     {
         isRunning = true;
-        Debug.Log("Timer Started!");
+        GameLog.Log("Timer Started!");
     }
 
     /// <summary>
@@ -64,7 +51,7 @@ public class GameTimer : MonoBehaviour
     public void StopTimer()
     {
         isRunning = false;
-        Debug.Log("Timer Stopped!");
+        GameLog.Log("Timer Stopped!");
     }
 
     /// <summary>
@@ -75,7 +62,7 @@ public class GameTimer : MonoBehaviour
     {
         currentTime = initialTime;
         isRunning = andStart;
-        Debug.Log($"Timer Reset to {initialTime}s. Started: {andStart}");
+        GameLog.Log($"Timer Reset to {initialTime}s. Started: {andStart}");
     }
 
     /// <summary>
@@ -85,6 +72,6 @@ public class GameTimer : MonoBehaviour
     public void SetInitialTime(float newTime)
     {
         initialTime = newTime;
-        Debug.Log($"Initial Timer Time set to: {newTime}s");
+        GameLog.Log($"Initial Timer Time set to: {newTime}s");
     }
 }

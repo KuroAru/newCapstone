@@ -80,7 +80,7 @@ public class GlobalChatbot : BaseChatbot
                     ApplyEmote(fc.arguments);
                     break;
                 default:
-                    Debug.LogWarning($"[{GetType().Name}] Unhandled tool call: {fc.name}");
+                    GameLog.LogWarning($"[{GetType().Name}] Unhandled tool call: {fc.name}");
                     break;
             }
         }
@@ -92,7 +92,7 @@ public class GlobalChatbot : BaseChatbot
         string level = ChatbotToolArgs.GetString(args, "hint_level", "subtle");
         string target = ChatbotToolArgs.GetString(args, "target_object");
         string category = ChatbotToolArgs.GetString(args, "hint_category");
-        Debug.Log($"[Hint] level={level}, target={target}, category={category}");
+        GameLog.Log($"[Hint] level={level}, target={target}, category={category}");
     }
 
     protected virtual void ApplyEmote(Dictionary<string, object> args)
@@ -100,6 +100,6 @@ public class GlobalChatbot : BaseChatbot
         if (args == null) return;
         string emotion = ChatbotToolArgs.GetString(args, "emotion");
         if (string.IsNullOrEmpty(emotion)) return;
-        Debug.Log($"Chester emote: {emotion}");
+        GameLog.Log($"Chester emote: {emotion}");
     }
 }

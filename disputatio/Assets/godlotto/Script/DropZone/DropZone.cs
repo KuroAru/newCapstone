@@ -31,7 +31,7 @@ public class DropZone : MonoBehaviour, IDropHandler
             {
                 // 사용 횟수를 1 증가시킵니다.
                 currentUses++;
-                Debug.Log(requiredItem.itemName + " 아이템을 사용했습니다. (" + currentUses + "/" + maxUses + ")");
+                GameLog.Log(requiredItem.itemName + " 아이템을 사용했습니다. (" + currentUses + "/" + maxUses + ")");
 
                 if (filterCardObject != null)
                 {
@@ -47,14 +47,14 @@ public class DropZone : MonoBehaviour, IDropHandler
 
                 if (currentUses >= maxUses)
                 {
-                    Debug.Log("마지막 사용! 인벤토리에서 아이템을 제거합니다.");
+                    GameLog.Log("마지막 사용! 인벤토리에서 아이템을 제거합니다.");
                     if (InventoryManager.instance != null)
                         InventoryManager.instance.RemoveItem(requiredItem);
                 }
             }
             else
             {
-                Debug.Log(requiredItem.itemName + " 아이템은 더 이상 사용할 수 없습니다.");
+                GameLog.Log(requiredItem.itemName + " 아이템은 더 이상 사용할 수 없습니다.");
             }
         }
     }

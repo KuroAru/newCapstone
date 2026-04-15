@@ -13,7 +13,7 @@ public class EndSceneManager : MonoBehaviour
     public AudioSource endBgm;
 
     [Header("씬 이름 설정")]
-    public string mainMenuSceneName = "MainMenuScene";
+    public string mainMenuSceneName = SceneNames.MainMenu;
 
     public TextMeshProUGUI playTimeText;
 

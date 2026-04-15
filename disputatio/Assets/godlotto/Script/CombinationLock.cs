@@ -26,7 +26,7 @@ public class CombinationLock : MonoBehaviour
     {
         currentDigits = new int[numberOfDigits];
         solved = flowchart.GetBooleanVariable("solved");
-        Debug.Log(solved);
+        GameLog.Log(solved.ToString());
         UpdateDisplay();
     }
 
@@ -63,7 +63,7 @@ public class CombinationLock : MonoBehaviour
 
         if (currentInput == correctAnswer)
         {
-            Debug.Log("Success! Lock opened.");
+            GameLog.Log("Success! Lock opened.");
             if (onUnlockSuccess != null)
             {
                 onUnlockSuccess.Invoke(); // 성공 이벤트 실행
@@ -73,7 +73,7 @@ public class CombinationLock : MonoBehaviour
         }
         else
         {
-            Debug.Log("Failed. Try again.");
+            GameLog.Log("Failed. Try again.");
             if (onUnlockFail != null)
             {
                 onUnlockFail.Invoke(); // 실패 이벤트 실행 (예: '철컥' 소리)

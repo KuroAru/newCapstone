@@ -6,10 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 using Unity.Cinemachine;
 
-public class MiniGameManager : MonoBehaviour
+public class MiniGameManager : SingletonMonoBehaviour<MiniGameManager>
 {
-    public static MiniGameManager Instance;
-
     public CinemachineCamera vcam;
 
     [Header("Game Settings")]
@@ -36,11 +34,6 @@ public class MiniGameManager : MonoBehaviour
     private GameObject playerInstance; 
     private int currentHealth;
     private bool isGameOver = false;
-
-    void Awake()
-    {
-        Instance = this;
-    }
 
     void Start()
     {
@@ -71,7 +64,7 @@ public class MiniGameManager : MonoBehaviour
         if (playerPrefab != null)
         {
             playerInstance = Instantiate(playerPrefab, playerSpawnPos, Quaternion.identity);
-            Debug.Log($"플레이어가 {playerSpawnPos} 위치에 소환되었습니다.");
+            GameLog.Log($"플레이어가 {playerSpawnPos} 위치에 소환되었습니다.");
         }
         else
         {
@@ -141,7 +134,7 @@ public class MiniGameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        Debug.Log("Game Over! 모든 동작이 정지되었습니다.");
+        GameLog.Log("Game Over! 모든 동작이 정지되었습니다.");
         
         // 여기에 게임 오버 UI를 띄우는 코드를 추가하면 좋습니다.
         // gameOverUI.SetActive(true); 
@@ -150,6 +143,6 @@ public class MiniGameManager : MonoBehaviour
     public void Win()
     {
         isGameOver = true;
-        Debug.Log("Escaped! Transitioning to 1st Person...");
+        GameLog.Log("Escaped! Transitioning to 1st Person...");
     }
 }

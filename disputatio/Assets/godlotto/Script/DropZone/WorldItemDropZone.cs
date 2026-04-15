@@ -92,18 +92,18 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
         switch (item.itemName)
         {
             case "StudyRoomKey":
-                return "UsedStudyKey";
+                return FungusVariableKeys.UsedStudyKey;
             case "MaidRoom_Key":
             case "MadeRoom_Key":
-                return "UsedMaidKey";
+                return FungusVariableKeys.UsedMaidKey;
             case "TutorRoomKey":
-                return "UsedTutorKey";
+                return FungusVariableKeys.UsedTutorKey;
             case "ChildRoomKey":
-                return "UsedChildKey";
+                return FungusVariableKeys.UsedChildKey;
             case "WifeRoomKey":
-                return "UsedWifeKey";
+                return FungusVariableKeys.UsedWifeKey;
             case "BedRoomKey":
-                return "UsedBedKey";
+                return FungusVariableKeys.UsedBedKey;
             case "PrisonKey":
                 return "UsedPrisonKey";
             case "BasementKey":
@@ -143,11 +143,11 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
 
         if (dropped != requiredItem)
         {
-            Debug.Log("잘못된 아이템입니다.");
+            GameLog.Log("잘못된 아이템입니다.");
             return false;
         }
 
-        Debug.Log($"올바른 아이템({requiredItem.itemName})을 사용했습니다!");
+        GameLog.Log($"올바른 아이템({requiredItem.itemName})을 사용했습니다!");
 
         onUnlock.Invoke();
 
@@ -166,7 +166,7 @@ public class WorldItemDropZone : MonoBehaviour, IDropHandler
 
         if (fc.GetBooleanVariable(dialogBoolName))
         {
-            Debug.Log("대사가 진행 중이라 아이템을 사용할 수 없습니다.");
+            GameLog.Log("대사가 진행 중이라 아이템을 사용할 수 없습니다.");
             return false;
         }
 

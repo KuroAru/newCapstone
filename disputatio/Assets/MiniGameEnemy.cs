@@ -78,7 +78,7 @@ public class MiniGameEnemy : MonoBehaviour
         if (dissolver != null)
         {
             dissolver.StartDissolve();
-            Debug.Log("실행됨");
+            GameLog.Log("실행됨");
         }
         else
         {

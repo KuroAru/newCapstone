@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Fungus;
@@ -23,6 +24,10 @@ namespace Godlotto.FungusIntegration
 
         float lastClickUnscaledTime = float.NegativeInfinity;
 
+        Collider2D[] cachedChildColliders;
+        readonly Dictionary<Collider2D, Clickable2D> clickableInParentByCollider = new Dictionary<Collider2D, Clickable2D>();
+        bool colliderHierarchyDirty = true;
+
         /// <summary>
         /// Unity <see cref="OnMouseDown"/>는 투명 스프라이트·UI 오버레이·멀티 카메라 조합에서 누락되는 경우가 있어
         /// <see cref="Update"/>에서 처리합니다. (Input System + 레거시 입력 모두 지원)
@@ -30,6 +35,16 @@ namespace Godlotto.FungusIntegration
         protected override void OnMouseDown()
         {
             // 의도적으로 비움 — 클릭 로직은 Update에서만 처리합니다.
+        }
+
+        void OnEnable()
+        {
+            colliderHierarchyDirty = true;
+        }
+
+        void OnTransformChildrenChanged()
+        {
+            colliderHierarchyDirty = true;
         }
 
         void Update()
@@ -131,10 +146,40 @@ namespace Godlotto.FungusIntegration
             return es.IsPointerOverGameObject();
         }
 
+        void EnsureColliderAndClickableCache()
+        {
+            if (!colliderHierarchyDirty)
+            {
+                return;
+            }
+
+            cachedChildColliders = GetComponentsInChildren<Collider2D>(true);
+            clickableInParentByCollider.Clear();
+            colliderHierarchyDirty = false;
+        }
+
+        Clickable2D GetCachedClickableInParent(Collider2D c)
+        {
+            if (clickableInParentByCollider.TryGetValue(c, out var cached) && cached != null)
+            {
+                return cached;
+            }
+
+            var resolved = c.GetComponentInParent<Clickable2D>();
+            clickableInParentByCollider[c] = resolved;
+            return resolved;
+        }
+
         bool IsOurCollider2DUnderPointer(Vector2 screenPosition)
         {
+            EnsureColliderAndClickableCache();
             Vector2 world = ScreenToWorldOnGameplayPlane(screenPosition);
-            foreach (Collider2D c in GetComponentsInChildren<Collider2D>(true))
+            if (cachedChildColliders == null)
+            {
+                return false;
+            }
+
+            foreach (Collider2D c in cachedChildColliders)
             {
                 if (c == null || !c.enabled || !c.gameObject.activeInHierarchy)
                 {
@@ -146,7 +191,7 @@ namespace Godlotto.FungusIntegration
                     continue;
                 }
 
-                if (c.GetComponentInParent<Clickable2D>() == this)
+                if (GetCachedClickableInParent(c) == this)
                 {
                     return true;
                 }

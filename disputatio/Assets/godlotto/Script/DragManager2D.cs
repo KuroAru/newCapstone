@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -21,6 +22,13 @@ public class DragManager2D : MonoBehaviour
     private Vector3 originalPos;
     private int layerMaskWithoutSnapTargets;
 
+    private readonly Dictionary<GameObject, DraggableSnap2D> draggableByGameObject =
+        new Dictionary<GameObject, DraggableSnap2D>();
+    private readonly Dictionary<GameObject, SpriteRenderer> spriteRendererByGameObject =
+        new Dictionary<GameObject, SpriteRenderer>();
+    private readonly Dictionary<GameObject, SnapTarget> snapTargetByGameObject =
+        new Dictionary<GameObject, SnapTarget>();
+
     private const float SortingLayerWeight = 10000f;
 
     void Awake()
@@ -33,6 +41,13 @@ public class DragManager2D : MonoBehaviour
     void Start()
     {
         DraggableSnap2D.RefreshSpriteDepthByWorldY();
+    }
+
+    void OnDisable()
+    {
+        draggableByGameObject.Clear();
+        spriteRendererByGameObject.Clear();
+        snapTargetByGameObject.Clear();
     }
 
     void Update()
@@ -79,8 +94,7 @@ public class DragManager2D : MonoBehaviour
 
         foreach (var h in hits)
         {
-            var drag = h.GetComponent<DraggableSnap2D>();
-            if (drag == null || (drag.isSnapped && drag.lockAfterSnap))
+            if (!TryGetDraggableSnap(h, out var drag) || (drag.isSnapped && drag.lockAfterSnap))
                 continue;
 
             float order = ComputePickPriority(h);
@@ -94,8 +108,7 @@ public class DragManager2D : MonoBehaviour
         if (bestCol == null)
             return;
 
-        current = bestCol.GetComponent<DraggableSnap2D>();
-        if (current == null)
+        if (!TryGetDraggableSnap(bestCol, out current))
             return;
 
         originalPos = current.transform.position;
@@ -104,17 +117,61 @@ public class DragManager2D : MonoBehaviour
         grabOffset.z = 0f;
     }
 
-    /// <summary>마우스 아래 여러 콜라이더가 겹칠 때, 화면 앞쪽(정렬 우선) 후보 점수.</summary>
-    private static float ComputePickPriority(Collider2D h)
+    bool TryGetDraggableSnap(Collider2D h, out DraggableSnap2D drag)
     {
-        var sr = h.GetComponent<SpriteRenderer>();
-        if (sr != null)
+        drag = null;
+        if (h == null)
+            return false;
+
+        GameObject go = h.gameObject;
+        if (draggableByGameObject.TryGetValue(go, out drag) && drag != null)
+            return true;
+
+        drag = h.GetComponent<DraggableSnap2D>();
+        draggableByGameObject[go] = drag;
+        return drag != null;
+    }
+
+    /// <summary>마우스 아래 여러 콜라이더가 겹칠 때, 화면 앞쪽(정렬 우선) 후보 점수.</summary>
+    private float ComputePickPriority(Collider2D h)
+    {
+        if (TryGetSpriteRenderer(h, out var sr) && sr != null)
         {
             int layerOrder = SortingLayer.GetLayerValueFromID(sr.sortingLayerID);
             return layerOrder * SortingLayerWeight + sr.sortingOrder;
         }
 
         return -h.transform.position.z;
+    }
+
+    bool TryGetSpriteRenderer(Collider2D h, out SpriteRenderer sr)
+    {
+        sr = null;
+        if (h == null)
+            return false;
+
+        GameObject go = h.gameObject;
+        if (spriteRendererByGameObject.TryGetValue(go, out sr) && sr != null)
+            return true;
+
+        sr = h.GetComponent<SpriteRenderer>();
+        spriteRendererByGameObject[go] = sr;
+        return sr != null;
+    }
+
+    bool TryGetSnapTarget(Collider2D h, out SnapTarget target)
+    {
+        target = null;
+        if (h == null)
+            return false;
+
+        GameObject go = h.gameObject;
+        if (snapTargetByGameObject.TryGetValue(go, out target) && target != null)
+            return true;
+
+        target = h.GetComponent<SnapTarget>();
+        snapTargetByGameObject[go] = target;
+        return target != null;
     }
 
     private void OnDrag()
@@ -161,8 +218,7 @@ public class DragManager2D : MonoBehaviour
 
         foreach (var h in hits)
         {
-            var t = h.GetComponent<SnapTarget>();
-            if (t == null || !t.CanAccept(draggable))
+            if (!TryGetSnapTarget(h, out var t) || !t.CanAccept(draggable))
                 continue;
 
             float d = ((Vector2)t.transform.position - draggablePosition).sqrMagnitude;

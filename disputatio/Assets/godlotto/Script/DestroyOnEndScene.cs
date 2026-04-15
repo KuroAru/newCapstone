@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class DestroyOnEndScene : MonoBehaviour
 {
     [Tooltip("이 씬들에 진입하면 오브젝트를 파괴합니다.")]
-    public string[] targetSceneNames = { "BetaEnd", "MainMenuScene" };
+    public string[] targetSceneNames = { "BetaEnd", SceneNames.MainMenu };
 
     void OnEnable()
     {
@@ -22,7 +22,7 @@ public class DestroyOnEndScene : MonoBehaviour
         {
             if (scene.name == target)
             {
-                Debug.Log($"[{gameObject.name}] {target} 씬 진입 → 오브젝트 파괴됨");
+                GameLog.Log($"[{gameObject.name}] {target} 씬 진입 → 오브젝트 파괴됨");
                 Destroy(gameObject);
                 return;
             }
