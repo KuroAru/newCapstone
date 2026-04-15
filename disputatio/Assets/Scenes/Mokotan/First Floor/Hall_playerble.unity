@@ -906,6 +906,8 @@ GameObject:
   - component: {fileID: 265606229}
   - component: {fileID: 265606233}
   - component: {fileID: 265606234}
+  - component: {fileID: 265606236}
+  - component: {fileID: 265606235}
   m_Layer: 0
   m_Name: Flowchart_hall
   m_TagString: Untagged
@@ -927,6 +929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   scrollPos: {x: 801.24426, y: 33.306305}
+  scrollPos: {x: -59.16487, y: -4.163929}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 302
@@ -941,6 +944,9 @@ MonoBehaviour:
   - {fileID: 265606191}
   selectedCommands:
   - {fileID: 265606192}
+  - {fileID: 265606236}
+  selectedCommands:
+  - {fileID: 265606235}
   variables:
   - {fileID: 265606045}
   - {fileID: 265606092}
@@ -9860,6 +9866,48 @@ MonoBehaviour:
     booleanRef: {fileID: 0}
     booleanVal: 1
   targetGameObjectOLD: {fileID: 0}
+--- !u!114 &265606235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265605998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18aa869908b14ab4badc92a02c095063, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 206
+  indentLevel: 0
+  targetItemId: 1
+--- !u!114 &265606236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265605998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d3d73aef2cfc4f51abf34ac00241f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeRect:
+    serializedVersion: 2
+    x: 576.16486
+    y: 551.16394
+    width: 110.19
+    height: 40
+  tint: {r: 1, g: 1, b: 1, a: 1}
+  useCustomTint: 0
+  itemId: 205
+  blockName: New Block
+  description: 
+  eventHandler: {fileID: 0}
+  commandList:
+  - {fileID: 265606235}
+  suppressAllAutoSelections: 0
 --- !u!1 &335360409
 GameObject:
   m_ObjectHideFlags: 0
@@ -12222,15 +12270,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4006151063543885999, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: m_Color.b
-      value: 0.01619794
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4006151063543885999, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: m_Color.g
-      value: 0.01619794
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4006151063543885999, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: m_Color.r
-      value: 0.26415092
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4387402410834348869, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: m_UiScaleMode
@@ -12341,8 +12389,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
+      propertyPath: maxSlots
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: pressTab
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
+      propertyPath: slotPrefab
+      value: 
+      objectReference: {fileID: 5978059533391442340, guid: 0e37c81f71df42441af6f33ddb63632a, type: 3}
+    - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
+      propertyPath: slotSpacing.x
+      value: 62.5
       objectReference: {fileID: 0}
     - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: targetflowchart

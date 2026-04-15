@@ -1566,9 +1566,7 @@ GameObject:
   - component: {fileID: 1167278008}
   - component: {fileID: 1167278007}
   - component: {fileID: 1167278006}
-  - component: {fileID: 1167278005}
   - component: {fileID: 1167278004}
-  - component: {fileID: 1167278003}
   - component: {fileID: 1167278002}
   - component: {fileID: 1167278001}
   - component: {fileID: 1167278009}
@@ -1578,6 +1576,8 @@ GameObject:
   - component: {fileID: 1167278014}
   - component: {fileID: 1167278012}
   - component: {fileID: 1167278015}
+  - component: {fileID: 1167278016}
+  - component: {fileID: 1167278017}
   m_Layer: 0
   m_Name: Flowchart
   m_TagString: Untagged
@@ -7509,8 +7509,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 1009.5873
-    y: 423.82465
+    x: 1007.2344
+    y: 425.00113
     width: 76.84
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -7523,9 +7523,9 @@ MonoBehaviour:
   - {fileID: 1167278008}
   - {fileID: 1167278007}
   - {fileID: 1167278006}
-  - {fileID: 1167278005}
+  - {fileID: 1167278016}
+  - {fileID: 1167278017}
   - {fileID: 1167278004}
-  - {fileID: 1167278003}
   - {fileID: 1167278002}
   - {fileID: 1167278001}
   suppressAllAutoSelections: 0
@@ -7567,34 +7567,6 @@ MonoBehaviour:
   interactableState:
     booleanRef: {fileID: 0}
     booleanVal: 1
---- !u!114 &1167278003
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167277873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 344
-  indentLevel: 0
-  description: 
-  targetObject: {fileID: 1673376038}
-  targetComponentAssemblyName: ItemPickup, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-    PublicKeyToken=null
-  targetComponentFullname: 'UnityEngine.Component[]'
-  targetComponentText: ItemPickup
-  targetMethod: PickUpDirect
-  targetMethodText: 'PickUpDirect (): Void'
-  methodParameters: []
-  saveReturnValue: 0
-  returnValueVariableKey: 
-  returnValueType: System.Void
-  showInherited: 0
-  callMode: 0
 --- !u!114 &1167278004
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -7616,51 +7588,6 @@ MonoBehaviour:
     booleanRef: {fileID: 0}
     booleanVal: 0
   targetGameObjectOLD: {fileID: 0}
---- !u!114 &1167278005
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167277873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 342
-  indentLevel: 0
-  description: 
-  targetObject: {fileID: 6135082600380105302, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
-  targetComponentAssemblyName: InventoryManager, Assembly-CSharp, Version=0.0.0.0,
-    Culture=neutral, PublicKeyToken=null
-  targetComponentFullname: 'UnityEngine.Component[]'
-  targetComponentText: InventoryManager
-  targetMethod: AddItem
-  targetMethodText: 'AddItem (Item): Void'
-  methodParameters:
-  - objValue:
-      typeAssemblyname: Item, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      typeFullname: Item
-      intValue: 0
-      boolValue: 0
-      floatValue: 0
-      stringValue: 
-      colorValue: {r: 0, g: 0, b: 0, a: 0}
-      gameObjectValue: {fileID: 0}
-      materialValue: {fileID: 0}
-      objectValue: {fileID: 11400000, guid: 22140fa725c2e4b40bb10fe1d73c4f43, type: 2}
-      spriteValue: {fileID: 0}
-      textureValue: {fileID: 0}
-      vector2Value: {x: 0, y: 0}
-      vector3Value: {x: 0, y: 0, z: 0}
-    variableKey: 
-  saveReturnValue: 0
-  returnValueVariableKey: 
-  returnValueType: System.Void
-  showInherited: 0
-  callMode: 0
 --- !u!114 &1167278006
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -8020,6 +7947,49 @@ MonoBehaviour:
     booleanRef: {fileID: 0}
     booleanVal: 0
   targetGameObjectOLD: {fileID: 0}
+--- !u!114 &1167278016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167277873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18aa869908b14ab4badc92a02c095063, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 353
+  indentLevel: 0
+  targetItemId: 1
+--- !u!114 &1167278017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167277873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688e35811870d403f9e2b1ab2a699d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 354
+  indentLevel: 0
+  description: 
+  targetObject: {fileID: 1673376038}
+  targetComponentAssemblyName: ItemPickup, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  targetComponentFullname: 'UnityEngine.Component[]'
+  targetComponentText: ItemPickup
+  targetMethod: PickUpDirect
+  targetMethodText: 'PickUpDirect (): Void'
+  methodParameters: []
+  saveReturnValue: 0
+  returnValueVariableKey: 
+  returnValueType: System.Void
+  showInherited: 0
+  callMode: 0
 --- !u!1001 &1222528570
 PrefabInstance:
   m_ObjectHideFlags: 0

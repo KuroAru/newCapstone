@@ -11318,12 +11318,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 009665f9edab7ce4fa70d08f9cbff703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCookbookPanel: 0
+  isCookbookPanel: 1
   pages:
   - {fileID: 373349580}
   - {fileID: 358870567}
   - {fileID: 268507134}
-  - {fileID: 720655338}
   scrapbookContentJson: {fileID: 0}
   scrapbookPageTextOverlay: {fileID: 901234503}
   scrapbookRecipeTextOverlay: {fileID: 0}
@@ -11331,12 +11330,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
   pageRecipeIllustrationSprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 44a43f83f5114ad09e680bab7e697cf4, type: 3}
+  - {fileID: 21300000, guid: 312285b7f8cd484a8481d0eb2ef6f382, type: 3}
+  - {fileID: 21300000, guid: 94052a95ac3a42728f47d228426be996, type: 3}
   cookBookRecipeIllustrationAnchor: {x: 0.3, y: 0.68}
   cookBookRecipeIllustrationSizeDelta: {x: 500, y: 400}
   cookBookRecipeTextAnchorMin: {x: 0.2, y: 0.13}
