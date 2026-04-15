@@ -12243,6 +12243,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5978059533391442340, guid: 0e37c81f71df42441af6f33ddb63632a, type: 3}
     - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
+      propertyPath: slotSpacing.x
+      value: 62.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432011457589529400, guid: d165af602cb8f9d4799711789615e1eb, type: 3}
       propertyPath: targetflowchart
       value: 
       objectReference: {fileID: 0}
