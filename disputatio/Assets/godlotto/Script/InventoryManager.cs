@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Fungus;
 
 public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
@@ -23,6 +24,12 @@ public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
     [SerializeField] private int maxSlots = 12;
     [SerializeField] private Flowchart targetflowchart;
     [SerializeField] private InventoryTooltipController tooltipController;
+
+    [Header("슬롯 레이아웃")]
+    [Tooltip("슬롯 사이의 가로/세로 간격 (픽셀)")]
+    [SerializeField] private Vector2 slotSpacing = new Vector2(50f, 0f);
+    [Tooltip("슬롯 하나의 가로/세로 크기 (픽셀)")]
+    [SerializeField] private Vector2 cellSize = new Vector2(150f, 150f);
 
     [SerializeField] private bool pressTab = false;
 
@@ -53,6 +60,12 @@ public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
 
     void Start()
     {
+        if (inventoryUI_Background == null)
+        {
+            GameLog.LogWarning($"[{nameof(InventoryManager)}] inventoryUI_Background가 할당되지 않았습니다.");
+            return;
+        }
+
         animator = inventoryUI_Background.GetComponent<Animator>();
         inventoryUI_Background.SetActive(false);
 
@@ -91,6 +104,12 @@ public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
     {
         if (item == null)
             return;
+
+        if (items.Contains(item))
+        {
+            GameLog.Log($"[InventoryManager] {item.itemName}은(는) 이미 인벤토리에 있습니다. 중복 추가 무시.");
+            return;
+        }
 
         if (ResolveFlowchart() != null)
             ItemAcquisitionTracker.MarkAcquired(targetflowchart, item);
@@ -154,10 +173,38 @@ public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
 
     private void CreateSlots()
     {
+        if (slotPrefab == null)
+        {
+            GameLog.LogWarning($"[{nameof(InventoryManager)}] slotPrefab이 할당되지 않았습니다. Inspector에서 InventorySlot 프리팹을 지정해 주세요.");
+            return;
+        }
+
+        if (slotsHolder == null)
+        {
+            GameLog.LogWarning($"[{nameof(InventoryManager)}] slotsHolder가 할당되지 않았습니다.");
+            return;
+        }
+
+        if (slotsHolder.TryGetComponent<GridLayoutGroup>(out var grid))
+        {
+            grid.spacing = slotSpacing;
+            grid.cellSize = cellSize;
+        }
+
         for (int i = 0; i < maxSlots; i++)
         {
             GameObject slotGO = Instantiate(slotPrefab, slotsHolder);
-            slots.Add(slotGO.GetComponent<InventorySlot>());
+            var slot = slotGO.GetComponent<InventorySlot>()
+                       ?? slotGO.GetComponentInChildren<InventorySlot>();
+            if (slot != null)
+            {
+                slots.Add(slot);
+            }
+            else
+            {
+                GameLog.LogWarning($"[{nameof(InventoryManager)}] slotPrefab({slotPrefab.name})에 InventorySlot 컴포넌트가 없습니다. " +
+                                   $"프리팹 경로를 확인해 주세요.");
+            }
         }
     }
 
@@ -165,6 +212,9 @@ public class InventoryManager : SingletonMonoBehaviour<InventoryManager>
     {
         for (int i = 0; i < slots.Count; i++)
         {
+            if (slots[i] == null)
+                continue;
+
             if (i < items.Count)
                 slots[i].AddItem(items[i]);
             else
