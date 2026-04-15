@@ -405,7 +405,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFlowchart: {fileID: 1931558220}
   variableName: ElectricOn
-  targetLight: {fileID: 1395375070}
+  targetLights:
+  - {fileID: 1395375070}
 --- !u!1 &182227208
 GameObject:
   m_ObjectHideFlags: 0
