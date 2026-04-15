@@ -19,7 +19,7 @@ public class BookPanelController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scrapbookRecipeTextOverlay;
     public const string RecipeIllustrationChildName = "RecipeIllustration";
     [Header("페이지별 배경 (선택, 페이지 루트 Image)")]
-    [Tooltip("종이·스프레드 전체를 덮는 스프라이트. 인스펙터에서만 지정 (Resources 자동 로드 없음)")]
+    [Tooltip("종이·스프레드 전체를 덮는 스프라이트. CookBook_Panel이고 비어 있으면 Resources/CookbookPageBg/1,2,… 로드")]
     [SerializeField] private Sprite[] pageBackgroundSprites;
     [Header("왼쪽 레시피 일러 (선택, 자식 RecipeIllustration)")]
     [Tooltip("각 페이지 아래 RecipeIllustration 오브젝트의 Image. CookBook_Panel이고 비어 있으면 Resources/CookbookPages/1,2,… 로드")]
@@ -71,8 +71,10 @@ public class BookPanelController : MonoBehaviour
             if (t != null)
                 scrapbookPageTextOverlay = t.GetComponent<TextMeshProUGUI>();
         }
+        DeactivateOrphanPageChildren();
         TryLoadScrapbookJson();
         TryAssignRecipeSpritesFromResources();
+        TryAssignPageBackgroundSpritesFromResources();
         ApplyPageBackgroundSprites();
         ApplyRecipeIllustrationSprites();
         ApplyCookBookRecipeIllustrationLayout();
@@ -196,6 +198,21 @@ public class BookPanelController : MonoBehaviour
         tmp.verticalAlignment = VerticalAlignmentOptions.Top;
         tmp.margin = CookBookLegacyMemoMargin;
     }
+    private void DeactivateOrphanPageChildren()
+    {
+        if (pages == null || pages.Length == 0)
+            return;
+        var pageSet = new System.Collections.Generic.HashSet<GameObject>(pages);
+        foreach (Transform child in transform)
+        {
+            if (child.GetComponent<Image>() != null
+                && !pageSet.Contains(child.gameObject)
+                && child.gameObject.name.StartsWith("CookBookPage"))
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+    }
     private static bool IsNullOrAllNull(Sprite[] arr)
     {
         if (arr == null || arr.Length == 0) return true;
@@ -219,6 +236,23 @@ public class BookPanelController : MonoBehaviour
         }
         if (any)
             pageRecipeIllustrationSprites = loaded;
+    }
+    private void TryAssignPageBackgroundSpritesFromResources()
+    {
+        if (!isCookbookPanel || pages == null || pages.Length == 0)
+            return;
+        if (!IsNullOrAllNull(pageBackgroundSprites))
+            return;
+        var loaded = new Sprite[pages.Length];
+        var any = false;
+        for (var i = 0; i < pages.Length; i++)
+        {
+            loaded[i] = Resources.Load<Sprite>($"CookbookPageBg/{i + 1}");
+            if (loaded[i] != null)
+                any = true;
+        }
+        if (any)
+            pageBackgroundSprites = loaded;
     }
     private void ApplyPageBackgroundSprites()
     {
