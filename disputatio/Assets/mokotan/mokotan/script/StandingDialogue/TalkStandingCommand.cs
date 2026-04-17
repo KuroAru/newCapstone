@@ -1,4 +1,5 @@
 using Mokotan.StandingDialogue;
+using TMPro;
 using UnityEngine;
 
 namespace Fungus
@@ -26,15 +27,25 @@ namespace Fungus
         [Tooltip("화자 스탠딩 이미지. 비우면 현재 슬롯 이미지를 유지합니다.")]
         [SerializeField] private Sprite speakerSprite;
 
-        [Tooltip("화자 이미지 위치 오프셋 (X=좌우, Y=상하). 0,0이면 슬롯 기본 위치 유지.")]
+        [Tooltip("화자 이미지 위치 오프셋 (X=좌우, Y=상하).")]
         [SerializeField] private Vector2 speakerOffset = Vector2.zero;
 
         [Header("상대 캐릭터 (선택)")]
         [Tooltip("반대편 캐릭터 스탠딩 이미지. 비우면 현재 슬롯 이미지를 유지합니다.")]
         [SerializeField] private Sprite otherSprite;
 
-        [Tooltip("상대 이미지 위치 오프셋 (X=좌우, Y=상하). 0,0이면 슬롯 기본 위치 유지.")]
+        [Tooltip("상대 이미지 위치 오프셋 (X=좌우, Y=상하).")]
         [SerializeField] private Vector2 otherOffset = Vector2.zero;
+
+        [Header("타이포그래피")]
+        [Tooltip("대사 폰트. 비우면 프리팹 기본 폰트(JalnanGothic SDF) 유지.")]
+        [SerializeField] private TMP_FontAsset font;
+
+        [Tooltip("대사 글자 크기. 0이면 프리팹 기본값 유지.")]
+        [SerializeField] private float fontSize = 0f;
+
+        [Tooltip("초당 출력 글자 수 (타이핑 효과). 0이면 즉시 전체 출력.")]
+        [SerializeField] private float charsPerSecond = 0f;
 
         public override void OnEnter()
         {
@@ -44,8 +55,19 @@ namespace Fungus
             StandingDialogueManager mgr = StandingDialogueManager.GetStandingDialogue();
             if (mgr == null) { Continue(); return; }
 
-            mgr.TalkStanding(speakerSide, speakerSprite, speakerOffset,
-                otherSprite, otherOffset, speakerName, dialogueText, () => Continue());
+            var typography = new TypographySettings
+            {
+                Font           = font,
+                FontSize       = fontSize,
+                CharsPerSecond = charsPerSecond,
+            };
+
+            mgr.TalkStanding(speakerSide,
+                speakerSprite, speakerOffset,
+                otherSprite,   otherOffset,
+                speakerName,   dialogueText,
+                typography,
+                () => Continue());
         }
 
         public override string GetSummary()
@@ -54,7 +76,8 @@ namespace Fungus
                 return "(설정 없음)";
             var name    = string.IsNullOrEmpty(speakerName) ? "?" : speakerName;
             var preview = dialogueText?.Length > 20 ? dialogueText.Substring(0, 20) + "..." : dialogueText;
-            return $"[{speakerSide}] {name}: \"{preview}\"";
+            var speed   = charsPerSecond > 0f ? $" | {charsPerSecond}자/초" : "";
+            return $"[{speakerSide}] {name}: \"{preview}\"{speed}";
         }
 
         public override Color GetButtonColor() => new Color32(255, 220, 150, 255);

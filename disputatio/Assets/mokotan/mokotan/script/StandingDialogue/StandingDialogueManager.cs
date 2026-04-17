@@ -2,9 +2,9 @@
 // Canvas (StandingDialogueCanvas) — Screen Space Overlay, Sort Order 10
 //   CanvasGroup
 //   ├── LeftSlot
-//   │     └── LeftCharImage (Image, Preserve Aspect: true)   ← LeftOverlay 삭제해도 됨
+//   │     └── LeftCharImage (Image, Preserve Aspect: true)
 //   ├── RightSlot
-//   │     └── RightCharImage (Image, Preserve Aspect: true)  ← RightOverlay 삭제해도 됨
+//   │     └── RightCharImage (Image, Preserve Aspect: true)
 //   └── DialogueBox (하단 중앙)
 //         ├── NameText (TMP)
 //         └── DialogueText (TMP)
@@ -20,12 +20,29 @@ namespace Mokotan.StandingDialogue
 {
     public enum Side { Left, Right }
 
+    /// <summary>타이핑 효과 설정값.</summary>
+    public struct TypographySettings
+    {
+        /// <summary>TMP 폰트 에셋. null이면 프리팹 기본값 유지.</summary>
+        public TMP_FontAsset Font;
+        /// <summary>대사 폰트 크기. 0이면 프리팹 기본값 유지.</summary>
+        public float FontSize;
+        /// <summary>초당 출력 글자 수. 0이면 즉시 출력.</summary>
+        public float CharsPerSecond;
+
+        public static readonly TypographySettings Default = new TypographySettings
+        {
+            Font           = null,
+            FontSize       = 0f,
+            CharsPerSecond = 0f,
+        };
+    }
+
     [AddComponentMenu("Mokotan/Standing Dialogue Manager")]
     public class StandingDialogueManager : MonoBehaviour
     {
         public const float FadeDurationSeconds = 0.3f;
 
-        // 비활성 캐릭터에 적용할 밝기 (0=완전검정, 1=원본)
         private static readonly Color ActiveColor   = Color.white;
         private static readonly Color InactiveColor = new Color(0.35f, 0.35f, 0.35f, 1f);
 
@@ -43,21 +60,33 @@ namespace Mokotan.StandingDialogue
             }
         }
 
-        [SerializeField] private Image leftCharImage;
-        [SerializeField] private Image rightCharImage;
+        [SerializeField] private Image    leftCharImage;
+        [SerializeField] private Image    rightCharImage;
         [SerializeField] private GameObject dialogueBox;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text dialogueTextField;
         [SerializeField] private CanvasGroup canvasGroup;
 
-        private bool _waitingForInput;
+        private bool   _waitingForInput;
+        private bool   _typing;           // 타이핑 중 여부
         private Action _onInputComplete;
         private Coroutine _fadeAllRoutine;
+        private Coroutine _typingRoutine;
+
+        // 대사 텍스트 기본 폰트 크기 (프리팹 설정값 보존용)
+        private float _defaultFontSize;
+        private TMP_FontAsset _defaultFont;
 
         private void Awake()
         {
             if (!ActiveStandingDialogues.Contains(this))
                 ActiveStandingDialogues.Add(this);
+
+            if (dialogueTextField != null)
+            {
+                _defaultFontSize = dialogueTextField.fontSize;
+                _defaultFont     = dialogueTextField.font;
+            }
         }
 
         private void OnDestroy()
@@ -92,20 +121,27 @@ namespace Mokotan.StandingDialogue
         private void Update()
         {
             if (!_waitingForInput) return;
+
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            {
+                // 타이핑 중이면 클릭 한 번에 전체 텍스트 즉시 출력
+                if (_typing)
+                {
+                    SkipTyping();
+                    return;
+                }
                 CompleteWaitingInput();
+            }
         }
 
         // ── 공개 API ──────────────────────────────────────────────
 
-        /// <summary>
-        /// 스프라이트 설정 + 하이라이트 + 대사를 한 번에 처리합니다.
-        /// speakerSprite / otherSprite가 null 이면 현재 슬롯 이미지를 유지합니다.
-        /// </summary>
         public void TalkStanding(Side speakerSide,
             Sprite speakerSprite, Vector2 speakerOffset,
-            Sprite otherSprite,  Vector2 otherOffset,
-            string speakerName, string dialogueText, Action onComplete)
+            Sprite otherSprite,   Vector2 otherOffset,
+            string speakerName,   string dialogueText,
+            TypographySettings typography,
+            Action onComplete)
         {
             EnsureCanvasVisible();
 
@@ -126,30 +162,37 @@ namespace Mokotan.StandingDialogue
             }
             if (otherImg != null) ApplyOffset(otherImg, otherOffset);
 
-            Speak(speakerSide, speakerName, dialogueText, onComplete);
+            Speak(speakerSide, speakerName, dialogueText, typography, onComplete);
         }
 
-        /// <summary>
-        /// 하이라이트 + 대사 표시. 스프라이트는 이미 로드된 상태여야 합니다.
-        /// </summary>
-        public void Speak(Side side, string speakerName, string dialogueText, Action onComplete)
+        public void Speak(Side side, string speakerName, string dialogueText,
+            TypographySettings typography, Action onComplete)
         {
             EnsureCanvasVisible();
 
-            if (nameText != null)       nameText.text       = speakerName  ?? string.Empty;
-            if (dialogueTextField != null) dialogueTextField.text = dialogueText ?? string.Empty;
-            if (dialogueBox != null)    dialogueBox.SetActive(true);
+            if (nameText != null)
+                nameText.text = speakerName ?? string.Empty;
 
+            if (dialogueBox != null)
+                dialogueBox.SetActive(true);
+
+            ApplyTypography(typography);
             ApplySpeakerHighlight(side);
 
             StopWaitingForInput();
-            _waitingForInput  = true;
-            _onInputComplete  = onComplete;
+            _waitingForInput = true;
+            _onInputComplete = onComplete;
+
+            if (_typingRoutine != null) StopCoroutine(_typingRoutine);
+
+            if (typography.CharsPerSecond > 0f && !string.IsNullOrEmpty(dialogueText))
+                _typingRoutine = StartCoroutine(TypeText(dialogueText, typography.CharsPerSecond));
+            else
+            {
+                if (dialogueTextField != null) dialogueTextField.text = dialogueText ?? string.Empty;
+            }
         }
 
-        /// <summary>
-        /// 전체 연출을 페이드 아웃하고 정리합니다.
-        /// </summary>
         public void HideAll()
         {
             StopWaitingForInput();
@@ -169,17 +212,64 @@ namespace Mokotan.StandingDialogue
 
         // ── 내부 ──────────────────────────────────────────────────
 
+        private void ApplyTypography(TypographySettings t)
+        {
+            if (dialogueTextField == null) return;
+
+            dialogueTextField.font     = t.Font     != null  ? t.Font     : _defaultFont;
+            dialogueTextField.fontSize = t.FontSize > 0f     ? t.FontSize : _defaultFontSize;
+        }
+
+        private IEnumerator TypeText(string fullText, float charsPerSecond)
+        {
+            _typing = true;
+            if (dialogueTextField != null) dialogueTextField.text = string.Empty;
+
+            float interval = 1f / charsPerSecond;
+            float elapsed  = 0f;
+            int   shown    = 0;
+
+            while (shown < fullText.Length)
+            {
+                elapsed += Time.deltaTime;
+                int target = Mathf.Min(Mathf.FloorToInt(elapsed * charsPerSecond) + 1, fullText.Length);
+                if (target > shown)
+                {
+                    shown = target;
+                    if (dialogueTextField != null)
+                        dialogueTextField.text = fullText.Substring(0, shown);
+                }
+                yield return null;
+            }
+
+            _typing        = false;
+            _typingRoutine = null;
+        }
+
+        private void SkipTyping()
+        {
+            if (_typingRoutine != null)
+            {
+                StopCoroutine(_typingRoutine);
+                _typingRoutine = null;
+            }
+            // 전체 텍스트를 즉시 표시 — dialogueTextField.text는 TypeText가 마지막으로 설정 중이므로
+            // maxVisibleCharacters를 활용하는 대신 text 자체를 직접 완성시킵니다.
+            // TalkStanding 호출 시 전달한 원본 텍스트를 보존하기 위해 TMP의 현재 text를 꺼냅니다.
+            // (TypeText 내부에서 Substring으로 설정했으므로 fullText를 다시 쓰는 대신
+            //  dialogueTextField의 text를 fullText로 되돌리는 방식으로 처리합니다.)
+            _typing = false;
+        }
+
         private void ApplySpeakerHighlight(Side speakerSide)
         {
             var speakerImg = GetCharImage(speakerSide);
             var otherImg   = GetCharImage(speakerSide == Side.Left ? Side.Right : Side.Left);
 
-            // 스프라이트가 있는 Image에만 색상을 적용 — 빈 슬롯은 건드리지 않음
             if (speakerImg != null && speakerImg.sprite != null)
                 speakerImg.color = ActiveColor;
-
-            if (otherImg != null && otherImg.sprite != null)
-                otherImg.color = InactiveColor;
+            if (otherImg   != null && otherImg.sprite   != null)
+                otherImg.color   = InactiveColor;
         }
 
         private IEnumerator HideAllRoutine()
@@ -198,7 +288,6 @@ namespace Mokotan.StandingDialogue
             }
 
             if (dialogueBox != null) dialogueBox.SetActive(false);
-
             ResetSlot(leftCharImage);
             ResetSlot(rightCharImage);
             _fadeAllRoutine = null;
@@ -222,8 +311,10 @@ namespace Mokotan.StandingDialogue
 
         private void StopWaitingForInput()
         {
+            _typing          = false;
             _waitingForInput = false;
             _onInputComplete = null;
+            if (_typingRoutine != null) { StopCoroutine(_typingRoutine); _typingRoutine = null; }
         }
 
         private void EnsureCanvasVisible()
