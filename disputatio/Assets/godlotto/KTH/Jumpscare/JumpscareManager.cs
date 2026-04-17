@@ -26,6 +26,8 @@ public struct AutoRegisteredSpawnPositionOverride
 public class JumpscareManager : SingletonMonoBehaviour<JumpscareManager>
 {
     public static event Action OnPlayerDied;
+    public static event Action OnEnemyAppeared;
+    public static event Action OnJumpscareReset;
 
     protected override bool PersistAcrossScenes => true;
 

@@ -136,7 +136,7 @@ public class FitchenPostExposureController : MonoBehaviour
 
     /// </summary>
 
-    public void TriggerFlashEffect(float peakExposure = 6f, float targetExposure = 0f)
+    public void TriggerFlashEffect(float peakExposure = 2f, float targetExposure = 0f)
 
     {
 

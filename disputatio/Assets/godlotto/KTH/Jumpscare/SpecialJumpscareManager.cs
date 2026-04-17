@@ -8,6 +8,8 @@ using UnityEngine.Rendering.Universal;
 public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareManager>
 {
     public static event Action OnPlayerDied;
+    public static event Action OnEnemyAppeared; // 추가: 적이 스폰되었을 때
+    public static event Action OnJumpscareReset; // 추가: 상태가 초기화될 때 (씬 이동 등)
 
     [Header("눈깜빡임 오버레이 (SpriteRenderer)")]
     [Tooltip("카메라 앞에 배치할 전체화면 눈깜빡임 Sprite")]
@@ -133,6 +135,7 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
             SetTriggerVisible(true);
 
             SetHideObjectsByTag(true);
+            OnEnemyAppeared?.Invoke(); // 이 줄을 추가합니다.
 
             StartCoroutine(WaitAndExecuteScare());
         }
@@ -272,6 +275,7 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
         jumpscareAnimator.gameObject.SetActive(false);
         if (gameOverObject != null) gameOverObject.SetActive(true);
         OnPlayerDied?.Invoke();
+        OnJumpscareReset?.Invoke(); // 이 줄을 추가합니다.
 
         // GameOver 표시 후 클릭 차단 해제 (리트라이 등 클릭 가능)
         isJumpscareInProgress = false;
