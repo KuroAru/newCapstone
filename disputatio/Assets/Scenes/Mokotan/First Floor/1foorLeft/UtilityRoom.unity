@@ -407,6 +407,7 @@ MonoBehaviour:
   variableName: ElectricOn
   targetLights:
   - {fileID: 1395375070}
+  targetSprites: []
 --- !u!1 &182227208
 GameObject:
   m_ObjectHideFlags: 0
@@ -2574,7 +2575,7 @@ MonoBehaviour:
   m_ComponentVersion: 2
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.353
+  m_FalloffIntensity: 0.379
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 16.6
   m_LightVolumeIntensity: 1
@@ -2597,10 +2598,10 @@ MonoBehaviour:
   m_LocalBounds:
     m_Center: {x: 0, y: -0.00000011920929, z: 0}
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 93.30075
-  m_PointLightOuterAngle: 180
+  m_PointLightInnerAngle: 110.90472
+  m_PointLightOuterAngle: 188.802
   m_PointLightInnerRadius: 54.81
-  m_PointLightOuterRadius: 1000
+  m_PointLightOuterRadius: 1251.4
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
