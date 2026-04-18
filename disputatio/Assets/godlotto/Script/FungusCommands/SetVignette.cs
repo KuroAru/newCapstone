@@ -10,6 +10,9 @@ using UnityEngine.Rendering.Universal;
 [AddComponentMenu("")]
 public class SetVignette : Command
 {
+    [Tooltip("대상 URP Volume. 비워 두면 씬에서 자동으로 첫 번째 Volume을 찾습니다.")]
+    [SerializeField] private Volume targetVolume;
+
     [Tooltip("비네트 강도. 0이면 효과 없음, 1이면 화면 가장자리가 완전히 검게 됨. 눈 깜빡임, 의식 흐림 연출에 사용.")]
     [Range(0f, 1f)]
     [SerializeField] private float intensity = 0.5f;
@@ -18,26 +21,28 @@ public class SetVignette : Command
     [Range(0f, 1f)]
     [SerializeField] private float smoothness = 0.5f;
 
+    [Header("Color Override")]
     [Tooltip("체크 시 Color 필드를 적용. 미체크 시 색상은 현재 값을 유지한 채 Intensity/Smoothness만 변경.")]
     [SerializeField] private bool overrideColor = false;
 
     [Tooltip("비네트 색상. 기본값 검정(공포/긴장), 붉은색(공포/위협), 흰색(희망/빛) 등 연출에 따라 변경.")]
     [SerializeField] private Color color = Color.black;
 
+    [Header("Timing")]
     [Tooltip("변환에 걸리는 시간(초). 0이면 즉시 적용, 양수면 SmoothStep으로 부드럽게 변환.")]
     [SerializeField] private float duration = 0f;
 
     [Tooltip("체크 시 Duration이 끝날 때까지 플로우차트 진행을 멈춤. 미체크 시 변환 도중에도 다음 커맨드 실행.")]
-    [SerializeField] private bool waitUntilFinished = false;
+    [SerializeField] private bool waitUntilFinished = true;
 
     private Coroutine fadeCoroutine;
 
     public override void OnEnter()
     {
-        Volume volume = Object.FindFirstObjectByType<Volume>();
+        Volume volume = targetVolume != null ? targetVolume : Object.FindFirstObjectByType<Volume>();
         if (volume == null || !volume.profile.TryGet(out Vignette vignette))
         {
-            Debug.LogWarning("[SetVignette] 씬에서 Vignette 효과를 찾을 수 없습니다.");
+            GameLog.LogWarning("[SetVignette] 씬에서 Vignette 효과를 찾을 수 없습니다.");
             Continue();
             return;
         }
@@ -53,6 +58,15 @@ public class SetVignette : Command
         {
             fadeCoroutine = StartCoroutine(Fade(vignette, duration));
             if (!waitUntilFinished) Continue();
+        }
+    }
+
+    public override void OnStopExecuting()
+    {
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
         }
     }
 
@@ -73,11 +87,16 @@ public class SetVignette : Command
     {
         float startIntensity = vignette.intensity.value;
         float startSmoothness = vignette.smoothness.value;
-        Color startColor = vignette.color.value;
 
         vignette.intensity.overrideState = true;
         vignette.smoothness.overrideState = true;
-        if (overrideColor) vignette.color.overrideState = true;
+
+        Color startColor = Color.black;
+        if (overrideColor)
+        {
+            startColor = vignette.color.value;
+            vignette.color.overrideState = true;
+        }
 
         float t = 0f;
         while (t < fadeDuration)
