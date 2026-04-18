@@ -408,6 +408,7 @@ MonoBehaviour:
   targetLights:
   - {fileID: 1395375070}
   targetSprites: []
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!1 &182227208
 GameObject:
   m_ObjectHideFlags: 0
@@ -2554,7 +2555,7 @@ Transform:
   m_GameObject: {fileID: 1395375068}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 42, y: 452, z: 6.3734417}
+  m_LocalPosition: {x: 42, y: 503, z: 6.3734417}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2577,7 +2578,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.379
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 16.6
+  m_Intensity: 10
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: f9ff5eeaa9213ba5000000000527fdd3c7ebbd2eb52a48b4ccd775fe
@@ -2598,7 +2599,7 @@ MonoBehaviour:
   m_LocalBounds:
     m_Center: {x: 0, y: -0.00000011920929, z: 0}
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 110.90472
+  m_PointLightInnerAngle: 47.839066
   m_PointLightOuterAngle: 188.802
   m_PointLightInnerRadius: 54.81
   m_PointLightOuterRadius: 1251.4
@@ -7896,7 +7897,7 @@ MonoBehaviour:
       typeFullname: System.Single
       intValue: 0
       boolValue: 0
-      floatValue: 2
+      floatValue: 5
       stringValue: 
       colorValue: {r: 0, g: 0, b: 0, a: 0}
       gameObjectValue: {fileID: 0}

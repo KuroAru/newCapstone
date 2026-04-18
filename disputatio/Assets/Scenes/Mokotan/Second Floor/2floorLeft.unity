@@ -1396,6 +1396,7 @@ MonoBehaviour:
   - {fileID: 1622118144}
   targetSprites:
   - {fileID: 1621454538}
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!4 &576654258
 Transform:
   m_ObjectHideFlags: 0
