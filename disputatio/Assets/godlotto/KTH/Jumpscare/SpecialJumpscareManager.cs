@@ -42,6 +42,11 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
     [Tooltip("적이 등장하면 비활성화될 Sprite 오브젝트들의 Tag")]
     public string hideObjectTag = "HideOnEnemy";
 
+    [Header("포스트 프로세싱")]
+    [Tooltip("적이 등장하면 활성화될 ChromaticAberration")]
+    private ChromaticAberration chromaticAberration;
+    private Coroutine chromaticCoroutine;
+
     private static bool hasVisitedSpecialScene = false;
     private bool hasTriggered = false;
     private DepthOfField dof;
@@ -61,6 +66,12 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
 
     void Start()
     {
+        // 연결된 Volume의 Profile에서 Chromatic Aberration 컴포넌트 가져오기
+        if (globalVolume != null && globalVolume.profile.TryGet(out chromaticAberration))
+        {
+            // 게임 시작 시 기본 상태를 꺼짐(0)으로 설정합니다.
+            chromaticAberration.intensity.value = 0f; 
+        }
         // 인스턴스 Material 생성
         if (blinkOverlay != null && blinkOverlay.material != null)
         {
@@ -137,6 +148,7 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
             SetHideObjectsByTag(true);
             OnEnemyAppeared?.Invoke(); // 이 줄을 추가합니다.
 
+            ChromaticOn();
             StartCoroutine(WaitAndExecuteScare());
         }
     }
@@ -276,6 +288,7 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
         if (gameOverObject != null) gameOverObject.SetActive(true);
         OnPlayerDied?.Invoke();
         OnJumpscareReset?.Invoke(); // 이 줄을 추가합니다.
+        ChromaticOff();
 
         // GameOver 표시 후 클릭 차단 해제 (리트라이 등 클릭 가능)
         isJumpscareInProgress = false;
@@ -290,6 +303,56 @@ public class SpecialJumpscareManager : SingletonMonoBehaviour<SpecialJumpscareMa
         {
             if (obj != null)
                 obj.SetActive(!hide);
+        }
+    }
+
+    /// <summary>
+    /// Chromatic Aberration 효과를 켜고 10초 주기로 1 -> 0 -> 1을 반복합니다.
+    /// </summary>
+    public void ChromaticOn()
+    {
+        if (chromaticAberration == null) return;
+
+        // 이미 실행 중인 코루틴이 있다면 중복 실행을 막기 위해 정지
+        if (chromaticCoroutine != null)
+        {
+            StopCoroutine(chromaticCoroutine);
+        }
+        
+        chromaticCoroutine = StartCoroutine(ChromaticRoutine());
+    }
+
+    /// <summary>
+    /// Chromatic Aberration 효과를 완전히 끕니다.
+    /// </summary>
+    public void ChromaticOff()
+    {
+        if (chromaticAberration == null) return;
+
+        if (chromaticCoroutine != null)
+        {
+            StopCoroutine(chromaticCoroutine);
+            chromaticCoroutine = null;
+        }
+
+        chromaticAberration.intensity.value = 0f;
+    }
+
+    private IEnumerator ChromaticRoutine()
+    {
+        float timer = 0f;
+
+        while (true)
+        {
+            timer += Time.deltaTime;
+            
+            // 10초를 주기로 1 -> 0 -> 1이 되도록 Cosine 함수 사용
+            // Mathf.Cos는 기본적으로 1 -> -1 -> 1로 변하므로, 이를 1 -> 0 -> 1로 정규화합니다.
+            float intensity = 0.5f * Mathf.Cos((timer / 10f) * 2f * Mathf.PI) + 0.5f;
+            
+            chromaticAberration.intensity.value = intensity;
+
+            yield return null;
         }
     }
 
