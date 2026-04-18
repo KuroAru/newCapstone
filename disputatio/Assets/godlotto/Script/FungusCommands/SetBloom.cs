@@ -25,6 +25,7 @@ public class SetBloom : Command
     [SerializeField] private bool waitUntilFinished = true;
 
     private Coroutine fadeCoroutine;
+    private Bloom cachedBloom;
 
     public override void OnEnter()
     {
@@ -36,11 +37,14 @@ public class SetBloom : Command
             return;
         }
 
+        cachedBloom = bloom;
+
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         if (duration <= 0f)
         {
             Apply(bloom, intensity);
+            cachedBloom = null;
             Continue();
         }
         else
@@ -56,6 +60,11 @@ public class SetBloom : Command
         {
             StopCoroutine(fadeCoroutine);
             fadeCoroutine = null;
+            if (cachedBloom != null)
+            {
+                Apply(cachedBloom, intensity);
+                cachedBloom = null;
+            }
         }
     }
 
@@ -80,6 +89,7 @@ public class SetBloom : Command
         }
 
         Apply(bloom, intensity);
+        cachedBloom = null;
         fadeCoroutine = null;
         if (waitUntilFinished) Continue();
     }

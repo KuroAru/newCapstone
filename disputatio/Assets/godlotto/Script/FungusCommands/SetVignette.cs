@@ -36,6 +36,7 @@ public class SetVignette : Command
     [SerializeField] private bool waitUntilFinished = true;
 
     private Coroutine fadeCoroutine;
+    private Vignette cachedVignette;
 
     public override void OnEnter()
     {
@@ -47,11 +48,14 @@ public class SetVignette : Command
             return;
         }
 
+        cachedVignette = vignette;
+
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         if (duration <= 0f)
         {
             Apply(vignette, intensity, smoothness);
+            cachedVignette = null;
             Continue();
         }
         else
@@ -67,6 +71,11 @@ public class SetVignette : Command
         {
             StopCoroutine(fadeCoroutine);
             fadeCoroutine = null;
+            if (cachedVignette != null)
+            {
+                Apply(cachedVignette, intensity, smoothness);
+                cachedVignette = null;
+            }
         }
     }
 
@@ -110,6 +119,7 @@ public class SetVignette : Command
         }
 
         Apply(vignette, intensity, smoothness);
+        cachedVignette = null;
         fadeCoroutine = null;
         if (waitUntilFinished) Continue();
     }

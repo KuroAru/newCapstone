@@ -36,9 +36,17 @@ public class SetColorAdjustments : Command
     [SerializeField] private bool waitUntilFinished = true;
 
     private Coroutine fadeCoroutine;
+    private ColorAdjustments cachedColorAdjustments;
 
     public override void OnEnter()
     {
+        if (!overridePostExposure && !overrideContrast)
+        {
+            GameLog.LogWarning("[SetColorAdjustments] overridePostExposure와 overrideContrast가 모두 꺼져 있습니다. 아무 효과도 적용되지 않습니다.");
+            Continue();
+            return;
+        }
+
         Volume volume = targetVolume != null ? targetVolume : Object.FindFirstObjectByType<Volume>();
         if (volume == null || !volume.profile.TryGet(out ColorAdjustments colorAdjustments))
         {
@@ -47,11 +55,14 @@ public class SetColorAdjustments : Command
             return;
         }
 
+        cachedColorAdjustments = colorAdjustments;
+
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
 
         if (duration <= 0f)
         {
             Apply(colorAdjustments, postExposure, contrast);
+            cachedColorAdjustments = null;
             Continue();
         }
         else
@@ -67,6 +78,11 @@ public class SetColorAdjustments : Command
         {
             StopCoroutine(fadeCoroutine);
             fadeCoroutine = null;
+            if (cachedColorAdjustments != null)
+            {
+                Apply(cachedColorAdjustments, postExposure, contrast);
+                cachedColorAdjustments = null;
+            }
         }
     }
 
@@ -111,6 +127,7 @@ public class SetColorAdjustments : Command
         }
 
         Apply(ca, postExposure, contrast);
+        cachedColorAdjustments = null;
         fadeCoroutine = null;
         if (waitUntilFinished) Continue();
     }
