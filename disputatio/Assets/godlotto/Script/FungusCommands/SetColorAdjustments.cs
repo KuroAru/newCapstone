@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Fungus;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -119,11 +118,9 @@ public class SetColorAdjustments : Command
     public override string GetSummary()
     {
         string durationStr = duration <= 0f ? "즉시" : $"{duration}s";
-        var parts = new List<string>();
-        if (overridePostExposure) parts.Add($"PostExposure: {postExposure}");
-        if (overrideContrast) parts.Add($"Contrast: {contrast}");
-        parts.Add($"Duration: {durationStr}");
-        return string.Join(", ", parts);
+        string exposurePart = overridePostExposure ? $"PostExposure: {postExposure}, " : "";
+        string contrastPart = overrideContrast ? $"Contrast: {contrast}, " : "";
+        return $"{exposurePart}{contrastPart}Duration: {durationStr}";
     }
 
     public override Color GetButtonColor()
