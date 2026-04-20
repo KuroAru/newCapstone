@@ -19,41 +19,40 @@ public class ElectricLightController : MonoBehaviour
     [Tooltip("ElectricOn 상태에 따라 동시에 표시하거나 숨길 스프라이트 렌더러들을 모두 연결하세요.")]
     public List<SpriteRenderer> targetSprites = new List<SpriteRenderer>();
 
-    // 이전 상태를 기억하여 상태가 변했을 때만 작동하도록 하는 변수
+    [Header("손전등 설정")]
+    [Tooltip("정전(ElectricOn = false) 시 마우스를 따라다닐 손전등(Spot Light 2D) 프리팹을 연결하세요.")]
+    public GameObject flashlightPrefab;
+
     private bool previousElectricState = false;
+    private GameObject flashlightInstance;
+    private Camera mainCamera;
 
     private void Start()
     {
+        // 마우스 위치 좌표 변환을 위해 메인 카메라를 캐싱합니다.
+        mainCamera = Camera.main;
+
+        // 시작할 때 손전등 프리팹을 씬에 생성하고 기본적으로 꺼둡니다.
+        if (flashlightPrefab != null)
+        {
+            flashlightInstance = Instantiate(flashlightPrefab);
+            flashlightInstance.SetActive(false);
+        }
+
         if (targetFlowchart != null)
         {
             // 씬 시작 시 펑거스 변수의 초기 상태를 읽어옵니다.
             previousElectricState = targetFlowchart.GetBooleanVariable(variableName);
-
-            // 리스트에 등록된 모든 조명의 초기 상태를 동기화합니다.
-            foreach (Light2D light in targetLights)
-            {
-                if (light != null)
-                {
-                    light.enabled = previousElectricState;
-                }
-            }
-
-            // 리스트에 등록된 모든 스프라이트의 초기 상태를 동기화합니다.
-            foreach (SpriteRenderer sprite in targetSprites)
-            {
-                if (sprite != null)
-                {
-                    sprite.enabled = previousElectricState;
-                }
-            }
+            
+            // 초기 상태에 맞게 환경을 설정합니다.
+            UpdateEnvironmentState(previousElectricState);
         }
     }
 
     private void Update()
     {
-        // 연결이 누락되었거나 관리할 오브젝트가 하나도 없다면 작동하지 않습니다.
+        // 연결이 누락되었으면 작동하지 않습니다.
         if (targetFlowchart == null) return;
-        if (targetLights.Count == 0 && targetSprites.Count == 0) return;
 
         // 매 프레임 펑거스 변수의 현재 상태를 읽어옵니다.
         bool currentElectricState = targetFlowchart.GetBooleanVariable(variableName);
@@ -61,26 +60,47 @@ public class ElectricLightController : MonoBehaviour
         // 현재 상태가 이전 상태와 다를 때만 실행합니다.
         if (currentElectricState != previousElectricState)
         {
-            // 리스트에 있는 모든 조명을 켜거나 끕니다.
-            foreach (Light2D light in targetLights)
-            {
-                if (light != null)
-                {
-                    light.enabled = currentElectricState;
-                }
-            }
-
-            // 리스트에 있는 모든 스프라이트를 켜거나 끕니다.
-            foreach (SpriteRenderer sprite in targetSprites)
-            {
-                if (sprite != null)
-                {
-                    sprite.enabled = currentElectricState;
-                }
-            }
-            
-            // 다음 비교를 위해 이전 상태 값을 갱신합니다.
+            UpdateEnvironmentState(currentElectricState);
             previousElectricState = currentElectricState;
+        }
+
+        // 전기가 꺼져있고(정전), 손전등 인스턴스가 존재할 때 손전등이 마우스를 따라가게 합니다.
+        if (!currentElectricState && flashlightInstance != null)
+        {
+            // 화면상의 마우스 좌표를 게임 월드 좌표로 변환합니다.
+            Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            // 2D 환경이므로 z축 좌표는 0으로 고정합니다.
+            mousePosition.z = 0f; 
+            
+            flashlightInstance.transform.position = mousePosition;
+        }
+    }
+
+    // 조명, 스프라이트, 손전등의 활성화 상태를 일괄적으로 처리하는 메서드입니다.
+    private void UpdateEnvironmentState(bool isElectricOn)
+    {
+        // 리스트에 있는 모든 조명을 켜거나 끕니다.
+        foreach (Light2D light in targetLights)
+        {
+            if (light != null)
+            {
+                light.enabled = isElectricOn;
+            }
+        }
+
+        // 리스트에 있는 모든 스프라이트를 켜거나 끕니다.
+        foreach (SpriteRenderer sprite in targetSprites)
+        {
+            if (sprite != null)
+            {
+                sprite.enabled = isElectricOn;
+            }
+        }
+
+        // 전기가 들어오면 손전등을 끄고, 정전이면 손전등을 켭니다.
+        if (flashlightInstance != null)
+        {
+            flashlightInstance.SetActive(!isElectricOn);
         }
     }
 }

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4f3071f20314e224ebba045aa7e49db2
+guid: 11f19625a6af66c4a8e585953f22f228
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -836365511714518998
-    second: 2f_wiferoom_closet_hanger2_0
+      213: 5322025396476581120
+    second: "\uAC10\uC625\uCC3D\uC0B4_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 2f_wiferoom_closet_hanger2_0
+      name: "\uAC10\uC625\uCC3D\uC0B4_0"
       rect:
         serializedVersion: 2
-        x: 23
-        y: 11
-        width: 476
-        height: 542
+        x: 0
+        y: 0
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a284ed39ff1a464f0800000000000000
-      internalID: -836365511714518998
+      spriteID: 005189a96e1abd940800000000000000
+      internalID: 5322025396476581120
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      2f_wiferoom_closet_hanger2_0: -836365511714518998
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

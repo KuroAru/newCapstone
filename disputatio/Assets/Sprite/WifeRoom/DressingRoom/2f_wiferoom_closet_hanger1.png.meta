@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      2f_wiferoom_closet_hanger1_0: -2195604890735988424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

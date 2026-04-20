@@ -931,6 +931,7 @@ MonoBehaviour:
   - {fileID: 257450090}
   targetSprites:
   - {fileID: 574165132}
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!4 &1102051003
 Transform:
   m_ObjectHideFlags: 0
@@ -990,7 +991,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: f07fdd1348476d54c9feaf04085ab848, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2978,7 +2979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &1945851972
 MonoBehaviour:
   m_ObjectHideFlags: 2
