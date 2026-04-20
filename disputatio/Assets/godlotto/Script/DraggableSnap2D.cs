@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Fungus;
 
 [RequireComponent(typeof(Collider2D))]
@@ -19,6 +20,7 @@ public class DraggableSnap2D : MonoBehaviour
 
     private SpriteRenderer sr;
     private const string SnapSaveKeyPrefix = "SnapState_";
+    private string SaveKey => SnapSaveKeyPrefix + SceneManager.GetActiveScene().name + "_" + gameObject.name;
 
     [Header("스프라이트 앞·뒤 (목마 등 겹침)")]
     [Tooltip("같은 Sorting Layer끼리 월드 Y가 작을수록(화면 아래·가까운 쪽) 더 앞에 그립니다.")]
@@ -77,10 +79,11 @@ public class DraggableSnap2D : MonoBehaviour
             }
             else if (clearSnaps)
             {
+                string sceneName = SceneManager.GetActiveScene().name;
                 foreach (var d in allDrag)
                 {
                     if (d != null)
-                        PlayerPrefs.DeleteKey(SnapSaveKeyPrefix + d.gameObject.name);
+                        PlayerPrefs.DeleteKey(SnapSaveKeyPrefix + sceneName + "_" + d.gameObject.name);
                 }
                 PlayerPrefs.Save();
                 Debug.Log("[DraggableSnap2D] Editor: SnapState_* 키만 삭제했습니다.");
@@ -94,8 +97,7 @@ public class DraggableSnap2D : MonoBehaviour
 
         sr = GetComponent<SpriteRenderer>();
 
-        string key = SnapSaveKeyPrefix + gameObject.name;
-        if (PlayerPrefs.GetInt(key, 0) == 1)
+        if (PlayerPrefs.GetInt(SaveKey, 0) == 1)
         {
             var target = FindSnapTargetForKind();
             if (target != null)
@@ -103,6 +105,9 @@ public class DraggableSnap2D : MonoBehaviour
                 transform.position = target.transform.position;
                 isSnapped = true;
                 target.occupied = true;
+
+                if (sr != null)
+                    sr.color = new Color(1f, 1f, 1f, 0.9f);
 
                 if (lockAfterSnap)
                 {
@@ -122,9 +127,10 @@ public class DraggableSnap2D : MonoBehaviour
     /// 같은 Sorting Layer를 쓰는 <see cref="DraggableSnap2D"/>끼리 묶어,
     /// 월드 Y에 따라 sortingOrder를 재배치합니다. (낮은 Y = 앞, 기본값)
     /// </summary>
-    public static void RefreshSpriteDepthByWorldY()
+    public static void RefreshSpriteDepthByWorldY(DraggableSnap2D[] all = null)
     {
-        DraggableSnap2D[] all = Object.FindObjectsByType<DraggableSnap2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (all == null)
+            all = Object.FindObjectsByType<DraggableSnap2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         if (all == null || all.Length == 0)
             return;
 
@@ -151,7 +157,8 @@ public class DraggableSnap2D : MonoBehaviour
             if (list == null || list.Count <= 1)
                 continue;
 
-            list.Sort(CompareDepthPeers);
+            bool groupInvert = list[0].invertWorldYDepth;
+            list.Sort((a, b) => CompareDepthPeers(a, b, groupInvert));
 
             int minOrder = int.MaxValue;
             foreach (var d in list)
@@ -175,10 +182,10 @@ public class DraggableSnap2D : MonoBehaviour
         }
     }
 
-    private static int CompareDepthPeers(DraggableSnap2D a, DraggableSnap2D b)
+    private static int CompareDepthPeers(DraggableSnap2D a, DraggableSnap2D b, bool invertY)
     {
-        float fa = a.invertWorldYDepth ? -a.transform.position.y : a.transform.position.y;
-        float fb = b.invertWorldYDepth ? -b.transform.position.y : b.transform.position.y;
+        float fa = invertY ? -a.transform.position.y : a.transform.position.y;
+        float fb = invertY ? -b.transform.position.y : b.transform.position.y;
         int c = fa.CompareTo(fb);
         if (c != 0)
             return c;
@@ -192,8 +199,7 @@ public class DraggableSnap2D : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.MovePosition(target.transform.position);
 
-        string key = SnapSaveKeyPrefix + gameObject.name;
-        PlayerPrefs.SetInt(key, 1);
+        PlayerPrefs.SetInt(SaveKey, 1);
         PlayerPrefs.Save();
 
         Flowchart snapFc = FlowchartLocator.Resolve(targetFlowchart);
