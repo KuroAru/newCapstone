@@ -42,6 +42,30 @@ public class BookPanelController : MonoBehaviour
     [Tooltip("요리책(가정부 스크랩북) 전용 레이아웃·자동 리소스 로드에 사용합니다.")]
     [SerializeField] private bool isCookbookPanel;
 
+    [Header("퍼즐북 TXT (선택)")]
+    [Tooltip("PuzzleBookLoader 포맷의 TXT. 지정 시 scrapbookContentJson 보다 우선 적용됩니다.")]
+    [SerializeField] private TextAsset puzzleBookTxt;
+
+    [Header("퍼즐북 자동 매핑")]
+    [Tooltip("활성화 시 Awake에서 TXT·페이지·텍스트 컴포넌트를 자동으로 연결합니다.")]
+    [SerializeField] private bool autoMapPuzzleBook;
+    [Tooltip("비우면 GameObject 이름을 Resources 키로 사용합니다. (예: MaidRoomPuzzleBook)")]
+    [SerializeField] private string puzzleBookResourceKey;
+    [Tooltip("동적 생성 TMP 오버레이에 사용할 폰트. 비우면 TMP 기본 폰트(LiberationSans) 사용.")]
+    [SerializeField] private TMP_FontAsset overlayFont;
+
+    [Header("퍼즐북 텍스트 피벗 (autoMapPuzzleBook 활성 시 적용)")]
+    [Tooltip("좌 텍스트(Left 페이지) 피벗. x: 좌0/우1, y: 하0/상1")]
+    [SerializeField] private Vector2 puzzleBookLeftPivot  = new Vector2(0.5f, 1f);
+    [Tooltip("우 텍스트(Right 페이지) 피벗. x: 좌0/우1, y: 하0/상1")]
+    [SerializeField] private Vector2 puzzleBookRightPivot = new Vector2(0.5f, 0.5f);
+
+    [Header("레시피북 텍스트 피벗 (isCookbookPanel 활성 시 적용)")]
+    [Tooltip("좌 텍스트(레시피) 피벗. x: 좌0/우1, y: 하0/상1")]
+    [SerializeField] private Vector2 cookbookLeftPivot  = new Vector2(0.5f, 1f);
+    [Tooltip("우 텍스트(메모) 피벗. x: 좌0/우1, y: 하0/상1")]
+    [SerializeField] private Vector2 cookbookRightPivot = new Vector2(0.5f, 0.5f);
+
     [Header("페이지 오브젝트 목록")]
     public GameObject[] pages;
 
@@ -77,6 +101,38 @@ public class BookPanelController : MonoBehaviour
     [Tooltip("페이지 내용이 교체되는 프레임 인덱스 (0부터). 보통 절반 지점.")]
     [SerializeField] private int contentSwapFrame = 2;
 
+    /// <summary>퍼즐북 오버레이 TMP 오토 사이즈 하한 (상한은 PageLayoutSettings 글자 크기).</summary>
+    private const float PuzzleBookOverlayAutoSizeMin = 10f;
+
+    private static bool ShouldUsePuzzleBookStyledMemoOverlay(TextMeshProUGUI tmp, bool autoMap)
+    {
+        if (tmp == null) return false;
+        if (autoMap) return true;
+        string n = tmp.name;
+        return string.Equals(n, "PuzzleBookMemoText", StringComparison.Ordinal)
+            || string.Equals(n, "CookBookScrapText", StringComparison.Ordinal);
+    }
+
+    private static bool ShouldUsePuzzleBookStyledRecipeOverlay(TextMeshProUGUI tmp, bool autoMap)
+    {
+        if (tmp == null) return false;
+        if (autoMap) return true;
+        string n = tmp.name;
+        return string.Equals(n, "PuzzleBookRecipeText", StringComparison.Ordinal)
+            || string.Equals(n, "CookBookRecipeText", StringComparison.Ordinal);
+    }
+
+    /// <summary>TMP 오토 사이즈: min &lt; max 가 되도록 보정 (둘이 같으면 오토가 비활성처럼 보일 수 있음).</summary>
+    private static void ApplyTmpAutoSizingRange(TextMeshProUGUI tmp, float maxFontSize)
+    {
+        float maxFs = Mathf.Max(1f, maxFontSize);
+        float minFs = Mathf.Min(PuzzleBookOverlayAutoSizeMin, maxFs - 1f);
+        if (minFs >= maxFs) minFs = Mathf.Max(1f, maxFs * 0.5f);
+        tmp.fontSizeMax = maxFs;
+        tmp.fontSizeMin = minFs;
+        tmp.fontSize    = maxFs;
+    }
+
     private int currentPageIndex = 0;
     private bool _isTurning = false;
     private string PREF_KEY;
@@ -96,6 +152,10 @@ public class BookPanelController : MonoBehaviour
             turnAnimationImage.raycastTarget = false;
 
         PREF_KEY = "LastBookPage_" + gameObject.name;
+
+        if (autoMapPuzzleBook)
+            RunAutoMap();
+
         if (scrapbookContentJson == null && isCookbookPanel)
             scrapbookContentJson = Resources.Load<TextAsset>("MaidRoomCookbookScrapbook");
         if (scrapbookPageTextOverlay == null)
@@ -110,14 +170,12 @@ public class BookPanelController : MonoBehaviour
         ApplyPageBackgroundSprites();
         ApplyRecipeIllustrationSprites();
 
+        // 레시피 TMP는 메모보다 늦게 만들어질 수 있음 — 레이아웃(오토 사이즈·정렬) 적용 전에 존재해야 함
+        if (_cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
+            EnsureCookBookRecipeTextUi();
+
         // 초기 전체 레이아웃 적용 (페이지 0 기준)
         ApplyLayoutForPage(0);
-
-        if (isCookbookPanel)
-        {
-            if (_cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
-                EnsureCookBookRecipeTextUi();
-        }
     }
 
     // ── 페이지별 레이아웃 ─────────────────────────────────────────
@@ -135,11 +193,10 @@ public class BookPanelController : MonoBehaviour
     /// <summary>지정 페이지의 레이아웃(일러스트·레시피·메모 앵커)을 즉시 적용합니다.</summary>
     private void ApplyLayoutForPage(int pageIndex)
     {
-        if (pages == null) return;
         var layout = GetLayout(pageIndex);
 
-        // 일러스트 — 해당 페이지 오브젝트에만 적용
-        if (pageIndex >= 0 && pageIndex < pages.Length && pages[pageIndex] != null)
+        // 일러스트 — 해당 페이지 오브젝트에만 적용 (pages 없어도 레시피·메모 TMP 스타일은 적용)
+        if (pages != null && pageIndex >= 0 && pageIndex < pages.Length && pages[pageIndex] != null)
             ApplyIllustrationLayout(pages[pageIndex], layout);
 
         // 레시피·메모 텍스트 오버레이 — 전체 공유 오브젝트에 적용
@@ -164,17 +221,30 @@ public class BookPanelController : MonoBehaviour
         var rt = scrapbookRecipeTextOverlay.rectTransform;
         rt.anchorMin        = layout.recipeAnchorMin;
         rt.anchorMax        = layout.recipeAnchorMax;
-        rt.pivot            = new Vector2(0.5f, 1f);
+        rt.pivot            = autoMapPuzzleBook ? puzzleBookLeftPivot
+                            : isCookbookPanel   ? cookbookLeftPivot
+                            : new Vector2(0.5f, 1f);
         rt.offsetMin        = Vector2.zero;
         rt.offsetMax        = Vector2.zero;
         rt.anchoredPosition = Vector2.zero;
         var tmp = scrapbookRecipeTextOverlay;
-        tmp.fontSize              = layout.recipeFontSize;
+        bool puzzleBookRecipeStyle = ShouldUsePuzzleBookStyledRecipeOverlay(tmp, autoMapPuzzleBook);
+        if (puzzleBookRecipeStyle)
+        {
+            tmp.enableAutoSizing = true;
+            ApplyTmpAutoSizingRange(tmp, layout.recipeFontSize);
+            tmp.horizontalAlignment = HorizontalAlignmentOptions.Right;
+        }
+        else
+        {
+            tmp.enableAutoSizing    = false;
+            tmp.fontSize            = layout.recipeFontSize;
+            tmp.horizontalAlignment = HorizontalAlignmentOptions.Center;
+        }
         tmp.margin                = layout.recipeMargin;
         tmp.textWrappingMode      = TextWrappingModes.Normal;
         tmp.overflowMode          = TextOverflowModes.Overflow;
         tmp.wordWrappingRatios    = 0.5f;
-        tmp.horizontalAlignment   = HorizontalAlignmentOptions.Center;
         tmp.verticalAlignment     = VerticalAlignmentOptions.Top;
         tmp.lineSpacing           = 2f;
         tmp.paragraphSpacing      = 8f;
@@ -186,17 +256,30 @@ public class BookPanelController : MonoBehaviour
         var rt = scrapbookPageTextOverlay.rectTransform;
         rt.anchorMin        = layout.memoAnchorMin;
         rt.anchorMax        = layout.memoAnchorMax;
-        rt.pivot            = new Vector2(0.5f, 0.5f);
+        rt.pivot            = autoMapPuzzleBook ? puzzleBookRightPivot
+                            : isCookbookPanel   ? cookbookRightPivot
+                            : new Vector2(0.5f, 0.5f);
         rt.offsetMin        = Vector2.zero;
         rt.offsetMax        = Vector2.zero;
         rt.anchoredPosition = Vector2.zero;
         var tmp = scrapbookPageTextOverlay;
-        tmp.fontSize              = layout.memoFontSize;
+        bool puzzleBookMemoStyle = ShouldUsePuzzleBookStyledMemoOverlay(tmp, autoMapPuzzleBook);
+        if (puzzleBookMemoStyle)
+        {
+            tmp.enableAutoSizing = true;
+            ApplyTmpAutoSizingRange(tmp, layout.memoFontSize);
+            tmp.horizontalAlignment = HorizontalAlignmentOptions.Left;
+        }
+        else
+        {
+            tmp.enableAutoSizing    = false;
+            tmp.fontSize            = layout.memoFontSize;
+            tmp.horizontalAlignment = HorizontalAlignmentOptions.Center;
+        }
         tmp.margin                = layout.memoMargin;
         tmp.textWrappingMode      = TextWrappingModes.Normal;
         tmp.overflowMode          = TextOverflowModes.Overflow;
         tmp.wordWrappingRatios    = 0.5f;
-        tmp.horizontalAlignment   = HorizontalAlignmentOptions.Center;
         tmp.verticalAlignment     = VerticalAlignmentOptions.Middle;
     }
 
@@ -280,7 +363,11 @@ public class BookPanelController : MonoBehaviour
     {
         index = Mathf.Clamp(index, 0, pages.Length - 1);
         for (int i = 0; i < pages.Length; i++)
+        {
+            // 자기 자신이 pages[]에 들어간 단일 페이지 모드면 SetActive 스킵
+            if (pages[i] == gameObject) continue;
             pages[i].SetActive(i == index);
+        }
         ApplyLayoutForPage(index);
         UpdateScrapbookOverlay(index);
     }
@@ -293,9 +380,13 @@ public class BookPanelController : MonoBehaviour
     private void UpdateScrapbookOverlay(int index)
     {
         if (scrapbookPageTextOverlay == null) return;
-        if (isCookbookPanel && _cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
+
+        // split-page 데이터(JSON recipe/memo 또는 TXT left/right) 우선 렌더링
+        if (_cookbookSplitPages != null && _cookbookSplitPages.Length > 0)
         {
             EnsureCookBookRecipeTextUi();
+            // EnsureCookBookRecipeTextUi 가 처음으로 레시피 TMP를 만든 직후, 오토 사이즈·정렬을 다시 적용
+            ApplyLayoutForPage(index);
             string memo   = string.Empty;
             string recipe = string.Empty;
             if (index >= 0 && index < _cookbookSplitPages.Length)
@@ -309,12 +400,14 @@ public class BookPanelController : MonoBehaviour
             ForceRebuild(scrapbookRecipeTextOverlay);
             return;
         }
+
+        // 레거시 단일 본문 렌더링
         if (_scrapbookLegacyBodies == null || _scrapbookLegacyBodies.Length == 0) return;
         if (scrapbookRecipeTextOverlay != null) scrapbookRecipeTextOverlay.text = string.Empty;
         scrapbookPageTextOverlay.text =
             (index >= 0 && index < _scrapbookLegacyBodies.Length && !string.IsNullOrEmpty(_scrapbookLegacyBodies[index]))
             ? _scrapbookLegacyBodies[index] : string.Empty;
-        if (isCookbookPanel) ForceRebuild(scrapbookPageTextOverlay);
+        ForceRebuild(scrapbookPageTextOverlay);
     }
 
     /// <summary>온점(. 및 。) 뒤에 줄바꿈을 삽입합니다.</summary>
@@ -350,6 +443,21 @@ public class BookPanelController : MonoBehaviour
     {
         _cookbookSplitPages    = null;
         _scrapbookLegacyBodies = null;
+
+        // TXT 포맷 우선 (puzzleBookTxt 지정 시)
+        if (puzzleBookTxt != null)
+        {
+            var parsed = PuzzleBookLoader.Parse(puzzleBookTxt.text);
+            if (parsed != null && parsed.Length > 0)
+            {
+                _cookbookSplitPages = System.Array.ConvertAll(
+                    parsed,
+                    p => new CookbookPagePair { recipe = p.left, memo = p.right }
+                );
+            }
+            return;
+        }
+
         if (scrapbookContentJson == null) return;
         var raw = scrapbookContentJson.text;
         if (raw.IndexOf("\"recipe\"", StringComparison.Ordinal) >= 0)
@@ -363,7 +471,7 @@ public class BookPanelController : MonoBehaviour
 
     private void EnsureCookBookRecipeTextUi()
     {
-        if (!isCookbookPanel || scrapbookPageTextOverlay == null) return;
+        if (scrapbookPageTextOverlay == null) return;
         if (scrapbookRecipeTextOverlay != null) return;
         var tr = transform.Find("CookBookRecipeText");
         if (tr != null)
@@ -385,6 +493,178 @@ public class BookPanelController : MonoBehaviour
         rt.SetSiblingIndex(src.transform.GetSiblingIndex());
         scrapbookRecipeTextOverlay = tmp;
     }
+
+    // ── 자동 매핑 ────────────────────────────────────────────────
+
+    /// <summary>
+    /// ① TXT 자동 발견  — puzzleBookResourceKey(없으면 GameObject 이름)로 Resources 탐색
+    /// ② Pages[] 자동 연결 — 자식 중 Image 를 가진 "Page" 패턴 오브젝트 수집
+    /// ③ 텍스트 오버레이 자동 연결 — 자식에서 TMP 컴포넌트를 이름 패턴으로 탐색
+    /// </summary>
+    private void RunAutoMap()
+    {
+        AutoDiscoverTxt();
+        AutoDiscoverPages();
+        AutoDiscoverTextOverlays();
+    }
+
+    private void AutoDiscoverTxt()
+    {
+        if (puzzleBookTxt != null) return;
+
+        string key = string.IsNullOrEmpty(puzzleBookResourceKey)
+            ? gameObject.name
+            : puzzleBookResourceKey;
+
+        puzzleBookTxt = Resources.Load<TextAsset>(key);
+
+        // 이름 기반 실패 시 "MaidRoomPuzzleBook" 고정 키로 재시도
+        if (puzzleBookTxt == null)
+            puzzleBookTxt = Resources.Load<TextAsset>("MaidRoomPuzzleBook");
+
+        if (puzzleBookTxt != null)
+            Debug.Log($"[BookPanelController] TXT 자동 연결: {puzzleBookTxt.name}");
+        else
+            Debug.LogWarning($"[BookPanelController] TXT 자동 발견 실패 (key: {key})");
+    }
+
+    private static readonly string[] PageNameKeywords = { "page", "책장", "pg" };
+
+    private void AutoDiscoverPages()
+    {
+        if (pages != null && pages.Length > 0) return;
+
+        var found = new System.Collections.Generic.List<GameObject>();
+        foreach (Transform child in transform)
+        {
+            if (child.GetComponent<Image>() == null) continue;
+            string lower = child.name.ToLowerInvariant();
+            foreach (var kw in PageNameKeywords)
+            {
+                if (lower.Contains(kw)) { found.Add(child.gameObject); break; }
+            }
+        }
+
+        // 인덱스 순 정렬 (Page_0, Page_1 … 또는 끝 숫자 기준)
+        found.Sort((a, b) =>
+        {
+            int ia = ExtractTrailingInt(a.name);
+            int ib = ExtractTrailingInt(b.name);
+            return ia.CompareTo(ib);
+        });
+
+        if (found.Count > 0)
+        {
+            pages = found.ToArray();
+            Debug.Log($"[BookPanelController] Pages 자동 연결: {found.Count}개");
+        }
+        else
+        {
+            // 폴백: 자신을 단일 페이지로 사용 (단일 페이지 북 패널)
+            pages = new GameObject[] { gameObject };
+            Debug.Log("[BookPanelController] Pages 자동 연결 폴백: 패널 자신을 단일 페이지로 사용합니다.");
+        }
+    }
+
+    private static readonly string[] MemoNameKeywords  = { "memo", "scrap", "right", "right" };
+    private static readonly string[] RecipeNameKeywords = { "recipe", "left" };
+
+    private void AutoDiscoverTextOverlays()
+    {
+        var allTmp = GetComponentsInChildren<TextMeshProUGUI>(true);
+
+        // 1차: 이름 패턴으로 분류
+        foreach (var tmp in allTmp)
+        {
+            string lower = tmp.name.ToLowerInvariant();
+
+            if (scrapbookPageTextOverlay == null)
+                foreach (var kw in MemoNameKeywords)
+                    if (lower.Contains(kw)) { scrapbookPageTextOverlay = tmp; break; }
+
+            if (scrapbookRecipeTextOverlay == null)
+                foreach (var kw in RecipeNameKeywords)
+                    if (lower.Contains(kw)) { scrapbookRecipeTextOverlay = tmp; break; }
+
+            if (scrapbookPageTextOverlay != null && scrapbookRecipeTextOverlay != null) break;
+        }
+
+        // 2차 폴백: 이름 매칭 실패 시 발견된 TMP 순서대로 할당
+        if (allTmp.Length > 0 && scrapbookPageTextOverlay == null)
+        {
+            scrapbookPageTextOverlay = allTmp[0];
+            Debug.Log($"[BookPanelController] 우측 텍스트 폴백 연결: {allTmp[0].name}");
+        }
+        if (allTmp.Length > 1 && scrapbookRecipeTextOverlay == null)
+        {
+            scrapbookRecipeTextOverlay = allTmp[1];
+            Debug.Log($"[BookPanelController] 좌측 텍스트 폴백 연결: {allTmp[1].name}");
+        }
+
+        // 3차 폴백: TMP 자체가 없으면 동적으로 생성
+        if (scrapbookPageTextOverlay == null)
+        {
+            scrapbookPageTextOverlay = CreateOverlayTmp("PuzzleBookMemoText",
+                new Vector2(0.05f, 0.05f), new Vector2(0.95f, 0.95f));
+            Debug.Log("[BookPanelController] 우측 텍스트 동적 생성: PuzzleBookMemoText");
+        }
+
+        if (scrapbookRecipeTextOverlay == null && scrapbookPageTextOverlay != null)
+        {
+            scrapbookRecipeTextOverlay = CreateOverlayTmp("PuzzleBookRecipeText",
+                new Vector2(0.05f, 0.05f), new Vector2(0.45f, 0.95f));
+            Debug.Log("[BookPanelController] 좌측 텍스트 동적 생성: PuzzleBookRecipeText");
+        }
+
+        // overlayFont 지정 시 발견/생성된 오버레이에 모두 적용
+        if (overlayFont != null)
+        {
+            if (scrapbookPageTextOverlay   != null) scrapbookPageTextOverlay.font   = overlayFont;
+            if (scrapbookRecipeTextOverlay != null) scrapbookRecipeTextOverlay.font = overlayFont;
+        }
+    }
+
+    private TextMeshProUGUI CreateOverlayTmp(string goName, Vector2 anchorMin, Vector2 anchorMax)
+    {
+        var go  = new GameObject(goName, typeof(RectTransform));
+        var tmp = go.AddComponent<TextMeshProUGUI>();
+        if (overlayFont != null) tmp.font = overlayFont;
+        tmp.raycastTarget = false;
+        tmp.richText      = true;
+        tmp.fontSize      = 28f;
+        tmp.color         = Color.black;
+        tmp.textWrappingMode   = TextWrappingModes.Normal;
+        tmp.horizontalAlignment = HorizontalAlignmentOptions.Left;
+        tmp.verticalAlignment   = VerticalAlignmentOptions.Top;
+        var rt = tmp.rectTransform;
+        rt.SetParent(transform, false);
+        rt.anchorMin        = anchorMin;
+        rt.anchorMax        = anchorMax;
+        rt.offsetMin        = Vector2.zero;
+        rt.offsetMax        = Vector2.zero;
+        rt.anchoredPosition = Vector2.zero;
+        return tmp;
+    }
+
+    private static int ExtractTrailingInt(string name)
+    {
+        int i = name.Length - 1;
+        while (i >= 0 && char.IsDigit(name[i])) i--;
+        string digits = name.Substring(i + 1);
+        return digits.Length > 0 ? int.Parse(digits) : 0;
+    }
+
+#if UNITY_EDITOR
+    [ContextMenu("Auto Map Puzzle Book (에디터 미리보기)")]
+    private void EditorAutoMap()
+    {
+        AutoDiscoverTxt();
+        AutoDiscoverPages();
+        AutoDiscoverTextOverlays();
+        UnityEditor.EditorUtility.SetDirty(this);
+        Debug.Log("[BookPanelController] 에디터 자동 매핑 완료");
+    }
+#endif
 
     private void DeactivateOrphanPageChildren()
     {
