@@ -538,6 +538,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!1 &57187457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1374,6 +1378,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!50 &266823516
 Rigidbody2D:
   serializedVersion: 5
@@ -1946,21 +1954,7 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
---- !u!114 &316330122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316330117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  acceptKind: 6
-  lockWhenOccupied: 1
-  occupied: 0
+  completedGlobalBoolKeyOverride: 
 --- !u!212 &316330119
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2077,6 +2071,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &316330122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316330117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptKind: 6
+  lockWhenOccupied: 1
+  occupied: 0
 --- !u!1001 &318213306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2335,8 +2344,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 1700883150}
-  sonFlowchart: {fileID: 687597760}
+  dialogAdvanceKey: 32
   userInputField: {fileID: 336609495}
+  sonFlowchart: {fileID: 687597760}
 --- !u!114 &336609495 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4419980225969595842, guid: c02bb81fb98599f4bad4bbdd01f2744b, type: 3}
@@ -2933,6 +2943,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!1 &578390729
 GameObject:
   m_ObjectHideFlags: 0
@@ -12564,6 +12578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snapSearchRadius: 120
+  dragPlaneWorldZ: 0
 --- !u!4 &818358284
 Transform:
   m_ObjectHideFlags: 0
@@ -12755,6 +12770,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!50 &1180844264
 Rigidbody2D:
   serializedVersion: 5
@@ -12948,21 +12967,7 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
---- !u!114 &1189791328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1189791323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  acceptKind: 5
-  lockWhenOccupied: 1
-  occupied: 0
+  completedGlobalBoolKeyOverride: 
 --- !u!212 &1189791325
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13079,6 +13084,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1189791328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189791323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e7bc1181b09294085c1acbeb3788eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptKind: 5
+  lockWhenOccupied: 1
+  occupied: 0
 --- !u!1001 &1221517203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13497,6 +13517,7 @@ MonoBehaviour:
         m_CallState: 2
   flowchart: {fileID: 0}
   dialogBoolName: isTalking
+  completedGlobalBoolKeyOverride: 
 --- !u!114 &1280579636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13694,6 +13715,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!1 &1363582558
 GameObject:
   m_ObjectHideFlags: 0
@@ -14269,17 +14294,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.097560376, y: 0.004065141}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.77}
+    oldSize: {x: 0.62, y: 0.66}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.75, y: 1.28}
+  m_Size: {x: 0.51219803, y: 0.7804892}
   m_EdgeRadius: 0
 --- !u!212 &1658578554
 SpriteRenderer:
@@ -14325,7 +14350,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
+  m_Sprite: {fileID: 525780498, guid: 847f3e08157367e458aec63415b2d664, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -14345,8 +14370,8 @@ Transform:
   m_GameObject: {fileID: 1658578551}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 115, y: 965, z: 0}
-  m_LocalScale: {x: 150, y: 150, z: 1}
+  m_LocalPosition: {x: 253, y: 903, z: 0}
+  m_LocalScale: {x: 200, y: 200, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -14495,7 +14520,7 @@ Transform:
   m_GameObject: {fileID: 1662381622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 994, y: 29, z: -6.948167}
+  m_LocalPosition: {x: 976, y: 71, z: -6.948167}
   m_LocalScale: {x: 100, y: 100, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15783,6 +15808,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!1 &2140710413
 GameObject:
   m_ObjectHideFlags: 0
@@ -15822,6 +15851,10 @@ MonoBehaviour:
   isSnapped: 0
   rb: {fileID: 0}
   originalPos: {x: 0, y: 0, z: 0}
+  syncSpriteDepthByWorldY: 1
+  invertWorldYDepth: 0
+  editorClearSnapPlayerPrefsOnPlay: 0
+  editorDangerDeleteAllPlayerPrefsOnPlay: 0
 --- !u!50 &2140710415
 Rigidbody2D:
   serializedVersion: 5
