@@ -39,6 +39,17 @@ public class BookPanelController : MonoBehaviour
         public float   memoFontSize     = 28f;
     }
 
+    /// <summary>인스펙터에서 패널별 TMP 스타일을 조정합니다. 글자 크기 상한은 PageLayoutSettings의 memo/recipe 글자 크기입니다.</summary>
+    [Serializable]
+    public class BookOverlayTextStyle
+    {
+        public HorizontalAlignmentOptions horizontalAlignment = HorizontalAlignmentOptions.Center;
+        public VerticalAlignmentOptions verticalAlignment   = VerticalAlignmentOptions.Middle;
+        public bool enableAutoSizing = false;
+        [Tooltip("오토 사이즈 사용 시 최소 글자 크기 (최대는 해당 페이지 PageLayoutSettings 글자 크기)")]
+        public float autoSizeMinFont = 10f;
+    }
+
     [Tooltip("요리책(가정부 스크랩북) 전용 레이아웃·자동 리소스 로드에 사용합니다.")]
     [SerializeField] private bool isCookbookPanel;
 
@@ -59,6 +70,41 @@ public class BookPanelController : MonoBehaviour
     [SerializeField] private Vector2 puzzleBookLeftPivot  = new Vector2(0.5f, 1f);
     [Tooltip("우 텍스트(Right 페이지) 피벗. x: 좌0/우1, y: 하0/상1")]
     [SerializeField] private Vector2 puzzleBookRightPivot = new Vector2(0.5f, 0.5f);
+
+    [Header("퍼즐 패널 — 텍스트 스타일")]
+    [Tooltip("autoMapPuzzleBook 이거나 이름이 PuzzleBookMemoText 일 때")]
+    [SerializeField] private BookOverlayTextStyle puzzlePanelMemoTextStyle = new BookOverlayTextStyle
+    {
+        horizontalAlignment = HorizontalAlignmentOptions.Left,
+        verticalAlignment   = VerticalAlignmentOptions.Middle,
+        enableAutoSizing    = true,
+        autoSizeMinFont     = 10f
+    };
+    [Tooltip("autoMapPuzzleBook 이거나 이름이 PuzzleBookRecipeText 일 때")]
+    [SerializeField] private BookOverlayTextStyle puzzlePanelRecipeTextStyle = new BookOverlayTextStyle
+    {
+        horizontalAlignment = HorizontalAlignmentOptions.Right,
+        verticalAlignment   = VerticalAlignmentOptions.Top,
+        enableAutoSizing    = true,
+        autoSizeMinFont     = 10f
+    };
+
+    [Header("레시피북 패널 — 텍스트 스타일")]
+    [Tooltip("퍼즐 패널이 아닐 때 (CookBookScrapText, CookBookRecipeText 등)")]
+    [SerializeField] private BookOverlayTextStyle recipeBookPanelMemoTextStyle = new BookOverlayTextStyle
+    {
+        horizontalAlignment = HorizontalAlignmentOptions.Center,
+        verticalAlignment   = VerticalAlignmentOptions.Middle,
+        enableAutoSizing    = false,
+        autoSizeMinFont     = 10f
+    };
+    [SerializeField] private BookOverlayTextStyle recipeBookPanelRecipeTextStyle = new BookOverlayTextStyle
+    {
+        horizontalAlignment = HorizontalAlignmentOptions.Center,
+        verticalAlignment   = VerticalAlignmentOptions.Top,
+        enableAutoSizing    = false,
+        autoSizeMinFont     = 10f
+    };
 
     [Header("레시피북 텍스트 피벗 (isCookbookPanel 활성 시 적용)")]
     [Tooltip("좌 텍스트(레시피) 피벗. x: 좌0/우1, y: 하0/상1")]
@@ -101,36 +147,48 @@ public class BookPanelController : MonoBehaviour
     [Tooltip("페이지 내용이 교체되는 프레임 인덱스 (0부터). 보통 절반 지점.")]
     [SerializeField] private int contentSwapFrame = 2;
 
-    /// <summary>퍼즐북 오버레이 TMP 오토 사이즈 하한 (상한은 PageLayoutSettings 글자 크기).</summary>
-    private const float PuzzleBookOverlayAutoSizeMin = 10f;
-
-    private static bool ShouldUsePuzzleBookStyledMemoOverlay(TextMeshProUGUI tmp, bool autoMap)
+    /// <summary>퍼즐 패널 전용 텍스트 스타일(좌·우 정렬, 오토 사이즈). 레시피북과 분리합니다.</summary>
+    private bool UsePuzzlePanelMemoTextStyle(TextMeshProUGUI tmp)
     {
         if (tmp == null) return false;
-        if (autoMap) return true;
-        string n = tmp.name;
-        return string.Equals(n, "PuzzleBookMemoText", StringComparison.Ordinal)
-            || string.Equals(n, "CookBookScrapText", StringComparison.Ordinal);
+        if (autoMapPuzzleBook) return true;
+        return string.Equals(tmp.name, "PuzzleBookMemoText", StringComparison.Ordinal);
     }
 
-    private static bool ShouldUsePuzzleBookStyledRecipeOverlay(TextMeshProUGUI tmp, bool autoMap)
+    /// <summary>퍼즐 패널 전용 텍스트 스타일(좌·우 정렬, 오토 사이즈). 레시피북과 분리합니다.</summary>
+    private bool UsePuzzlePanelRecipeTextStyle(TextMeshProUGUI tmp)
     {
         if (tmp == null) return false;
-        if (autoMap) return true;
-        string n = tmp.name;
-        return string.Equals(n, "PuzzleBookRecipeText", StringComparison.Ordinal)
-            || string.Equals(n, "CookBookRecipeText", StringComparison.Ordinal);
+        if (autoMapPuzzleBook) return true;
+        return string.Equals(tmp.name, "PuzzleBookRecipeText", StringComparison.Ordinal);
     }
 
     /// <summary>TMP 오토 사이즈: min &lt; max 가 되도록 보정 (둘이 같으면 오토가 비활성처럼 보일 수 있음).</summary>
-    private static void ApplyTmpAutoSizingRange(TextMeshProUGUI tmp, float maxFontSize)
+    private static void ApplyTmpAutoSizingRange(TextMeshProUGUI tmp, float maxFontSize, float inspectorMinFont)
     {
         float maxFs = Mathf.Max(1f, maxFontSize);
-        float minFs = Mathf.Min(PuzzleBookOverlayAutoSizeMin, maxFs - 1f);
+        float userMin = Mathf.Max(1f, inspectorMinFont);
+        float minFs   = Mathf.Min(userMin, maxFs - 0.01f);
         if (minFs >= maxFs) minFs = Mathf.Max(1f, maxFs * 0.5f);
         tmp.fontSizeMax = maxFs;
         tmp.fontSizeMin = minFs;
         tmp.fontSize    = maxFs;
+    }
+
+    private void ApplyOverlayTextStyle(TextMeshProUGUI tmp, float layoutFontSize, BookOverlayTextStyle style)
+    {
+        tmp.horizontalAlignment = style.horizontalAlignment;
+        tmp.verticalAlignment   = style.verticalAlignment;
+        if (style.enableAutoSizing)
+        {
+            tmp.enableAutoSizing = true;
+            ApplyTmpAutoSizingRange(tmp, layoutFontSize, style.autoSizeMinFont);
+        }
+        else
+        {
+            tmp.enableAutoSizing = false;
+            tmp.fontSize         = layoutFontSize;
+        }
     }
 
     private int currentPageIndex = 0;
@@ -228,24 +286,12 @@ public class BookPanelController : MonoBehaviour
         rt.offsetMax        = Vector2.zero;
         rt.anchoredPosition = Vector2.zero;
         var tmp = scrapbookRecipeTextOverlay;
-        bool puzzleBookRecipeStyle = ShouldUsePuzzleBookStyledRecipeOverlay(tmp, autoMapPuzzleBook);
-        if (puzzleBookRecipeStyle)
-        {
-            tmp.enableAutoSizing = true;
-            ApplyTmpAutoSizingRange(tmp, layout.recipeFontSize);
-            tmp.horizontalAlignment = HorizontalAlignmentOptions.Right;
-        }
-        else
-        {
-            tmp.enableAutoSizing    = false;
-            tmp.fontSize            = layout.recipeFontSize;
-            tmp.horizontalAlignment = HorizontalAlignmentOptions.Center;
-        }
+        var style = UsePuzzlePanelRecipeTextStyle(tmp) ? puzzlePanelRecipeTextStyle : recipeBookPanelRecipeTextStyle;
+        ApplyOverlayTextStyle(tmp, layout.recipeFontSize, style);
         tmp.margin                = layout.recipeMargin;
         tmp.textWrappingMode      = TextWrappingModes.Normal;
         tmp.overflowMode          = TextOverflowModes.Overflow;
         tmp.wordWrappingRatios    = 0.5f;
-        tmp.verticalAlignment     = VerticalAlignmentOptions.Top;
         tmp.lineSpacing           = 2f;
         tmp.paragraphSpacing      = 8f;
     }
@@ -263,24 +309,12 @@ public class BookPanelController : MonoBehaviour
         rt.offsetMax        = Vector2.zero;
         rt.anchoredPosition = Vector2.zero;
         var tmp = scrapbookPageTextOverlay;
-        bool puzzleBookMemoStyle = ShouldUsePuzzleBookStyledMemoOverlay(tmp, autoMapPuzzleBook);
-        if (puzzleBookMemoStyle)
-        {
-            tmp.enableAutoSizing = true;
-            ApplyTmpAutoSizingRange(tmp, layout.memoFontSize);
-            tmp.horizontalAlignment = HorizontalAlignmentOptions.Left;
-        }
-        else
-        {
-            tmp.enableAutoSizing    = false;
-            tmp.fontSize            = layout.memoFontSize;
-            tmp.horizontalAlignment = HorizontalAlignmentOptions.Center;
-        }
+        var style = UsePuzzlePanelMemoTextStyle(tmp) ? puzzlePanelMemoTextStyle : recipeBookPanelMemoTextStyle;
+        ApplyOverlayTextStyle(tmp, layout.memoFontSize, style);
         tmp.margin                = layout.memoMargin;
         tmp.textWrappingMode      = TextWrappingModes.Normal;
         tmp.overflowMode          = TextOverflowModes.Overflow;
         tmp.wordWrappingRatios    = 0.5f;
-        tmp.verticalAlignment     = VerticalAlignmentOptions.Middle;
     }
 
     // ── 페이지 이동 ──────────────────────────────────────────────
