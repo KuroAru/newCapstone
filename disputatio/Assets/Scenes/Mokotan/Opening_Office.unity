@@ -206,11 +206,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 423.97208, y: 236.55069}
+  scrollPos: {x: 381.5023, y: 219.06578}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.8000002
+  zoom: 0.83000016
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -276,8 +276,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 57.14406
-    y: -41.49186
+    x: 63.39406
+    y: -48.811134
     width: 78.03
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -569,6 +569,7 @@ MonoBehaviour:
   itemId: 52
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC694\uC0C8 \uD749\uD749\uD558\uB124\uC694. \uC774\uB7F4 \uB54C
@@ -596,6 +597,7 @@ MonoBehaviour:
   itemId: 53
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC774 \uB140\uC11D\uC544 \uADF8\uB798\uB3C4 \uB0A8\uB4E4\uC774
@@ -622,6 +624,7 @@ MonoBehaviour:
   itemId: 54
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uB9D0\uC774 \uBE68\uB77C\uC9C0\uBA70) \uB9DE\uC544\uC694. \uC15C\uB85D
@@ -651,6 +654,7 @@ MonoBehaviour:
   itemId: 55
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uBB50 \uADF8\uAC74 \uADF8\uB807\uC9C0 \uC774 \uC0AC\uBB34\uC18C\uB97C
@@ -679,6 +683,7 @@ MonoBehaviour:
   itemId: 56
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC0AC\uAC74\uC774 \uC5C6\uC73C\uBA74 \uD0D0\uC815\uC774\uACE0 \uACBD\uCC30\uC774\uACE0
@@ -706,6 +711,7 @@ MonoBehaviour:
   itemId: 58
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC54C\uC558\uC5B4. \uB124 \uC15C\uB85D\uD648\uC988 \uCC2C\uC591\uC740
@@ -786,6 +792,7 @@ MonoBehaviour:
   itemId: 60
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "(\uD55C\uC228\uC744 \uD479 \uC26C\uBA70 \uC218\uD654\uAE30\uB97C
@@ -814,6 +821,7 @@ MonoBehaviour:
   itemId: 61
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC544~ \uAC70\uAE30\u2026 \uADC0\uC2E0 \uB098\uC628\uB2E4\uACE0
@@ -842,6 +850,7 @@ MonoBehaviour:
   itemId: 62
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC804\uD654 \uC654\uC73C\uB2C8 \uC774\uC81C \uC870\uC6A9\uD788
@@ -868,6 +877,7 @@ MonoBehaviour:
   itemId: 63
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC8FC\uC778\uACF5: (\uC758\uC790\uB97C \uC090\uB531\uD558\uAC8C
@@ -898,6 +908,7 @@ MonoBehaviour:
   itemId: 65
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "(\uB9D0\uC744 \uBA48\uCD98\uB2E4. \uC7A0\uC2DC \uC815\uC801) \"...\uC9C0\uAE08
@@ -925,6 +936,7 @@ MonoBehaviour:
   itemId: 66
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC5D0\uC774 \uC774\uC81C \uC2DC\uC791\uC778\uB370.. ."
@@ -950,6 +962,7 @@ MonoBehaviour:
   itemId: 70
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uADF8\uB7F0 \uC0AC\uB78C\uB4E4\uC774 \uC4F0\uB358 \uC800\uD0DD
@@ -977,6 +990,7 @@ MonoBehaviour:
   itemId: 68
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uAC70\uAE30 \uC0AC\uB78C \uC5C6\uB294 \uC800\uD0DD \uC54C\uC9C0?"
@@ -1002,6 +1016,7 @@ MonoBehaviour:
   itemId: 69
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uBA54\uBAA8\uB97C \uBCF4\uBA70)\uD788\uC775?! \uBB34\uC2A8 \uC758\uB8B0\uC778\uB370
@@ -1028,6 +1043,7 @@ MonoBehaviour:
   itemId: 71
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uD65C\uAE30\uCC28\uAC8C \uC18C\uB9AC\uCE5C\uB2E4) \uB135!! \uB2F9\uC5F0\uD558\uC8E0.
@@ -1055,6 +1071,7 @@ MonoBehaviour:
   itemId: 74
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC870\uC218\uC57C \uC77C\uB2E8 \uB298 \uD558\uB358\uB300\uB85C
@@ -1083,6 +1100,7 @@ MonoBehaviour:
   itemId: 73
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC870\uAE08 \uC54C\uC544\uBD10\uC57C \uACA0\uB2E4. "
@@ -1108,6 +1126,7 @@ MonoBehaviour:
   itemId: 72
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uAC70\uAE30 \uC0AC\uB78C \uC0AC\uB294 \uAC70\uC57C? \uADFC\uB370
@@ -1135,6 +1154,7 @@ MonoBehaviour:
   itemId: 75
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
+  overrideSayDialog: {fileID: 0}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC774\uB984\uC774 \uC774\uC0C1\uD558\uAE34 \uD558\uC9C0\uB9CC \uADF8\uB798\uB3C4
