@@ -287,6 +287,7 @@ MonoBehaviour:
   - {fileID: 1823664180}
   targetSprites:
   - {fileID: 702489734}
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!4 &112854845
 Transform:
   m_ObjectHideFlags: 0
@@ -2413,7 +2414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scope: 2
   key: ElectricOn
-  value: 1
+  value: 0
 --- !u!114 &641933033
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -9482,7 +9483,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -416, y: 434}
-  m_SizeDelta: {x: 150, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1425236011
 MonoBehaviour:
@@ -9560,7 +9561,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10075,7 +10076,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 299109539, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

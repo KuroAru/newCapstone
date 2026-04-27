@@ -1598,11 +1598,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -169.51938, y: -14.777016}
+  scrollPos: {x: -272.58096, y: -123.94291}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.6700003
+  zoom: 0.8200002
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -1610,9 +1610,8 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 1167277884}
-  selectedCommands:
-  - {fileID: 1167277967}
+  - {fileID: 1167278000}
+  selectedCommands: []
   variables:
   - {fileID: 1167277951}
   - {fileID: 1167277887}
@@ -7949,7 +7948,7 @@ MonoBehaviour:
   targetGameObjectOLD: {fileID: 0}
 --- !u!114 &1167278016
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -7964,7 +7963,7 @@ MonoBehaviour:
   targetItemId: 1
 --- !u!114 &1167278017
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -8090,6 +8089,7 @@ MonoBehaviour:
   - {fileID: 514995944}
   targetSprites:
   - {fileID: 1322027200}
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!4 &1243178499
 Transform:
   m_ObjectHideFlags: 0
@@ -8319,7 +8319,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.77}
+    oldSize: {x: 0.16, y: 0.16}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -8371,7 +8371,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 299109539, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8952,7 +8952,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -416, y: 434}
-  m_SizeDelta: {x: 150, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1917743638
 MonoBehaviour:
@@ -9030,7 +9030,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

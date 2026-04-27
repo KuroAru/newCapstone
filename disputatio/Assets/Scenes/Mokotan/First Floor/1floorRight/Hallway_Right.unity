@@ -1455,7 +1455,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 299109539, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2411,6 +2411,7 @@ MonoBehaviour:
   - {fileID: 1926664703}
   targetSprites:
   - {fileID: 216076265}
+  flashlightPrefab: {fileID: 3816896053191074467, guid: 39d548fe7be9c5040afec2ac4d0ec8de, type: 3}
 --- !u!4 &1474723024
 Transform:
   m_ObjectHideFlags: 0

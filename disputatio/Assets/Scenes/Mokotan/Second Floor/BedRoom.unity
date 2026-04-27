@@ -508,7 +508,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 32, y: -32}
-  m_SizeDelta: {x: 88, y: 88}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &250047115
 MonoBehaviour:
@@ -586,7 +586,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7626,7 +7626,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 32, y: -32}
-  m_SizeDelta: {x: 88, y: 88}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &709346021
 MonoBehaviour:
@@ -7704,7 +7704,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7816,6 +7816,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   dialText: {fileID: 1282792507}
+  editorResetThisDialPrefsOnPlay: 0
 --- !u!1 &892126686 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5735584017159551285, guid: 00991fb273694e1498f2faf546686432, type: 3}
@@ -8053,6 +8054,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   dialText: {fileID: 1447929582}
+  editorResetThisDialPrefsOnPlay: 0
 --- !u!1 &1168354751
 GameObject:
   m_ObjectHideFlags: 0
@@ -9346,7 +9348,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 32, y: -32}
-  m_SizeDelta: {x: 88, y: 88}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1583338814
 MonoBehaviour:
@@ -9660,17 +9662,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.102030784, y: -0.00000013411045}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.77}
+    oldSize: {x: 0.62, y: 0.66}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.75, y: 1.28}
+  m_Size: {x: 0.5547822, y: 0.73285365}
   m_EdgeRadius: 0
 --- !u!212 &1658578554
 SpriteRenderer:
@@ -9716,7 +9718,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 299109539, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  m_Sprite: {fileID: 525780498, guid: 847f3e08157367e458aec63415b2d664, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9736,8 +9738,8 @@ Transform:
   m_GameObject: {fileID: 1658578551}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 115, y: 965, z: 0}
-  m_LocalScale: {x: 150, y: 150, z: 1}
+  m_LocalPosition: {x: 127.8062, y: 950.593, z: 0}
+  m_LocalScale: {x: 191.31001, y: 193.66501, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -10083,8 +10085,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localServerUrl: http://15.134.24.132:8000/chat
   chatSayDialog: {fileID: 1335496677}
-  mainFlowchart: {fileID: 687597760}
+  dialogAdvanceKey: 32
   userInputField: {fileID: 1728581070}
+  mainFlowchart: {fileID: 687597760}
 --- !u!1 &1800068793
 GameObject:
   m_ObjectHideFlags: 0
@@ -10284,6 +10287,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   dialText: {fileID: 1558921234}
+  editorResetThisDialPrefsOnPlay: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

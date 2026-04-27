@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      2f_wiferoom_closet_door_0: -3822548143795823577
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

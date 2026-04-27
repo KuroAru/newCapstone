@@ -11,7 +11,7 @@ using UnityEngine;
 public class DragManager2D : MonoBehaviour
 {
     [Header("스냅 탐색 반경(드롭 시 근처 타겟 보정)")]
-    public float snapSearchRadius = 100f;
+    public float snapSearchRadius = 1.5f;
 
     [Tooltip("2D 드래그용 월드 평면의 Z (씬에 맞게 조정). ChildRoom 등 픽셀 좌표·z=0 스프라이트 기준.")]
     [SerializeField] private float dragPlaneWorldZ = 0f;
@@ -21,6 +21,7 @@ public class DragManager2D : MonoBehaviour
     private Vector3 grabOffset;
     private Vector3 originalPos;
     private int layerMaskWithoutSnapTargets;
+    private DraggableSnap2D[] cachedDraggables;
 
     private readonly Dictionary<GameObject, DraggableSnap2D> draggableByGameObject =
         new Dictionary<GameObject, DraggableSnap2D>();
@@ -40,7 +41,8 @@ public class DragManager2D : MonoBehaviour
 
     void Start()
     {
-        DraggableSnap2D.RefreshSpriteDepthByWorldY();
+        cachedDraggables = Object.FindObjectsByType<DraggableSnap2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        DraggableSnap2D.RefreshSpriteDepthByWorldY(cachedDraggables);
     }
 
     void OnDisable()
@@ -48,6 +50,7 @@ public class DragManager2D : MonoBehaviour
         draggableByGameObject.Clear();
         spriteRendererByGameObject.Clear();
         snapTargetByGameObject.Clear();
+        cachedDraggables = null;
     }
 
     void Update()
@@ -112,8 +115,7 @@ public class DragManager2D : MonoBehaviour
             return;
 
         originalPos = current.transform.position;
-        Vector3 mouseWorld = MouseWorldOnDragPlane();
-        grabOffset = current.transform.position - mouseWorld;
+        grabOffset = current.transform.position - mw;
         grabOffset.z = 0f;
     }
 
@@ -184,7 +186,7 @@ public class DragManager2D : MonoBehaviour
         targetPos.z = current.transform.position.z;
 
         current.rb.MovePosition(targetPos);
-        DraggableSnap2D.RefreshSpriteDepthByWorldY();
+        DraggableSnap2D.RefreshSpriteDepthByWorldY(cachedDraggables);
     }
 
     private void EndDrag()
@@ -202,7 +204,7 @@ public class DragManager2D : MonoBehaviour
             current.rb.MovePosition(originalPos);
         }
 
-        DraggableSnap2D.RefreshSpriteDepthByWorldY();
+        DraggableSnap2D.RefreshSpriteDepthByWorldY(cachedDraggables);
         current = null;
     }
 

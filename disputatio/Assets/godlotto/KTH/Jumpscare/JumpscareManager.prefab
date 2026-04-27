@@ -56,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -267,7 +267,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -395,9 +395,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetScenes:
   - sceneName: Hall_Right
-    spawnPosition: {x: 960, y: 540}
+    spawnPosition: {x: 0, y: 0}
     spawnChance: 20
   defaultSpawnChanceForMokotanScenes: 20
+  defaultAutoRegisteredSpawnPosition: {x: 0, y: 0}
+  autoRegisteredSpawnPositionOverrides:
+  - sceneName: 
+    spawnPosition: {x: 0, y: 0}
   guaranteedJumpscareAfterSeconds: 60
   blinkOverlay: {fileID: 6443540971245444807}
   waitTimeToScare: 60
@@ -483,7 +487,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: f07fdd1348476d54c9feaf04085ab848, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

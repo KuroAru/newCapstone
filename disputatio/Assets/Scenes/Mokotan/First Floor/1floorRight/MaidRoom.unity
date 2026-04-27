@@ -9868,17 +9868,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0960792, y: 0.006085083}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.77}
+    oldSize: {x: 0.62, y: 0.66}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.75, y: 1.28}
+  m_Size: {x: 0.5146951, y: 0.74452055}
   m_EdgeRadius: 0
 --- !u!212 &456103143
 SpriteRenderer:
@@ -9924,7 +9924,7 @@ SpriteRenderer:
   m_SortingLayerID: -362872839
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 299109539, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  m_Sprite: {fileID: 525780498, guid: 847f3e08157367e458aec63415b2d664, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9944,8 +9944,8 @@ Transform:
   m_GameObject: {fileID: 456103140}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 115, y: 965, z: 0}
-  m_LocalScale: {x: 150, y: 150, z: 1}
+  m_LocalPosition: {x: 133.7249, y: 936.1924, z: 0}
+  m_LocalScale: {x: 210.405, y: 237.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -11320,6 +11320,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCookbookPanel: 1
+  puzzleBookTxt: {fileID: 0}
+  autoMapPuzzleBook: 0
+  puzzleBookResourceKey: 
+  overlayFont: {fileID: 0}
+  puzzleBookLeftPivot: {x: 0.5, y: 1}
+  puzzleBookRightPivot: {x: 0.5, y: 0.5}
+  puzzlePanelMemoTextStyle:
+    horizontalAlignment: 1
+    verticalAlignment: 512
+    enableAutoSizing: 1
+    autoSizeMinFont: 10
+  puzzlePanelRecipeTextStyle:
+    horizontalAlignment: 4
+    verticalAlignment: 256
+    enableAutoSizing: 1
+    autoSizeMinFont: 10
+  recipeBookPanelMemoTextStyle:
+    horizontalAlignment: 2
+    verticalAlignment: 512
+    enableAutoSizing: 0
+    autoSizeMinFont: 10
+  recipeBookPanelRecipeTextStyle:
+    horizontalAlignment: 2
+    verticalAlignment: 256
+    enableAutoSizing: 0
+    autoSizeMinFont: 10
+  cookbookLeftPivot: {x: 0.5, y: 1}
+  cookbookRightPivot: {x: 0.5, y: 0.5}
   pages:
   - {fileID: 373349580}
   - {fileID: 358870567}
@@ -12344,7 +12372,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 200, y: -300}
-  m_SizeDelta: {x: 300, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1054880612
 MonoBehaviour:
@@ -12422,7 +12450,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13889,6 +13917,7 @@ GameObject:
   - component: {fileID: 1407025574}
   - component: {fileID: 1407025576}
   - component: {fileID: 1407025575}
+  - component: {fileID: 1407025577}
   m_Layer: 6
   m_Name: PuzzlePanel
   m_TagString: Untagged
@@ -13908,15 +13937,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1744047830}
   - {fileID: 1892094437}
   - {fileID: 1952253955}
   m_Father: {fileID: 89394293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 72.655334}
+  m_SizeDelta: {x: 0, y: 145.3107}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1407025575
 MonoBehaviour:
@@ -13931,15 +13959,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 2ef8ac471c4409042a0a4a116a46ff16, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -13956,6 +13984,70 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407025573}
   m_CullTransparentMesh: 1
+--- !u!114 &1407025577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407025573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 009665f9edab7ce4fa70d08f9cbff703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCookbookPanel: 0
+  puzzleBookTxt: {fileID: 4900000, guid: 6860bb267361da1479cb84d098b89b5c, type: 3}
+  autoMapPuzzleBook: 1
+  puzzleBookResourceKey: 
+  overlayFont: {fileID: 11400000, guid: 34d8dd68c71273049a43918fae18662a, type: 2}
+  puzzleBookLeftPivot: {x: 0.4, y: 1}
+  puzzleBookRightPivot: {x: 0.4, y: 0.5}
+  puzzlePanelMemoTextStyle:
+    horizontalAlignment: 1
+    verticalAlignment: 512
+    enableAutoSizing: 1
+    autoSizeMinFont: 10
+  puzzlePanelRecipeTextStyle:
+    horizontalAlignment: 4
+    verticalAlignment: 256
+    enableAutoSizing: 1
+    autoSizeMinFont: 10
+  recipeBookPanelMemoTextStyle:
+    horizontalAlignment: 2
+    verticalAlignment: 512
+    enableAutoSizing: 0
+    autoSizeMinFont: 10
+  recipeBookPanelRecipeTextStyle:
+    horizontalAlignment: 2
+    verticalAlignment: 256
+    enableAutoSizing: 0
+    autoSizeMinFont: 10
+  cookbookLeftPivot: {x: 0.5, y: 1}
+  cookbookRightPivot: {x: 0.5, y: 0.5}
+  pages: []
+  pageLayouts: []
+  defaultLayout:
+    illustrationAnchor: {x: 0.255, y: 0.63}
+    illustrationSize: {x: 260, y: 175}
+    illustrationOffset: {x: 0, y: 0}
+    recipeAnchorMin: {x: 0.06, y: 0.12}
+    recipeAnchorMax: {x: 0.44, y: 0.5}
+    recipeMargin: {x: 8, y: 4, z: 8, w: 6}
+    recipeFontSize: 26
+    memoAnchorMin: {x: 0.6, y: 0.12}
+    memoAnchorMax: {x: 0.92, y: 0.82}
+    memoMargin: {x: 12, y: 14, z: 12, w: 14}
+    memoFontSize: 28
+  scrapbookContentJson: {fileID: 0}
+  scrapbookPageTextOverlay: {fileID: 0}
+  scrapbookRecipeTextOverlay: {fileID: 0}
+  pageBackgroundSprites: []
+  pageRecipeIllustrationSprites: []
+  turnForwardFrames: []
+  turnAnimationImage: {fileID: 0}
+  frameDuration: 0.07
+  contentSwapFrame: 2
 --- !u!1001 &1441499828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14186,8 +14278,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.3129, y: 30.903}
-  m_SizeDelta: {x: 1721.389, y: 962.19}
+  m_AnchoredPosition: {x: -0.0045547, y: -0.00048065}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1478480061
 MonoBehaviour:
@@ -14772,81 +14864,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690416403}
   m_CullTransparentMesh: 1
---- !u!1 &1744047829
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1744047830}
-  - component: {fileID: 1744047832}
-  - component: {fileID: 1744047831}
-  m_Layer: 6
-  m_Name: PuzzleBookPage1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1744047830
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744047829}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1407025574}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1744047831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744047829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 3494866260757197722, guid: 4762872447316344cbc3180f4425dd6f, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1744047832
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744047829}
-  m_CullTransparentMesh: 1
 --- !u!1 &1758289379
 GameObject:
   m_ObjectHideFlags: 0
@@ -15361,8 +15378,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 360, y: 0}
-  m_SizeDelta: {x: 1000, y: 1000}
+  m_AnchoredPosition: {x: -554, y: 152.07275}
+  m_SizeDelta: {x: 1366.1812, y: 1366.1816}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1892094438
 MonoBehaviour:
@@ -15416,7 +15433,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -865, y: 468}
-  m_SizeDelta: {x: 150, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1907014997
 MonoBehaviour:
@@ -15494,7 +15511,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15625,9 +15642,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -861, y: 460}
-  m_SizeDelta: {x: 150, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -872, y: 296}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: -0.45598823}
 --- !u!114 &1952253956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15704,7 +15721,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15908,7 +15925,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -870, y: 462}
-  m_SizeDelta: {x: 150, y: 100}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1996043113
 MonoBehaviour:
@@ -15986,7 +16003,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 9159483732125017881, guid: 371489499411cf748a70df0fd527d0e3, type: 3}
+  m_Sprite: {fileID: -232279858, guid: 9647ce8cf65f5ff498b406128db94c11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

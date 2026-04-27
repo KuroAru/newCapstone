@@ -143,6 +143,15 @@ namespace Mokotan.StandingDialogue
             TypographySettings typography,
             Action onComplete)
         {
+            SetupSpeakerSlots(speakerSide, speakerSprite, speakerOffset, otherSprite, otherOffset);
+            Speak(speakerSide, speakerName, dialogueText, typography, onComplete);
+        }
+
+        /// <summary>스탠딩 이미지 슬롯과 하이라이트만 설정합니다. 대사창은 외부(SayDialog)에서 처리할 때 사용합니다.</summary>
+        public void SetupSpeakerSlots(Side speakerSide,
+            Sprite speakerSprite, Vector2 speakerOffset,
+            Sprite otherSprite,   Vector2 otherOffset)
+        {
             EnsureCanvasVisible();
 
             var speakerImg = GetCharImage(speakerSide);
@@ -162,7 +171,9 @@ namespace Mokotan.StandingDialogue
             }
             if (otherImg != null) ApplyOffset(otherImg, otherOffset);
 
-            Speak(speakerSide, speakerName, dialogueText, typography, onComplete);
+            ApplySpeakerHighlight(speakerSide);
+
+            if (dialogueBox != null) dialogueBox.SetActive(false);
         }
 
         public void Speak(Side side, string speakerName, string dialogueText,
