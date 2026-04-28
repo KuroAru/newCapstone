@@ -276,8 +276,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 63.39406
-    y: -48.811134
+    x: 62.18924
+    y: -46.401497
     width: 78.03
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}

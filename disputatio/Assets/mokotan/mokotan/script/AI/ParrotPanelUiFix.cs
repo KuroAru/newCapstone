@@ -19,9 +19,13 @@ public class ParrotPanelUiFix : MonoBehaviour
     [Header("Parret Visibility Settings")]
     [Tooltip("자동으로 찾을 Parret 오브젝트의 이름입니다.")]
     [SerializeField] private string parretObjectName = "Parret";
-    
+
     [Tooltip("자동으로 찾은 Parret 오브젝트가 여기에 캐싱됩니다. 미리 인스펙터에서 할당해둘 수도 있습니다.")]
     [SerializeField] private GameObject targetParret;
+
+    [Header("Input Panel")]
+    [Tooltip("패널 활성화 시 함께 켜질 InputPanelNotebook. 비워두면 자식에서 이름으로 찾습니다.")]
+    [SerializeField] private GameObject inputPanelNotebook;
 
     private Sprite defaultBackgroundSprite;
 
@@ -57,18 +61,17 @@ public class ParrotPanelUiFix : MonoBehaviour
         if (targetParret == null)
         {
             targetParret = GameObject.Find(parretObjectName);
-            
-            // 만약 스크립트로 프리팹을 생성(Instantiate)해서 이름 뒤에 "(Clone)"이 붙는다면 
-            // 아래 주석을 해제하여 사용할 수 있습니다.
-            // if (targetParret == null)
-            //     targetParret = GameObject.Find(parretObjectName + "(Clone)");
         }
 
         // 3. Parret 임시 비활성화
         if (targetParret != null)
-        {
             targetParret.SetActive(false);
-        }
+
+        // 4. InputPanelNotebook 자동 탐색 후 활성화
+        if (inputPanelNotebook == null)
+            inputPanelNotebook = transform.Find("InputPanelNotebook")?.gameObject;
+        if (inputPanelNotebook != null)
+            inputPanelNotebook.SetActive(true);
 
         ApplyBackgroundSprite();
     }
@@ -77,9 +80,11 @@ public class ParrotPanelUiFix : MonoBehaviour
     {
         // 패널이 닫힐 때 Parret 다시 활성화
         if (targetParret != null)
-        {
             targetParret.SetActive(true);
-        }
+
+        // InputPanelNotebook도 함께 비활성화
+        if (inputPanelNotebook != null)
+            inputPanelNotebook.SetActive(false);
     }
 
     private void ApplyBackgroundSprite()

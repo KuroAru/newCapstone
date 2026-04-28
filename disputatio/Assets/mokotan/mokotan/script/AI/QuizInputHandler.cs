@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using TMPro;
 using Fungus;
 
@@ -88,6 +89,33 @@ public class QuizInputHandler : MonoBehaviour
                 GameLog.LogWarning($"[{nameof(QuizInputHandler)}] tutorChatbot resolved via FindFirstObjectByType — assign in Inspector for faster startup.");
         }
         AttachSayDialogSyncToPanel();
+        WireSendButton();
+    }
+
+    /// <summary>
+    /// inputPanel 또는 그 부모에서 "SendButton" 이름의 버튼을 찾아 onClick을 연결합니다.
+    /// 프리팹에서 Inspector 연결 없이도 버튼이 동작하도록 런타임에 처리합니다.
+    /// </summary>
+    private void WireSendButton()
+    {
+        Transform searchRoot = inputPanel != null ? inputPanel.transform : transform;
+        // inputPanel이 TMP_InputField 자체라면 한 단계 위로 올라가 패널 루트에서 검색
+        if (inputPanel != null && inputPanel.GetComponent<TMP_InputField>() != null && inputPanel.transform.parent != null)
+            searchRoot = inputPanel.transform.parent;
+
+        foreach (var btn in searchRoot.GetComponentsInChildren<Button>(true))
+        {
+            if (btn.gameObject.name != "SendButton")
+                continue;
+            btn.onClick.RemoveListener(SubmitQuizAnswerFromUI);
+            btn.onClick.AddListener(SubmitQuizAnswerFromUI);
+            if (debugLogInputField)
+                GameLog.Log("[QuizInputHandler] SendButton onClick → SubmitQuizAnswerFromUI 연결 완료.");
+            return;
+        }
+
+        if (debugLogInputField)
+            GameLog.LogWarning("[QuizInputHandler] SendButton을 찾지 못했습니다. Inspector에서 직접 연결하거나 버튼 이름을 확인하세요.");
     }
 
     private static string EscapeForDebugLog(string s)

@@ -8,6 +8,13 @@ public class GlobalChatbot : BaseChatbot
     [Header("GlobalBot UI")]
     [SerializeField] public Flowchart globalFlowchart;
 
+    /// <summary>
+    /// 패널이 열려 있는 동안 SayDialog를 유지합니다.
+    /// BaseChatbot 기본값(true)은 대사 완료 후 SayDialog를 끄는데,
+    /// Parret_Panel 안에서는 패널이 닫힐 때 TutorPanelSayDialogSync가 처리하므로 꺼선 안 됩니다.
+    /// </summary>
+    protected override bool DeactivateSayDialogWhenLineCompletes => false;
+
     private const int BottleItemId = 1;
     private const string FallbackSystemPrompt = "당신은 저택의 도우미입니다.";
 

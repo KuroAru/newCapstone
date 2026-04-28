@@ -220,14 +220,40 @@ public abstract class BaseChatbot : MonoBehaviour, IChatHttpCallbacks
         if (chatSayDialog != null)
         {
             if (!chatSayDialog.gameObject.activeInHierarchy)
-                chatSayDialog.gameObject.SetActive(true);
-            chatSayDialog.Say(message, true, true, false, true, true, null, Done);
+                EnsureSayDialogActiveInHierarchy(chatSayDialog);
+
+            if (chatSayDialog.gameObject.activeInHierarchy)
+            {
+                chatSayDialog.Say(message, true, true, false, true, true, null, Done);
+            }
+            else
+            {
+                // 부모가 비활성이거나 씬 인스턴스가 아닌 경우: Fungus DoSay를 BaseChatbot에서 시작합니다.
+                // DoSay 내부(Fungus 코드)에서 gameObject.SetActive(true)를 직접 호출하므로
+                // BaseChatbot(항상 활성)에서 코루틴을 소유하면 초기 StartCoroutine이 성공합니다.
+                GameLog.LogWarning($"[BaseChatbot] '{chatSayDialog.gameObject.name}' activeInHierarchy=false — DoSay를 BaseChatbot에서 시작합니다. scene.IsValid={chatSayDialog.gameObject.scene.IsValid()}");
+                StartCoroutine(chatSayDialog.DoSay(message, true, true, false, true, true, null, Done));
+            }
         }
         else
         {
             GameLog.LogWarning("Inspector에서 Chat Say Dialog를 연결해주세요!");
             Done();
         }
+    }
+
+    /// <summary>
+    /// SayDialog 및 비활성화된 모든 상위 게임 오브젝트를 활성화합니다.
+    /// </summary>
+    private static void EnsureSayDialogActiveInHierarchy(SayDialog sayDialog)
+    {
+        for (var t = sayDialog.transform; t != null; t = t.parent)
+        {
+            if (!t.gameObject.activeSelf)
+                t.gameObject.SetActive(true);
+        }
+        if (!sayDialog.gameObject.activeInHierarchy)
+            GameLog.LogWarning($"[BaseChatbot] '{sayDialog.gameObject.name}' 계층 활성화 실패. scene.IsValid={sayDialog.gameObject.scene.IsValid()}");
     }
 
     // ---------------------------------------------------------------
