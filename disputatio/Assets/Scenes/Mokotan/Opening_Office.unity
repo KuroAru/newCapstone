@@ -206,11 +206,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 381.5023, y: 219.06578}
+  scrollPos: {x: 833.18445, y: 884.2238}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 280
-  zoom: 0.83000016
+  zoom: 0.53000003
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -218,9 +218,8 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 545852010}
-  selectedCommands:
-  - {fileID: 545852071}
+  - {fileID: 545852045}
+  selectedCommands: []
   variables: []
   description: 
   stepPause: 0
@@ -276,8 +275,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 62.18924
-    y: -46.401497
+    x: 56.165146
+    y: -47.606316
     width: 78.03
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -390,7 +389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 124.10253
+    x: 122.21574
     y: -198.35017
     width: 113.229996
     height: 40
@@ -597,7 +596,7 @@ MonoBehaviour:
   itemId: 53
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC774 \uB140\uC11D\uC544 \uADF8\uB798\uB3C4 \uB0A8\uB4E4\uC774
@@ -624,7 +623,7 @@ MonoBehaviour:
   itemId: 54
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uB9D0\uC774 \uBE68\uB77C\uC9C0\uBA70) \uB9DE\uC544\uC694. \uC15C\uB85D
@@ -654,7 +653,7 @@ MonoBehaviour:
   itemId: 55
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uBB50 \uADF8\uAC74 \uADF8\uB807\uC9C0 \uC774 \uC0AC\uBB34\uC18C\uB97C
@@ -683,7 +682,7 @@ MonoBehaviour:
   itemId: 56
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC0AC\uAC74\uC774 \uC5C6\uC73C\uBA74 \uD0D0\uC815\uC774\uACE0 \uACBD\uCC30\uC774\uACE0
@@ -711,7 +710,7 @@ MonoBehaviour:
   itemId: 58
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC54C\uC558\uC5B4. \uB124 \uC15C\uB85D\uD648\uC988 \uCC2C\uC591\uC740
@@ -792,7 +791,7 @@ MonoBehaviour:
   itemId: 60
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "(\uD55C\uC228\uC744 \uD479 \uC26C\uBA70 \uC218\uD654\uAE30\uB97C
@@ -821,7 +820,7 @@ MonoBehaviour:
   itemId: 61
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC544~ \uAC70\uAE30\u2026 \uADC0\uC2E0 \uB098\uC628\uB2E4\uACE0
@@ -850,7 +849,7 @@ MonoBehaviour:
   itemId: 62
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC804\uD654 \uC654\uC73C\uB2C8 \uC774\uC81C \uC870\uC6A9\uD788
@@ -877,7 +876,7 @@ MonoBehaviour:
   itemId: 63
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC8FC\uC778\uACF5: (\uC758\uC790\uB97C \uC090\uB531\uD558\uAC8C
@@ -908,7 +907,7 @@ MonoBehaviour:
   itemId: 65
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "(\uB9D0\uC744 \uBA48\uCD98\uB2E4. \uC7A0\uC2DC \uC815\uC801) \"...\uC9C0\uAE08
@@ -936,7 +935,7 @@ MonoBehaviour:
   itemId: 66
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC5D0\uC774 \uC774\uC81C \uC2DC\uC791\uC778\uB370.. ."
@@ -962,7 +961,7 @@ MonoBehaviour:
   itemId: 70
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uADF8\uB7F0 \uC0AC\uB78C\uB4E4\uC774 \uC4F0\uB358 \uC800\uD0DD
@@ -990,7 +989,7 @@ MonoBehaviour:
   itemId: 68
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uAC70\uAE30 \uC0AC\uB78C \uC5C6\uB294 \uC800\uD0DD \uC54C\uC9C0?"
@@ -1016,7 +1015,7 @@ MonoBehaviour:
   itemId: 69
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uBA54\uBAA8\uB97C \uBCF4\uBA70)\uD788\uC775?! \uBB34\uC2A8 \uC758\uB8B0\uC778\uB370
@@ -1043,7 +1042,7 @@ MonoBehaviour:
   itemId: 71
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "(\uD65C\uAE30\uCC28\uAC8C \uC18C\uB9AC\uCE5C\uB2E4) \uB135!! \uB2F9\uC5F0\uD558\uC8E0.
@@ -1071,7 +1070,7 @@ MonoBehaviour:
   itemId: 74
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC870\uC218\uC57C \uC77C\uB2E8 \uB298 \uD558\uB358\uB300\uB85C
@@ -1100,7 +1099,7 @@ MonoBehaviour:
   itemId: 73
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uC870\uAE08 \uC54C\uC544\uBD10\uC57C \uACA0\uB2E4. "
@@ -1126,7 +1125,7 @@ MonoBehaviour:
   itemId: 72
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 1
   speakerName: "\uC8FC\uC778\uACF5"
   dialogueText: "\uAC70\uAE30 \uC0AC\uB78C \uC0AC\uB294 \uAC70\uC57C? \uADFC\uB370
@@ -1154,7 +1153,7 @@ MonoBehaviour:
   itemId: 75
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 0}
+  overrideSayDialog: {fileID: 2032954892}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC774\uB984\uC774 \uC774\uC0C1\uD558\uAE34 \uD558\uC9C0\uB9CC \uADF8\uB798\uB3C4
@@ -2227,6 +2226,114 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9fb3bb52ef4eff48a14a0a5cef41b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &2032954891
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 30001, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_Name
+      value: SayDialogNotebook
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30002, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+--- !u!114 &2032954892 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
+  m_PrefabInstance: {fileID: 2032954891}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a0bbe22c246e4c78ad8e9816cbae9d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2045024222
@@ -3405,3 +3512,4 @@ SceneRoots:
   - {fileID: 4982006044741602706}
   - {fileID: 1017295656}
   - {fileID: 1597564517017057346}
+  - {fileID: 2032954891}
