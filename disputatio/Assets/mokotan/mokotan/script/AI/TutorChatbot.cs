@@ -415,7 +415,10 @@ public class TutorChatbot : BaseChatbot, IGraderHost, IChesterParrotHost
     protected override IEnumerator HandleChatbotResponse(string responseMessage, List<FunctionCallData> functionCalls)
     {
         if (chatSayDialog != null)
+        {
             chatSayDialog.Stop();
+            chatSayDialog.FadeWhenDone = false;
+        }
 
         string displayMessage = TutorQuizGrader.PrepareTutorDisplayAndQuizMetadata(
             responseMessage,
@@ -539,7 +542,10 @@ public class TutorChatbot : BaseChatbot, IGraderHost, IChesterParrotHost
         if (!_tutorWaitingOnHttp)
             yield break;
         if (chatSayDialog != null)
+        {
             chatSayDialog.Stop();
+            chatSayDialog.FadeWhenDone = false;
+        }
         Say(thinkingHoldSayMessage, null);
     }
 

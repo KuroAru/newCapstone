@@ -224,6 +224,7 @@ public abstract class BaseChatbot : MonoBehaviour, IChatHttpCallbacks
 
             if (chatSayDialog.gameObject.activeInHierarchy)
             {
+                chatSayDialog.FadeWhenDone = false;
                 chatSayDialog.Say(message, true, true, false, true, true, null, Done);
             }
             else

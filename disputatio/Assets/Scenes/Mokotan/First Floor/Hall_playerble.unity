@@ -9423,7 +9423,7 @@ MonoBehaviour:
   itemId: 207
   indentLevel: 2
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uD50C\uB808\uC774\uC5B4"
   dialogueText: ".....? \uC5EC\uAE30 \uC660 \uC0C8\uAC00 \uC788\uB0D0?"
@@ -9475,7 +9475,7 @@ MonoBehaviour:
   itemId: 209
   indentLevel: 2
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uD50C\uB808\uC774\uC5B4"
   dialogueText: "\uCCB4....\uC154... \uB0B4 \uC774\uB984...."
@@ -9527,7 +9527,7 @@ MonoBehaviour:
   itemId: 212
   indentLevel: 2
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uD50C\uB808\uC774\uC5B4"
   dialogueText: "\uCCB4....\uC154... \uB0B4 \uC774\uB984...."
@@ -9553,7 +9553,7 @@ MonoBehaviour:
   itemId: 211
   indentLevel: 2
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 1
   speakerName: "\uD50C\uB808\uC774\uC5B4"
   dialogueText: ".....? \uC5EC\uAE30 \uC660 \uC0C8\uAC00 \uC788\uB0D0?"

@@ -569,7 +569,7 @@ MonoBehaviour:
   itemId: 52
   indentLevel: 0
   setStandingDialogue: {fileID: 0}
-  overrideSayDialog: {fileID: 10007, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  overrideSayDialog: {fileID: 30007, guid: c3d4e5f6789012345678901234abcdef, type: 3}
   speakerSide: 0
   speakerName: "\uC870\uC218 "
   dialogueText: "\uC694\uC0C8 \uD749\uD749\uD558\uB124\uC694. \uC774\uB7F4 \uB54C
