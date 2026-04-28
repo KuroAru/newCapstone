@@ -32,14 +32,14 @@ namespace Fungus
         [SerializeField] private Sprite speakerSprite;
 
         [Tooltip("화자 이미지 위치 오프셋 (X=좌우, Y=상하).")]
-        [SerializeField] private Vector2 speakerOffset = Vector2.zero;
+        [SerializeField] private Vector2 speakerOffset = new Vector2(0f, -50f);
 
         [Header("상대 캐릭터 (선택)")]
         [Tooltip("반대편 캐릭터 스탠딩 이미지. 비우면 현재 슬롯 이미지를 유지합니다.")]
         [SerializeField] private Sprite otherSprite;
 
         [Tooltip("상대 이미지 위치 오프셋 (X=좌우, Y=상하).")]
-        [SerializeField] private Vector2 otherOffset = Vector2.zero;
+        [SerializeField] private Vector2 otherOffset = new Vector2(0f, -50f);
 
         [Header("타이포그래피")]
         [Tooltip("대사 폰트. 비우면 프리팹 기본 폰트(JalnanGothic SDF) 유지.")]
