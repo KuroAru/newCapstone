@@ -34,8 +34,21 @@ public class UISafeLockController : MonoBehaviour
 
     private const string UnlockKey = "SafeLock_Unlocked";
 
+#if UNITY_EDITOR
+    [Header("Editor only")]
+    [SerializeField] private bool editorResetOnPlay;
+#endif
+
     private void Start()
     {
+#if UNITY_EDITOR
+        if (editorResetOnPlay)
+        {
+            PlayerPrefs.DeleteKey(UnlockKey);
+            PlayerPrefs.Save();
+            Debug.LogWarning("[Safe] 에디터 자동 초기화 완료");
+        }
+#endif
         unlocked = PlayerPrefs.GetInt(UnlockKey, 0) == 1;
         currentStep = 0;
         RefreshStepUI();
@@ -48,11 +61,13 @@ public class UISafeLockController : MonoBehaviour
     public void OnDialChanged(int val)
     {
         currentDialValue = val;
+        Debug.LogWarning($"[Safe] OnDialChanged 호출됨: val={val}");
     }
 
     // 확인 버튼 onClick 에 연결
     public void Confirm()
     {
+        Debug.LogWarning($"[Safe] Confirm 호출됨: unlocked={unlocked}, step={currentStep}, dialVal={currentDialValue}, target={targets[currentStep]}");
         if (unlocked) return;
 
         if (currentDialValue == targets[currentStep])
@@ -102,7 +117,20 @@ public class UISafeLockController : MonoBehaviour
                 : $"✓  {currentStep}번 맞음";
     }
 
+#if UNITY_EDITOR
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle(GUI.skin.box);
+        style.fontSize = 20;
+        style.normal.textColor = Color.yellow;
+        GUI.Box(new Rect(10, 10, 220, 40),
+            $"[Safe] 단계: {currentStep + 1} / {targets.Length}  (입력값: {currentDialValue})",
+            style);
+    }
+#endif
+
     // 에디터에서 금고 상태 초기화용
+    [ContextMenu("금고 초기화 (PlayerPrefs 삭제)")]
     public void EditorResetLock()
     {
         PlayerPrefs.DeleteKey(UnlockKey);

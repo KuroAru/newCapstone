@@ -1354,9 +1354,9 @@ MonoBehaviour:
     width: 1114
     height: 859
   selectedBlocks:
-  - {fileID: 687597829}
+  - {fileID: 687597819}
   selectedCommands:
-  - {fileID: 687597835}
+  - {fileID: 687597862}
   variables:
   - {fileID: 687597774}
   - {fileID: 687597827}
@@ -3142,7 +3142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 396.44922
+    x: 394.44922
     y: 70.02008
     width: 125.41
     height: 40
@@ -3416,8 +3416,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeRect:
     serializedVersion: 2
-    x: 197.71552
-    y: 142.172
+    x: 198.71552
+    y: 143.172
     width: 122.23
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
@@ -7851,7 +7851,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   dialText: {fileID: 1282792507}
-  editorResetThisDialPrefsOnPlay: 0
+  editorResetThisDialPrefsOnPlay: 1
 --- !u!1 &799275837
 GameObject:
   m_ObjectHideFlags: 0
@@ -8470,7 +8470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1236498913
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8577,6 +8577,7 @@ MonoBehaviour:
   onWrong:
     m_PersistentCalls:
       m_Calls: []
+  editorResetOnPlay: 1
 --- !u!1 &1282792505
 GameObject:
   m_ObjectHideFlags: 0
@@ -9602,7 +9603,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1630553527
